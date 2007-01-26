@@ -1,0 +1,33 @@
+INSTALLATION
+
+  Install the scripts to a directory, that is reachable for your webserver
+  (e.g. apache).
+
+  Create a directory where your images will be put. This directory shouldn't be
+  reachable via your webserver (for security-reasons). It should be writeable
+  for the webserver (so you won't be able to edit your photopages).
+
+CREATING A PHOTOPAGE
+Using the shell
+---------------
+1) Create a subdirectory, where the pictures shall reside
+1) Copy all photos in high resolution to the subdirectory orig/
+2) Start mk_photopage (this will take some minutes)
+   This will create the directories 600/ and 200/ (or others, see conf.php)
+   and put rescaled versions of all the images there
+   as last part it will create a fotocfg.txt
+4) Edit fotocfg.txt
+   - You can put comments to your pictures:
+     "photo_1.jpg This is Picture one."
+   - You can put text there, according to "DOCU"
+5) Ready.
+
+Using the webpage
+-----------------
+1) Log in with a user that may create pages
+2) Click on "Edit Page".
+3) Drop a new subdirectory to your current page
+4) Enter the data
+5) Save
+6) Go to the newly create page, use "Upload images" to upload images. This can
+   take a little while, the images will be scaled to the other resolutions.

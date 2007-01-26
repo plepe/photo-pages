@@ -1,0 +1,61 @@
+#!/bin/bash
+# mk_photopage
+# - Creates Links to the scripts and an empty fotocfg.txt
+# Copyright (c) 1998-2006 Stephan Plepelits <skunk@xover.mud.at>
+#
+# This file is part of Skunks' Photosscripts 
+# - http://xover.mud.at/~skunk/proj/photo
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+p=$1
+if [ "$p" == "" ] ; then
+  echo "mk_photopage <path to php-files>"
+  echo
+  echo "This files generates Links to the *.php-files, so you just have to "
+  echo "update the files in this directory."
+  echo "Besides, this files generates a config-file for this page."
+  echo
+  echo "(c) 2002-2006 Stephan Plepeltis <skunk@xover.mud.at>"
+  exit
+fi
+
+for i in `ls $p/*.php` ; do ln -s $i . ; done
+
+if [ -f fotocfg.txt ] ; then
+  echo Es gibt schon eine Config.
+else
+  echo "TITLE " > fotocfg.txt
+  echo "PHOTOS_BY " >> fotocfg.txt
+  echo "DATE " >> fotocfg.txt
+  echo "WELCOME_TEXT " >> fotocfg.txt
+  echo "MAIN_PICTURE" >> fotocfg.txt
+
+  echo "[rights]" >> fotocfg.txt
+  echo >> fotocfg.txt
+  echo "[imglist]" >> fotocfg.txt
+
+
+  cd orig/
+  for i in * ; do echo $i >> ../fotocfg.txt ; done
+  cd ..
+
+  echo >> fotocfg.txt
+fi
+
+mkdir -p comments
+chmod a+w comments
+chmod a+w fotocfg.txt
+chmod a+w *.lst

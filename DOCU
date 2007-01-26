@@ -1,0 +1,58 @@
+=============================== Skunks Photopages ==============================
+
+Das fotocfg.txt enthaelt die Konfiguration und die Texte fuer die aktuelle
+Photopage. Im Header steht die Konfiguration, im Body (nach der ersten
+Leerzeile) folgen die Texte zu den Bildern.
+
+HEADER
+======
+Die Texte jeder Variablen folgen nach einem Space auf den Variablennamen.
+Wenn auf die Variable """ folgt, gehoeren auch die weiteren Zeilen dazu,
+bis """ als Abschluss gefunden wird. Beispiel:
+TITEL Photos von der Party!
+WELCOME_TEXT """
+Das war eine sehr witzige Party.
+Anwesend waren urviele Leute. """
+
+TITLE
+  Legt den Titel fest.
+
+PHOTOS_BY
+  Wer hat die Photos geschossen?
+
+DATE
+  Wann wurden die Photos geschossen?
+
+WELCOME_TEXT
+  Ein Text, der auf der Mainpage dargestellt wird.
+
+HIDE (yes/no)
+  Wenn HIDE=yes ist, wird dieses Photopage nicht in der Uebersicht angezeigt.
+
+SORT alpha (std) | explicit
+  Bei SORT alpha werden alle Photos dargestellt, die im index/ gefunden
+  werden. Die Dateien werden alphabetisch sortiert. Photos die im fotocfg.txt
+  nicht gefunden werden, werden ohne Kommentar dargestellt.
+  Bei SORT explicit werden nur die Photos dargestellt, die im fotocfg.txt
+  stehen und die Reihenfolge der Auflistung wird beibehalten.
+
+BODY
+====
+Nach der Leerzeile kommt fuer jedes File ein Eintrag. Als Variablenname
+wird der Name des Files genommen.
+
+filename comment
+  Gibt das Kommentar fuer das aktuelle File an.
+
+== header ==
+  Dies fuegt eine Ueberschrift ein. Die Anzahl der == gibt das Level der
+  Ueberschrift an.
+
+"xxx"
+  Dies fuegt einen Fliesstext ein.
+
+xxx/
+  Dies fuegt einen Link zum Unterverzeichnis xxx ein.
+
+xxx@
+  Dies fuegt einen Link zur Ansicht xxx ein.
