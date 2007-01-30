@@ -30,6 +30,7 @@ if(!$img)
 start_html_header("{$page->cfg[TITLE]} :: Bild ".($img+1));
 use_javascript("image");
 use_javascript("magnify");
+use_javascript("url");
 end_html_header();
 
 ?>
@@ -57,6 +58,8 @@ foreach($page->cfg["LIST"] as $el) {
   }
 }
 
+    print "<div id='debug'>\n";
+    print "&nbsp;</div>\n";
 ?>
 <div class='message' id='message'>
 no message

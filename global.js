@@ -55,7 +55,7 @@ function processReqChange() {
     var xmldata=xmlhttp_req.responseXML;
 
     var status=xmldata.getElementsByTagName('status');
-    if(status) {
+    if((status.length>0)&&(status[0].length>0)) {
       status=status[0].firstChild.nodeValue;
       if(status!="success") {
         alert(status);
@@ -191,4 +191,29 @@ function prev_sibl(ob) {
   }
 
   return ob;
+}
+
+function ajax_read_formated_text(xmldata, key) {
+  ret="";
+
+  obs=xmldata.getElementsByTagName(key);
+  for(i=0; i<obs.length; i++) {
+    ret+=obs[i].firstChild.nodeValue;
+  }
+
+  return ret;
+}
+
+function ajax_read_value(xmldata, key) {
+  ob=xmldata.getElementsByTagName(key);
+  if(!ob)
+    return null;
+  if(ob.length==0)
+    return "";
+  if(!ob[0].firstChild)
+    return "";
+
+  var x=new Function("return "+ajax_read_formated_text(xmldata, key)+";");
+  //ob[0].firstChild.nodeValue+";");
+  return x();
 }

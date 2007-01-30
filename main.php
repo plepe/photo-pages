@@ -27,7 +27,7 @@ include "data.php";
 ?>
 <html>
 <head>
-<link rel=stylesheet type="text/css" href="<?=$img_path?>/style.css">
+<link rel=stylesheet type="text/css" href="<?=url_img("style.css");?>">
 </head>
 <BODY>
 <?

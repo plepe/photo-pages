@@ -45,6 +45,7 @@ $lang_str=array(
   "tool_editdesc_name"=>"Beschreibung bearbeiten",
   "tool_comments_name"=>"Kommentar hinzuf&uuml;gen",
   "tool_edit_page"=>"Seite bearbeiten",
+  "tool_new_page"=>"Neue Unterseite anlegen",
   "tool_upload_pict"=>"Bild(er) hochladen",
   "tool_userauth_login"=>"Anmelden",
   "tool_userauth_loggedin"=>"Angemeldet als",
@@ -69,6 +70,8 @@ $lang_str=array(
   "error_notexist_pict"=>"Dieses Bild existiert nicht",
   "error_invalid_series"=>"Ung&uuml;ltiger Serienname, verwende Standard",
   "error_invalid_chars"=>"enth&auml;lt ung&uuml;ltige Zeichen.",
-  "error_invald_auth"=>"Username oder Passwort falsch!"
+  "error_invald_auth"=>"Username oder Passwort falsch!",
 
+  "new_page_no_dot"=>"Verzeichnisse dürfen nicht mit einem . beginnen",
+  "new_page_no_page_name"=>"Die Kurzbezeichnung darf nicht leer sein"
 );

@@ -174,6 +174,9 @@ switch($todo) {
 
     print "<status>success</status>\n";
     break;
+  case "read_upload_dir":
+    $x=list_dir($_REQUEST["dir"]);
+    html_export_var(array("dir"=>$x));
   default:
 }
 

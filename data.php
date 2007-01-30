@@ -36,8 +36,7 @@ if(!defined("DATA_PHP")) {
   include "inc/user.php";
   include "inc/group.php";
   include "inc/html_header.php";
-?>
-<?
+  include "inc/url.php";
 
 class Chunk {
   var $index;
@@ -151,25 +150,22 @@ class SubdirChunk extends Chunk {
 
   function album_show() {
     global $pfad;
-    global $img_path;
     global $web_path;
     global $no_main_picture;
     global $lang_str;
-    global $url_page;
-    global $url_img;
     $ret="";
 
     $this->get_subpage();
     $subdata=$this->subpage->cfg;
 
-    $ret.=sprintf("<a href='$url_page'>", $this->subpage->path, "", "index.php");
+    $ret.="<a href='".url_page($this->subpage->path, "", "index.php")."'>";
     if($subdata[MAIN_PICTURE])
-      $ret.=sprintf("<img class='album_series' src='$url_img' align='left'>", $this->subpage->path, "", "index.php", "main", "main.jpg", 200, $_SESSION[img_version][$this->img]);
+      $ret.="<img class='album_series' src='".url_photo($this->subpage->path, "", "index.php", "main", "main.jpg", 200, $_SESSION[img_version][$this->img])."' align='left'>";
     else
       $ret.="<img class='album_series' src='$no_main_picture' align='left'>";
     $ret.="</a>\n";
 
-    $ret.=sprintf("<a href='$url_page'>", $this->subpage->path, "", "index.php");
+    $ret.="<a href='".url_page($this->subpage->path, "", "index.php")."'>";
     $ret.="$subdata[TITLE]</a><br>";
     $ret.="$subdata[DATE]<br>";
 /*
@@ -250,12 +246,9 @@ class SeriesChunk extends Chunk {
   function html_class() { return "series"; }
   function album_show() {
     global $pfad;
-    global $img_path;
     global $web_path;
     global $no_main_picture;
     global $lang_str;
-    global $url_page;
-    global $url_img;
     $ret="";
 
     $this->get_subpage();
@@ -264,7 +257,7 @@ class SeriesChunk extends Chunk {
     $this->get_subpage();
     $subdata=$this->subpage->cfg;
 
-    $ret.=sprintf("<a href='$url_page'>", $this->subpage->path, $this->subpage->series, "index.php");
+    $ret.="<a href='".url_page($this->subpage->path, $this->subpage->series, "index.php")."'>";
 
     if($subdata[MAIN_PICTURE])
       $ret.="<img class='album_series' src='$web_path$subdata[MAIN_PICTURE]' align='left'>";
@@ -273,7 +266,7 @@ class SeriesChunk extends Chunk {
     $ret.="</a>\n";
 
     $ret.="$lang_str[nav_view]: ";
-    $ret.=sprintf("<a href='$url_page'>", $this->subpage->path, $this->subpage->series, "index.php");
+    $ret.="<a href='".url_page($this->subpage->path, $this->subpage->series, "index.php")."'>";
     $ret.="$subdata[TITLE]</a><br>\n";
     /*
     $ret.="<a href='album.php?series=$this->dir'><img src='$img_path/view_album.png' class='viewmode' alt='*'> Albumansicht</a><br>";
@@ -444,13 +437,11 @@ class ImgChunk extends Chunk {
   function album_show() {
     global $series;
     global $index_res;
-    global $url_skript;
-    global $url_img;
 
     $r=getimagesize("{$this->page->path}/$index_res/$this->img");
 
-    $ret =sprintf("<a href='$url_skript'>", $this->page->path, $this->page->series, "image.php", $this->index);
-    $ret.=sprintf("<img src='$url_img'", $this->page->path, $this->page->series, "image.php", $this->id, $this->img, $index_res, $_SESSION[img_version][$this->img]);
+    $ret ="<a href='".url_script($this->page->path, $this->page->series, "image.php", $this->index)."'>";
+    $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $index_res, $_SESSION[img_version][$this->img])."'";
     
     #$index_res/$this->img?{$_SESSION[img_version][$this->img]}' ".
     $ret.="class='album_image' width='$r[0]' height='$r[1]'></a><br>";
@@ -471,12 +462,11 @@ class ImgChunk extends Chunk {
 
   function get_image_details() {
     global $orig_path;
-    global $url_img;
 
     $r=getimagesize("{$this->page->path}/$orig_path/$this->img");
     $e=exif_read_data("{$this->page->path}/$orig_path/$this->img");
 
-    $ret["filename"]=sprintf("<a href='$url_img'>$this->img</a>", $this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img]);
+    $ret["filename"]="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."'>$this->img</a>";
 
     //$ret["filename"]="<a href='orig/$this->img'>$this->img</a>";
     $ret["filesize"]=sprintf("%.1f kB", filesize("{$this->page->path}/$orig_path/$this->img")/1024.0);
@@ -553,9 +543,7 @@ class ImgChunk extends Chunk {
     global $normal_res;
     global $orig_path;
     global $file_path;
-    global $img_path;
     global $lang_str;
-    global $url_img;
     $ret="";
 
     if(!$res)
@@ -566,13 +554,12 @@ class ImgChunk extends Chunk {
     $ret.="<script type='text/javascript'>\n".
           "<!--\n".
           "var img_version=\"{$_SESSION[img_version][$this->img]}\";\n".
-          "var img_orig=\"".(sprintf($url_img, $this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img]))."\";\n".
-          "var img_size_url=\"".(sprintf($url_img, $this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, "%SIZE%", $_SESSION[img_version][$this->img]))."\";\n".
+          "var img_orig=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."\";\n".
+          "var img_size_url=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, "%SIZE%", $_SESSION[img_version][$this->img])."\";\n".
           "var imgurl=\"$this->img\";\n".
           "var cur_res=\"$normal_res\";\n".
           "var series=\"$series\";\n".
           "var page=\"{$this->page->path}\";\n".
-          "var img_path=\"$img_path\";\n".
           "var imgchunk=\"$this->index\";\n";
 
     if($_SESSION[window_width])
@@ -611,11 +598,11 @@ class ImgChunk extends Chunk {
       $ih=$imgres[1];
     }
 
-    $ret.=sprintf("<a href='$url_img' target='_top'>", $this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img]);
+    $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."' target='_top'>";
 
 //    $ret.="<a href='$orig_path/$this->img?{$_SESSION[img_version][$this->img]}' target='_top'>".
     //$ret.="<img src='$normal_res/$this->img?{$_SESSION[img_version][$this->img]}' ";
-    $ret.=sprintf("<img src='$url_img' target='_top' ", $this->page->path, $this->page->series, "image.php", $this->id, $this->img, $normal_res, $_SESSION[img_version][$this->img]);
+    $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $normal_res, $_SESSION[img_version][$this->img])."' target='_top' ";
     $ret.="id='img' class='imageview_image' width='$iw' height='$ih' onLoad='notify_img_load()'></a>";
 // 
 
@@ -676,14 +663,12 @@ class ImgChunk extends Chunk {
     global $series;
     global $_SESSION;
     global $index_res;
-    global $url_img;
-    global $url_skript;
 
-    $ret =sprintf("<a href='$url_skript' target='main'>", $this->page->path, $this->page->series, "image.php", $this->index);
+    $ret ="<a href='".url_script($this->page->path, $this->page->series, "image.php", $this->index)."' target='main'>";
 //    $ret ="<a href='image.php?img=$this->index&series=".
 //          $this->page->series.
 //          "' target='main'>";
-    $ret.=sprintf("<img src='$url_img' class='list_image' id='$this->img'>", $this->page->path, $this->page->series, "image.php", $this->id, $this->img, $index_res, $_SESSION[img_version][$this->img]);
+    $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $index_res, $_SESSION[img_version][$this->img])."' class='list_image' id='$this->img'>";
     //$ret.="<img src='$index_res/$this->img?{$_SESSION[img_version][$this->img]}' class='list_image' id='$this->img'></a>";
 
     return $ret;
@@ -691,19 +676,24 @@ class ImgChunk extends Chunk {
 
   function edit_show($text=0) {
     global $index_res;
-    global $url_img;
+    global $orig_path;
 
     if(!$text)
       $text=$this->text;
 
     $ret.="<div class='edit_img' ".
           "onMouseOver='page_edit_show_pic(this, \"$this->img\", \"".
-          sprintf("$url_img", $this->page->path, $this->page->series, 
+          url_photo($this->page->path, $this->page->series, 
                   "get_image.php", $this->id, $this->img, 600, 
+                  $_SESSION[img_version][$this->img])."\", \"".
+          url_photo($this->page->path, $this->page->series, 
+                  "get_image.php", $this->id, $this->img, $orig_path, 
                   $_SESSION[img_version][$this->img])."\")' ".
           "onMouseOut='page_edit_dont_show_pic()' ".
-          "onMouseMove='page_edit_move_pic(event)'>";
-    $ret.=sprintf("<img src='$url_img'>", $this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, 64, $_SESSION[img_version][$this->img]);
+          "onMouseMove='page_edit_move_pic(event)' ".
+	  "onClick='page_edit_photo_click(event)' ".
+	  "onDrag='page_edit_photo_drag(event)'>\n";
+    $ret.="<img src='".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, 64, $_SESSION[img_version][$this->img])."'>";
     $ret.="</div>\n";
     $ret.="<input type='hidden' name='data[LIST][$this->id][img]' value='$this->img'>\n";
     $ret.="<textarea name='data[LIST][$this->id][text]' class='edit_input_imgchunk' onFocus='input_get_focus(this)' rows='1' onKeyUp='resize_textarea(this)' onMouseOut='page_edit_input_leave(this)'>$text</textarea>\n";
@@ -720,7 +710,6 @@ class ImgChunk extends Chunk {
 function show_path() {
   global $text_pfad;
   global $lang_str;
-  global $url_page;
 
   print "<div class='pathinfo'>$lang_str[nav_path]: ";
   if(!$text_pfad) {
@@ -733,9 +722,9 @@ function show_path() {
       if(!$subdata[TITLE])
         $subdata[TITLE]="(unknown)";
       if($tp=="")
-        array_unshift($path_to_me, sprintf("<a href='$url_page' target='_top'>", $this->path, "", "index.php")."$subdata[TITLE]</a>");
+        array_unshift($path_to_me, "<a href='".url_page($this->path, "", "index.php")."$subdata[TITLE]</a>")."' target='_top'>";
       else
-        array_unshift($path_to_me, sprintf("<a href='$url_page' target='_top'>", $this->path, "", "index.php")."$subdata[TITLE]</a>");
+        array_unshift($path_to_me, "<a href='".url_page($this->path, "", "index.php")."$subdata[TITLE]</a>")."' target='_top'>";
       $tp.="../";
     }
 
@@ -839,7 +828,7 @@ class Page {
       $this->inh_rights[$username]=$this->parent->get_rights($username);
     }
 
-    foreach($this->cfg["GROUP_LIST"] as $g=>$group) {
+    if($this->cfg["GROUP_LIST"]) foreach($this->cfg["GROUP_LIST"] as $g=>$group) {
       if($group->is_member($username))
 	$this->inh_rights[$username]=rights_merge($this->inh_rights[$username], 
                                               $this->cfg["GROUP_RIGHTS"][$g]);
@@ -1056,7 +1045,6 @@ class Page {
   }
 
   function Page($path="", $series="") {
-    global $img_path;
     global $file_path;
     global $index_res;
 
@@ -1138,7 +1126,7 @@ class Page {
     }
     fclose($fp);
     
-    foreach($this->cfg["RIGHTS"] as $u=>$r) {
+    if($this->cfg["RIGHTS"]) foreach($this->cfg["RIGHTS"] as $u=>$r) {
       if(substr($u, 0, 1)=="@") {
 	$g=substr($u, 1);
         $this->cfg["GROUP_RIGHTS"][$g]=$r;
@@ -1155,7 +1143,6 @@ class Page {
   function toolbox() {
     global $cols;
     global $lang_str;
-    global $url_skript;
 
     $ret.="<div class='toolbox_main'>\n";
     $ret.="$lang_str[nav_columns]:\n";
@@ -1168,12 +1155,17 @@ class Page {
 
     if($this->get_right($_SESSION[current_user], "edit")) {
       $ret.="<div class='toolbox_main'>\n";
-      $ret.=sprintf("<form action='$url_skript' method='get'>\n", $this->path, $this->series, "page_edit.php", "");
+      $ret.="<form action='".url_script($this->path, $this->series, "page_edit.php", "")."' method='get'>\n";
       $ret.="<input type='hidden' name='page' value=\"$this->path\">\n";
       $ret.="<input type='hidden' name='series' value=\"$this->series\">\n";
       $ret.="<input type='submit' value='$lang_str[tool_edit_page]' class='toolbox_input'><br>\n";
       $ret.="</form>\n";
-      $ret.=sprintf("<form action='$url_skript' method='get'>\n", $this->path, $this->series, "upload_image.php", "");
+      $ret.="<form action='".url_script($this->path, $this->series, "new_page.php", "")."' method='get'>\n";
+      $ret.="<input type='hidden' name='page' value=\"$this->path\">\n";
+      $ret.="<input type='hidden' name='series' value=\"$this->series\">\n";
+      $ret.="<input type='submit' value='$lang_str[tool_new_page]' class='toolbox_input'>\n";
+      $ret.="</form>\n";
+      $ret.="<form action='".url_script($this->path, $this->series, "upload_image.php", "")."' method='get'>\n";
       $ret.="<input type='hidden' name='page' value=\"$this->path\">\n";
       $ret.="<input type='hidden' name='series' value=\"$this->series\">\n";
       $ret.="<input type='submit' value='$lang_str[tool_upload_pict]' class='toolbox_input'>\n";
@@ -1186,7 +1178,6 @@ class Page {
 
   function header() {
     global $lang_str;
-    global $url_page;
 
     $ret ="<div class='header'>\n";
     if($this->get_parent()) {
@@ -1198,7 +1189,7 @@ class Page {
     }
 
     $ret.="<span class='header_head'>";
-    $ret.=sprintf("<a href='$url_page'>", $this->path, $this->series, "index.php");
+    $ret.="<a href='".url_page($this->path, $this->series, "index.php")."'>";
     $ret.="{$this->cfg[TITLE]}</a></span><br>\n";
     $ret.="<span class='header_kurzbeschreibung'>";
     if($this->cfg[DATE])
@@ -1255,7 +1246,6 @@ class Page {
   }
 
   function get_path() {
-    global $url_page;
     $ret="";
 
     if($this->get_parent()) {
@@ -1266,7 +1256,7 @@ class Page {
         $ret.=" / ";
     }
 
-    $ret.=sprintf("<a href='$url_page'>", $this->path, $this->series, "index.php")."{$this->cfg[TITLE]}</a>";
+    $ret.="<a href='".url_page($this->path, $this->series, "index.php")."'>"."{$this->cfg[TITLE]}</a>";
 
     return $ret;
   }
@@ -1306,17 +1296,15 @@ class Page {
 */
 
   function get_album_nav() {
-    global $img_path;
     global $series;
     global $lang_str;
-    global $url_page;
 
     $ret ="<table class='nav'>\n";
 
     $ret.="<tr><td class='nav_home'>\n";
 
-    $ret.=sprintf("<a href='$url_page' target='_top'>", $this->path, $this->series, "index.php").
-          "<img src='$img_path/house.png' class='nav_home' alt='$lang_str[nav_home]' title='$lang_str[nav_home]'></a>";
+    $ret.="<a href='".url_page($this->path, $this->series, "index.php")."' target='_top'>".
+          "<img src='".url_img("house.png")."' class='nav_home' alt='$lang_str[nav_home]' title='$lang_str[nav_home]'></a>";
 
     $ret.="</td></tr></table>\n";
 
@@ -1324,18 +1312,15 @@ class Page {
   }
 
   function get_chunk_nav($img) {
-    global $img_path;
     global $lang_str;
-    global $url_page;
-    global $url_skript;
 
     $ret ="<table class='nav'>\n";
     $ret.="<tr><td class='nav_left'>\n";
     if($img==0)
-      $ret.="<img src='$img_path/arrow_left_dark.png' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'> ";
+      $ret.="<img src='".url_img("arrow_left_dark.png")."' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'> ";
     else
-      $ret.=sprintf("<a onClick='notify_list()' href='$url_skript' accesskey='p'>", $this->path, $this->series, "image.php", $img-1).
-            "<img src='$img_path/arrow_left.png' class='nav_left' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'></a> ";
+      $ret.="<a onClick='notify_list()' href='".url_script($this->path, $this->series, "image.php", $img-1)."' accesskey='p'>".
+            "<img src='".url_img("arrow_left.png")."' class='nav_left' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'></a> ";
 
     $ret.="</td><td class='nav_text'>\n";
 
@@ -1345,15 +1330,15 @@ class Page {
     $ret.="</td><td class='nav_right'>\n";
 
     if($img==$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->get_index())
-      $ret.="<img src='$img_path/arrow_right_dark.png' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'> ";
+      $ret.="<img src='".url_img("arrow_right_dark.png")."' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'> ";
     else
-      $ret.=sprintf("<a onClick='notify_list()' href='$url_skript' accesskey='n'>", $this->path, $this->series, "image.php", $img+1).
-            "<img src='$img_path/arrow_right.png' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'></a> ";
+      $ret.="<a onClick='notify_list()' href='".url_script($this->path, $this->series, "image.php", $img+1)."' accesskey='n'>".
+            "<img src='".url_img("arrow_right.png")."' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'></a> ";
 
     $ret.="</td><td class='nav_home'>\n";
 
-    $ret.=sprintf("<a accesskey='h' href='$url_page#img_$img' target='_top'>", $this->path, $this->series, "index.php").
-          "<img src='$img_path/view_album.png' class='nav_home' alt='$lang_str[nav_home]' title='$lang_str[nav_home]'></a>";
+    $ret.="<a accesskey='h' href='".url_page($this->path, $this->series, "index.php")."#img_$img' target='_top'>".
+          "<img src='".url_img("view_album.png")."' class='nav_home' alt='$lang_str[nav_home]' title='$lang_str[nav_home]'></a>";
 
     //$ret.="</td><td class='nav_album'>\n";
 
@@ -1361,9 +1346,8 @@ class Page {
 
     $ret.="</td><td class='nav_album'>\n";
 
-    $ret.=sprintf("<a href='$url_skript' target='_top' id='nav_frame_a'>",
-                  $this->path, $this->series, "frame.php", $img).
-          "<img src='$img_path/view_frame.png' class='nav_album' ".
+    $ret.="<a href='".url_script($this->path, $this->series, "frame.php", $img)."' target='_top' id='nav_frame_a'>".
+          "<img src='".url_img("view_frame.png")."' class='nav_album' ".
           "alt='$lang_str[nav_frame]' title='$lang_str[nav_frame]' ".
           "id='nav_frame_img'></a>";
 
@@ -1775,6 +1759,12 @@ class Page {
     $td_size=100.0/$cols;
     unset($cur_index);
 
+    print "<script type='text/javascript'>\n".
+          "<!--\n".
+          "var series=\"{$this->series}\";\n".
+          "var page=\"{$this->path}\";\n".
+          "//-->\n</script>\n";
+
     print "<table class='album_table' width='100%' id='table_album'>\n";
     $pos=$cols;
     $i=0;
@@ -1995,4 +1985,118 @@ function rights_merge($rights, $addrights) {
   return $rights;
 }
 
+function list_dir($dir) {
+  global $upload_path;
+  $ret="";
 
+  $ret.="Verzeichnis: ";
+  $l=array();
+  $l[]="<a href='javascript:list_dir(\"/\")'>$upload_path</a>";
+  $di="";
+  foreach(explode("/", $dir) as $d) {
+    $di.="/$d";
+    $l[]="<a href='javascript:list_dir(\"$di\")'>$d</a>\n";
+  }
+  $ret.=implode("/", $l);
+  $ret.="<input type='hidden' name='dir' value='$dir'>\n";
+
+  $ret.="<table>\n";
+  $d=opendir("$upload_path/$dir");
+  while($x=readdir($d)) {
+    if(substr($x, 0, 1)!=".") {
+      if(is_dir("$upload_path/$dir/$x"))
+	$ret.="<tr><td><a href='javascript:list_dir(\"$dir/$x\")'>$x/</a></td>\n";
+      else
+	$ret.="<tr><td>$x</td>\n";
+      $st=stat("$upload_path/$dir/$x");
+      $ret.="<td>";
+      //$ret.=print_r($st, 1);
+      $ret.="</td>\n";
+      $ret.="</tr>\n";
+    }
+  }
+  $ret.="</table>\n";
+  closedir($d);
+
+  return $ret;
+}
+
+function html_var_to_js($v) {
+  if(!isset($v))
+    return "null";
+
+  switch(gettype($v)) {
+    case "integer":
+    case "double":
+      $ret=$v;
+      break;
+    case "boolean":
+      $ret=$v?"true":"false";
+      break;
+    case "string":
+      $ret="\"".implode("\\n", explode("\n", addslashes($v)))."\"";
+      break;
+    case "array":
+      $ar_keys=array_keys($v);
+      if(($ar_keys[0]=="0")&&($ar_keys[sizeof($ar_keys)-1]==(string)(sizeof($ar_keys)-1))) {
+        $ret1=array();
+        foreach($v as $k1=>$v1) {
+          $ret1[]=html_var_to_js($v1);
+        }
+        $ret="new Array(".implode(", ", $ret1).")";
+      }
+      else {
+        $ret1=array();
+        foreach($v as $k1=>$v1) {
+          $ret1[]="$k1:".html_var_to_js($v1);
+        }
+        $ret="{ ".implode(", ", $ret1)." }";
+      }
+      break;
+    default:
+      $ret="";
+  }
+
+  return $ret;
+}
+
+function html_add_formated_text($key, $text) {
+  $text=strtr(utf8_encode($text), array(">"=>"&gt;", "<"=>"&lt;", "&"=>"&amp;"));
+
+  $i=0;
+  while($i+1024<strlen($text)) {
+    $anz=1024;
+    
+    if(($a=strrpos(substr($text, $i, $anz), "\n"))!==false) {
+      $anz=$a;
+    }
+
+    while(eregi("&[a-zA-Z0-9]*$", substr($text, $i, $anz))) {
+      $anz--;
+    }
+
+    print "<$key>".substr($text, $i, $anz)."</$key>\n";
+    $i+=$anz;
+  }
+
+  print "<$key>".substr($text, $i)."</$key>\n";
+}
+
+
+function html_export_var($vars) {
+  global $request_type;
+
+//  if($request_type=="html") {
+//    print "<script type='text/javascript'>\n<!--\n";
+//    foreach($vars as $k=>$v) {
+//      print "var $k=".html_var_to_js($v).";\n";
+//    }
+//    print "//-->\n</script>\n";
+//  }
+//  else {
+    foreach($vars as $key=>$value) {
+      //print "<$key>".html_var_to_js($value)."</$key>\n";
+      html_add_formated_text($key, html_var_to_js($value));
+    }
+  //}
+}

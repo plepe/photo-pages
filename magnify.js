@@ -30,8 +30,15 @@ function mag_move(event) {
     var img=document.getElementById('img');
     var magzoom=mag.width/img.width;
     var magsize=200;
-    divmag.style.left=event.clientX-magsize/2 + "px";
-    divmag.style.top=event.clientY-magsize/2 + "px";
+    if(divmag.parentNode.style.position=="absolute") {
+      var m=get_abs_pos(divmag.parentNode);
+    }
+    else {
+      var m=new Array(0, 0);
+    }
+
+    divmag.style.left=event.clientX-magsize/2-m[0] + "px";
+    divmag.style.top=event.clientY-magsize/2-m[1] + "px";
 
     // Absoluten Abstand zur Seite bestimmen
 //    var x=0; var y=0; var n=img;
@@ -45,7 +52,6 @@ function mag_move(event) {
     var p=get_abs_pos(img);
     var x=p[0];
     var y=p[1];
-
 
     var px=(event.clientX-x)*magzoom-(magsize/2);
     var py=(event.clientY-y)*magzoom-(magsize/2);
@@ -69,18 +75,27 @@ function mag_key(key) {
   alert(key);
 }
 
+function end_mag() {
+  var el;
+  if(!mag)
+    return;
+
+  if(el=document.getElementById("toolbox_input_mag"))
+    el.className='toolbox_input';
+  var img=document.getElementById('img');
+  divmag.removeChild(mag);
+  img.parentNode.removeChild(divmag);
+  mag=null;
+  divmag=null;
+}
+
 function start_mag() {
   if(mag) {
-    var el=document.getElementById("toolbox_input_mag");
-    el.className='toolbox_input';
-    var img=document.getElementById('img');
-    divmag.removeChild(mag);
-    img.parentNode.removeChild(divmag);
-    mag=null;
-    divmag=null;
+    end_mag();
   }
   else {
     var img=document.getElementById('img');
+    var el;
     divmag=document.createElement("div");
     mag=document.createElement("img");
     divmag.style.position='absolute';
@@ -96,8 +111,8 @@ function start_mag() {
     img.parentNode.appendChild(divmag);
     divmag.appendChild(mag);
 
-    var el=document.getElementById("toolbox_input_mag");
-    el.className='toolbox_input_active';
+    if(el=document.getElementById("toolbox_input_mag"))
+      el.className='toolbox_input_active';
   }
 }
 

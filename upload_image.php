@@ -29,7 +29,11 @@ setlocale(LC_ALL, "de_AT");
    "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link rel=stylesheet type="text/css" href="<?=$img_path?>/style.css">
+<link rel=stylesheet type="text/css" href="<?=url_img("style.css");?>">
+<?
+use_javascript("global");
+use_javascript("upload_image");
+?>
 <title><?=$cfg[TITLE]?></title>
 </head>
 <BODY>
@@ -103,6 +107,23 @@ function upload_file($file, $tmpname, $desc) {
   }
 }
 
+print_r($_REQUEST);
+if($_REQUEST["dir"]) {
+  if(!file_exists("$page->path/$orig_path"))
+    mkdir("$page->path/$orig_path");
+
+  $d=opendir("$upload_path/$_REQUEST[dir]");
+  while($f=readdir($d)) {
+    if(eregi("\.(jpg|jpeg)$", $f)) {
+      print "Copying $f<br>\n";
+      flush(); ob_flush();
+      copy("$upload_path/$_REQUEST[dir]/$f", "$page->path/$orig_path/$f");
+    }
+  }
+
+  autoconvert();
+}
+
 if($_FILES[image]) {
   print "<p>";
 
@@ -133,19 +154,23 @@ if($_FILES[image]) {
   print "<br>Finished.<br>\n";
 }
 
-autoconvert();
-
 print "<p>\n";
-print "<a href='index.php'>Back</a> /\n";
-print "<a href='page_edit.php'>Edit Page</a>\n";
+print "<a href='".url_page($page, $series, "index.php")."'>Back</a> /\n";
+print "<a href='".url_script($page, $series, "page_edit.php", null)."'>Edit Page</a>\n";
 print "<p>\n";
 print "<form action='upload_image.php' method='post' ".
       "enctype='multipart/form-data'>\n";
-print "<table>\n";
-print "<tr><td>Bild angeben:</td><td><input type='file' name='image'></td></tr>";
-print "<tr><td>Beschreibung:</td><td><input name='desc'></td></tr>";
-print "<tr><td colspan='2'><input type='submit' value='Ok'></td></tr>\n";
-print "</table>\n";
+//print "<table>\n";
+//print "<tr><td>Bild oder ZIP-Datei angeben:</td><td><input type='file' name='image'></td></tr>";
+//print "<tr><td>Beschreibung:</td><td><input name='desc'></td></tr>";
+//print "</table>\n";
+
+$dir="";
+print "<div id='dir_list' class='upload_image_dir_list'>\n";
+print list_dir($_REQUEST[dir]);
+print "</div>\n";
+
+print "<tr><td colspan='2'><input type='submit' value='Import all images'></td></tr>\n";
 print "</form>\n";
 
 ?>

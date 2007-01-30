@@ -32,16 +32,12 @@ $img=$_REQUEST[img];
 <FRAMESET cols="250,*" border=0 frameborder=0 framespacing=0 bordercolor="#0080FF">
 <?
 if($img) {
-  print sprintf("<FRAME SRC=\"$url_skript#img_$img\" NAME=\"list\" noresize>\n", 
-    $page->path, $page->series, "list.php", "");
-  print sprintf("<FRAME SRC=\"$url_skript\" NAME=\"main\">\n",
-    $page->path, $page->series, "image.php", $img);
+  print "<FRAME SRC=\"".url_script($page->path, $page->series, "list.php", "")."#img_$img\" NAME=\"list\" noresize>\n";
+  print "<FRAME SRC=\"".url_script($page->path, $page->series, "image.php", $img)."\" NAME=\"main\">\n";
 }
 else {
-  print sprintf("<FRAME SRC=\"$url_skript\" NAME=\"list\" noresize>\n", 
-    $page->path, $page->series, "list.php", "");
-  print sprintf("<FRAME SRC=\"$url_skript\" NAME=\"main\">\n",
-    $page->path, $page->series, "image.php", "");
+  print "<FRAME SRC=\"".url_script($page->path, $page->series, "list.php", "")."\" NAME=\"list\" noresize>\n";
+  print "<FRAME SRC=\"".url_skript($page->path, $page->series, "image.php", "")."\" NAME=\"main\">\n";
 }
 ?>
 </FRAMESET>
@@ -57,7 +53,7 @@ else {
 Photos by <? echo $cfg[PHOTOS_BY]; ?></p>
 <p>
 <?
-print "Here you have ".sprintf("<a href=\"$url_skript\">", $page->path, $page->series, "list.php", "")."the list of Pictures</a></P>\n";
+print "Here you have <a href=\"".url_script($page->path, $page->series, "list.php", "")."\">the list of Pictures</a></P>\n";
 ?>
 
 </BODY>

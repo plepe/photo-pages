@@ -46,6 +46,7 @@ $lang_str=array(
   "tool_editdesc_desc"=>"Click here to edit description",
   "tool_comments_name"=>"Add comment",
   "tool_edit_page"=>"Edit page",
+  "tool_new_page"=>"Create new subpage",
   "tool_upload_pict"=>"Upload picture(s)",
   "tool_userauth_login"=>"Login",
   "tool_userauth_loggedin"=>"Logged in as",

@@ -29,6 +29,7 @@ var page_edit_marked=new Array();
 var page_edit_was_marked=new Array();
 var page_edit_enlarged=null;
 var page_edit_over_input;
+var page_edit_fix_large=0;
 
 function page_edit_new_spacer() {
   var ret;
@@ -295,44 +296,75 @@ function page_edit_show(off) {
   var ob=document.getElementById("page_edit_show_pic");
   var ob2=ob.getElementsByTagName("img");
 
+  // Kill remaining timeouts
   if(!ob2[0].complete) {
     page_edit_pic_timeout=window.setTimeout("page_edit_show("+off+")", 50);
     return;
   }
 
+  // Move image into window
   h=window.innerHeight;
-  if(ob.style.top.replace("px", "")+ob2[0].height>h) {
+  //debug_write("h="+h+" pos="+ob.style.top.replace("px", "")+" height="+ob2[0].height+" p+height="+(parseInt(ob.style.top.replace("px", ""))+ob2[0].height));
+  if(parseInt(ob.style.top.replace("px", ""))+ob2[0].height>h-4) {
     ob.style.top=(h-ob2[0].height-4) + "px";
   }
 
-  var ob=document.getElementById("page_edit_show_pic");
+  // Show the image
   ob.style.display="block";
 }
 
-function page_edit_show_pic(img, chunk, pict_url) {
-  if(page_edit_moving) {
-    page_edit_dont_show_pic();
+function page_edit_show_pic(img, chunk, pict_url, pict_orig_url) {
+//  if(page_edit_pic_over==img)
+//    return;
+//
+//  page_edit_dont_show_pic(1);
+  end_mag();
+
+  //if(page_edit_pic_over!=img)
+//
+  if(page_edit_moving)
     return;
-  }
+
+  var ob=document.getElementById("page_edit_show_pic");
+  var ob2=ob.getElementsByTagName("img");
+  //alert(ob2[0].getAttribute("page_edit_src")+ " "+pict_url);
+  if(ob2[0].getAttribute("page_edit_src")==pict_url)
+    return;
+
+  page_edit_fix_large=0;
 
   var p=get_abs_pos(img);
   page_edit_pic_over=img;
-  var ob=document.getElementById("page_edit_show_pic");
   ob.style.position="absolute";
+  ob2[0].src=pict_url;
+  ob2[0].setAttribute("page_edit_src", pict_url)
   par=img.parentNode;
   while(par&&(par.className!="edit_img_list")) {
     par=par.parentNode;
   }
 
   ob.style.top=(p[1]-par.scrollTop)+"px";
-  ob.style.left=(p[0]+32)+"px";
+  ob.style.left=(p[0]+64+6)+"px";
 
-  var ob2=ob.getElementsByTagName("img");
-  ob2[0].src=pict_url; // "600/"+chunk;
+  // fuer magnify
+  ob2[0].id="img";
+  img_orig=pict_orig_url;
 
   clearTimeout(page_edit_pic_timeout);
   page_edit_pic_timeout=window.setTimeout("page_edit_show()", 500);
 
+  return true;
+}
+
+function page_edit_photo_click(event) {
+  debug_write("BLA");
+  page_edit_fix_large=1;
+
+  //fuer magnify
+  start_mag();
+}
+
+function page_edit_photo_drag(event) {
   return true;
 }
 
@@ -366,11 +398,16 @@ function page_edit_move_pic(event) {
   return true;
 }
 
-function page_edit_dont_show_pic() {
-  var ob=document.getElementById("page_edit_show_pic");
-  ob.style.display="none";
+function page_edit_dont_show_pic(force) {
+  if((!page_edit_fix_large)||(force)) {
+    var ob=document.getElementById("page_edit_show_pic");
+    ob.style.display="none";
 
-  clearTimeout(page_edit_pic_timeout);
+    end_mag();
+
+    clearTimeout(page_edit_pic_timeout);
+    page_edit_fix_large=0;
+  }
 
   return true;
 }

@@ -7,8 +7,6 @@ function use_javascript($file) {
 }
 
 function start_html_header($title) {
-  global $img_path;
-
   Header("content-type: text/html; charset=iso-8859-15");
   setlocale(LC_ALL, "de_AT");
 ?>
@@ -17,7 +15,7 @@ function start_html_header($title) {
 <html>
 <head>
 <title>Photopage :: <?=$title?></title>
-<link rel=stylesheet type="text/css" href="<?=$img_path?>/style.css">
+<link rel=stylesheet type="text/css" href="<?=url_img("style.css");?>">
 <?
 use_javascript("global");
 }

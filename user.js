@@ -25,7 +25,7 @@
 function do_authenticate() {
   var el1=document.getElementById("small_login_username");
   var el2=document.getElementById("small_login_password");
-  start_xmlreq("/~skunk/photo_scripts/toolbox.php?todo=login&username="+el1.value+"&password="+el2.value, "Login-Daten werden ueberprueft", authenticate_finish);
+  start_xmlreq(url_script(page, series, "toolbox.php", "")+"&todo=login&username="+el1.value+"&password="+el2.value, "Login-Daten werden ueberprueft", authenticate_finish);
   return false;
 }
 

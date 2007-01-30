@@ -25,10 +25,11 @@
 require "data.php";
 start_html_header($page->cfg[TITLE]);
 use_javascript("page_edit");
+use_javascript("magnify");
 end_html_header();
 
 ?>
-<BODY onLoad='init_page_edit()'>
+<BODY onLoad='init_page_edit()'  onMousemove='mag_move(event)'>
 <?
 print $page->header();
 print "<div class='wait_screen' id='wait_screen'><table width='100%' height='100%'><tr><td align='center' valign='middle'>Please wait</td></tr></table></div>\n";
@@ -40,7 +41,7 @@ if($_REQUEST[submit][ok]) {
 if($_REQUEST[submit][ok]) {
   if($page->set_page_edit_data($_REQUEST[data]))
     print $lang_str[page_edit_saved];
-  print "<br><br><a href='".sprintf("$url_page", $page->path, $page->series, "index.php")."'>Zur&uuml;ck</a>.";
+  print "<br><br><a href='".url_page($page->path, $page->series, "index.php")."'>Zur&uuml;ck</a>.";
 }
 else {
   $page->show_page_edit_form();

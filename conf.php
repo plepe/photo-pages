@@ -23,7 +23,6 @@
  *
  */
 
-$img_path="/~skunk/photo_scripts_devel/images";
 $no_main_picture="$img_path/black.png";
 $resolutions=array(64, 200, 600);
 $orig_path="orig";
@@ -31,8 +30,9 @@ $orig_path="orig";
 $index_res=200;
 $normal_res=600;
 
-$file_path="/home/skunk/photos";
-$web_path="/~skunk/photo_scripts_devel/";
+$file_path="/home/skunk/photo_archiv";
+$web_path="/~skunk/photos/";
+$upload_path="/home/skunk/photos";
 $passwd_file="$file_path/.htpasswd";
 $group_file ="$file_path/.htgroup";
 
@@ -51,7 +51,7 @@ umask(0000);
 
 $language="de";
 
-$default_rights=array("view", "announce");
+$default_rights=array("view", "announce", "edit");
 
 // URLs
 // es wird auf jeden fall $web_path davor gesetzt.
@@ -64,9 +64,11 @@ $default_rights=array("view", "announce");
 //   %6$s size (nur bei images)
 //   %7$s imgversion (nur bei images)
 $url_page=$web_path.'/?page=%1$s&series=%2$s';
-$url_img=$web_path.'/get_image.php/%5$s?page=%1$s&series=%2$s&img=%4$s&size=%6$s&%7$s';
-$url_skript=$web_path.'/%3$s?page=%1$s&series=%2$s&img=%4$s';
+$url_photo=$web_path.'/get_image.php/%5$s?page=%1$s&series=%2$s&img=%4$s&size=%6$s&%7$s';
+$url_script=$web_path.'/%3$s?page=%1$s&series=%2$s&img=%4$s';
 $url_javascript=$web_path.'/%3$s';
+//   %1$s imgfile
+$url_img=$web_path.'images/%1$s';
 
 //$url_page=$web_path.'%1$s/?series=%2$s';
 //$url_img='/photo_scripts/get_image.php/%5$s?page=%1$s&series=%2$s&img=%4$s&size=%6$s&%7$s';

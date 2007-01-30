@@ -27,6 +27,7 @@ require "data.php";
 start_html_header($page->cfg[TITLE]);
 use_javascript("index");
 use_javascript("user");
+urls_write();
 end_html_header();
 
 ?>
@@ -58,7 +59,12 @@ print $page->toolbox();
   print "</td>\n";
   print "</tr></table>\n";
 
+print "<pre>\n";
 //print_r($page->get_rights($_SESSION[current_user]));
+//print_r($_SESSION);
+print_r($page->rights);
+print "</pre>\n";
+
 if($page->get_right($_SESSION[current_user], "view")) {
   $page->read_list();
 
@@ -70,6 +76,7 @@ if($page->get_right($_SESSION[current_user], "view")) {
 if((!$page->get_right($_SESSION[current_user], "view"))||
    ($page->hidden_files)) {
   login_form();
+  small_login_form();
 }
 
 print $page->show_path();
