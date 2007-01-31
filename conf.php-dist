@@ -23,34 +23,51 @@
  *
  */
 
-$no_main_picture="black.png";
-$resolutions=array(64, 200, 600);
-$orig_path="orig";
-
-$index_res=200;
-$normal_res=600;
-
+// Set Paths
 $file_path="/home/skunk/photos";
 $web_path="/~skunk/photo_scripts/";
 $upload_path="/home/skunk/photos";
 $passwd_file="$file_path/.htpasswd";
 $group_file ="$file_path/.htgroup";
 
+// In which directory are the original files
+$orig_path="orig";
+
+// Which resolutions are used per default
+$index_res=200;
+$normal_res=600;
+$thumb_res=64;
+
+// Which resolutions should be produced when uploading files
+$resolutions=array(64, 200, 600);
+// Which options should be used when rescaling
 $convert_options="-filter Hamming -quality 85 -interlace PLANE";
 
+// Default picture, if no main_picture is set
+$no_main_picture="black.png";
+
+// The header-fields
 $fields=array("TITLE"=>"Titel", "PHOTOS_BY"=>"Photographiert von", 
               "DATE"=>"Datum", "WELCOME_TEXT"=>"Begr&uuml;&szlig;ungstext",
               "MAIN_PICTURE"=>"Hauptbild");
+
+// Which rights do exist
 $rights=array("announce", "view", "addcomment", "editdesc", "new", "edit", "rights");
 $global_rights=array("newusers", "useradmin");
 
+// Which group are all users added to automatically
 $default_group="users";
 
+// Which umask is used when creating/changing files
 umask(0000);
+
+// Aehm?? I think this line shouldn't be there
 //<li> useradmin - BenutzerIn darf Gruppenzugehoerigkeiten editieren, weitere Benutzer anlegen und auch wieder loeschen
 
+// Which is the default language
 $language="de";
 
+// Which rights does every user and anonymous have, if nothing else is defined
 $default_rights=array("view", "announce");
 
 // URLs
@@ -65,16 +82,16 @@ $default_rights=array("view", "announce");
 //   %7$s imgversion (nur bei images)
 
 // Original
-//$url_page=$web_path.'/?page=%1$s&series=%2$s';
+$url_page=$web_path.'/?page=%1$s&series=%2$s';
 $url_photo=$web_path.'/get_image.php/%5$s?page=%1$s&series=%2$s&img=%4$s&size=%6$s&%7$s';
-//$url_script=$web_path.'/%3$s?page=%1$s&series=%2$s&img=%4$s';
-//$url_javascript=$web_path.'/%3$s';
-//$url_img=$web_path.'images/%1$s';
-
-// Nice
-$url_page=$web_path.'%1$s/?series=%2$s';
-//$url_photo=$web_path.'%1$s/%6$s/%5$s?series=%2$s&img=%4$s&%7$s';
-$url_script=$web_path.'%1$s/%3$s?series=%2$s&img=%4$s';
+$url_script=$web_path.'/%3$s?page=%1$s&series=%2$s&img=%4$s';
 $url_javascript=$web_path.'/%3$s';
 $url_img=$web_path.'images/%1$s';
+
+// Nice (needs URL rewriting)
+//$url_page=$web_path.'%1$s/?series=%2$s';
+//$url_photo=$web_path.'%1$s/%6$s/%5$s?series=%2$s&img=%4$s&%7$s';
+//$url_script=$web_path.'%1$s/%3$s?series=%2$s&img=%4$s';
+//$url_javascript=$web_path.'/%3$s';
+//$url_img=$web_path.'images/%1$s';
 
