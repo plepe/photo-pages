@@ -238,7 +238,11 @@ function page_edit_mouse_move(event) {
         page_edit_marked[i].setAttribute("page_edit_next_img", n.id);
       else
         page_edit_marked[i].setAttribute("page_edit_next_img", null);
-      page_edit_marked[i].setAttribute("page_edit_list", page_edit_marked[i].parentNode.id);
+
+      if(page_edit_marked[i].parentNode.id!="move_img_list")
+        page_edit_marked[i].setAttribute("page_edit_list",
+                                         page_edit_marked[i].parentNode.id);
+
       move_ob.appendChild(page_edit_marked[i]);
 
       var s=page_edit_new_spacer();
