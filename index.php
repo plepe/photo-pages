@@ -62,7 +62,6 @@ print $page->toolbox();
 print "<pre>\n";
 //print_r($page->get_rights($_SESSION[current_user]));
 //print_r($_SESSION);
-print_r($page->rights);
 print "</pre>\n";
 
 if($page->get_right($_SESSION[current_user], "view")) {

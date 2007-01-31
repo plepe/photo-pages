@@ -328,8 +328,8 @@ function page_edit_show_pic(img, chunk, pict_url, pict_orig_url) {
   var ob=document.getElementById("page_edit_show_pic");
   var ob2=ob.getElementsByTagName("img");
   //alert(ob2[0].getAttribute("page_edit_src")+ " "+pict_url);
-  if(ob2[0].getAttribute("page_edit_src")==pict_url)
-    return;
+//  if(ob2[0].getAttribute("page_edit_src")==pict_url)
+//    return;
 
   page_edit_fix_large=0;
 

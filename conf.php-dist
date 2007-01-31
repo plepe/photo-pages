@@ -23,18 +23,35 @@
  *
  */
 
-$img_path="http://www.cg.tuwien.ac.at/photos/images";
-$resolutions=array(200, 600, 1000);
+$no_main_picture="black.png";
+$resolutions=array(64, 200, 600);
 $orig_path="orig";
 
 $index_res=200;
 $normal_res=600;
 
-$passwd_file=".htpasswd";
-$group_file=".htgroup";
-
-$default_rights=array("view", "list");
+$file_path="/home/skunk/photos";
+$web_path="/~skunk/photo_scripts/";
 $upload_path="/home/skunk/photos";
+$passwd_file="$file_path/.htpasswd";
+$group_file ="$file_path/.htgroup";
+
+$convert_options="-filter Hamming -quality 85 -interlace PLANE";
+
+$fields=array("TITLE"=>"Titel", "PHOTOS_BY"=>"Photographiert von", 
+              "DATE"=>"Datum", "WELCOME_TEXT"=>"Begr&uuml;&szlig;ungstext",
+              "MAIN_PICTURE"=>"Hauptbild");
+$rights=array("announce", "view", "addcomment", "editdesc", "new", "edit", "rights");
+$global_rights=array("newusers", "useradmin");
+
+$default_group="users";
+
+umask(0000);
+//<li> useradmin - BenutzerIn darf Gruppenzugehoerigkeiten editieren, weitere Benutzer anlegen und auch wieder loeschen
+
+$language="de";
+
+$default_rights=array("view", "announce");
 
 // URLs
 // es wird auf jeden fall $web_path davor gesetzt.
@@ -46,13 +63,18 @@ $upload_path="/home/skunk/photos";
 //   %5$s imgname (nur bei images)
 //   %6$s size (nur bei images)
 //   %7$s imgversion (nur bei images)
+
+// Original
 //$url_page=$web_path.'/?page=%1$s&series=%2$s';
-$url_skript='/photo_scripts/%3$s?page=%1$s&series=%2$s&img=%4$s';
-//$url_img=$web_path.'/get_image.php/%5$s?page=%1$s&series=%2$s&img=%4$s&size=%6$s&%7$s';
+$url_photo=$web_path.'/get_image.php/%5$s?page=%1$s&series=%2$s&img=%4$s&size=%6$s&%7$s';
+//$url_script=$web_path.'/%3$s?page=%1$s&series=%2$s&img=%4$s';
+//$url_javascript=$web_path.'/%3$s';
+//$url_img=$web_path.'images/%1$s';
+
+// Nice
 $url_page=$web_path.'%1$s/?series=%2$s';
-//$url_skript=$web_path.'%1$s/%3$s?series=%2$s&img=%4$s';
-$url_img='/photo_scripts/get_image.php/%5$s?page=%1$s&series=%2$s&img=%4$s&size=%6$s&%7$s';
-
-
-
+//$url_photo=$web_path.'%1$s/%6$s/%5$s?series=%2$s&img=%4$s&%7$s';
+$url_script=$web_path.'%1$s/%3$s?series=%2$s&img=%4$s';
+$url_javascript=$web_path.'/%3$s';
+$url_img=$web_path.'images/%1$s';
 

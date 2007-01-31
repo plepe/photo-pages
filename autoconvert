@@ -36,7 +36,7 @@ $convert_options="-filter Hamming -quality 85 -interlace PLANE";
 #    $orig_path=$1;
 #  }
 #}
-@resolutions=(64, 200, 600, 1000, 1600);
+@resolutions=(64, 200, 600);
 $orig_path="orig";
 
 if(!@resolutions) {
