@@ -40,27 +40,30 @@ use_javascript("upload_image");
 <?
 print $page->header();
 
+echo $page->path;
+echo("$file_path/$page->path/$orig_path");
+if(!file_exists("$file_path/$page->path/$orig_path"))
+  mkdir("$file_path/$page->path/$orig_path");
+
+foreach($resolutions as $r) {
+  if(!file_exists("$file_path/$page->path/$r"))
+    mkdir("$file_path/$page->path/$r");
+}
+
+
 function autoconvert() {
   global $page;
   global $resolutions;
   global $convert_options;
   global $orig_path;
 
-  if(!file_exists("$page->path/$orig_path"))
-    mkdir("$page->path/$orig_path");
-
-  foreach($resolutions as $r) {
-    if(!file_exists("$page->path/$r"))
-      mkdir("$page->path/$r");
-  }
-
-  $list=opendir("$page->path/$orig_path");
+  $list=opendir("$file_path/$page->path/$orig_path");
   while($file=readdir($list)) {
     foreach($resolutions as $r) {
-      if(!file_exists("$page->path/$r/$file")) {
+      if(!file_exists("$file_path/$page->path/$r/$file")) {
         print "Scaling $file to {$r}x{$r}<br>\n";
         flush(); ob_flush();
-        system("nice convert -resize {$r}x{$r} $convert_options $page->path/orig/$file $page->path/$r/$file");
+        system("nice convert -resize {$r}x{$r} $convert_options $file_path/$page->path/orig/$file $file_path/$page->path/$r/$file");
       }
     }
   }
@@ -78,16 +81,16 @@ function upload_file($file, $tmpname, $desc) {
   }
 
   print "<br>Uploading $file ...<br>";
-  if(file_exists("$page->path/orig/$file")) {
+  if(file_exists("$file_path/$page->path/orig/$file")) {
     print "Datei existiert bereits.<br>\n";
   }
   else {
-    rename($tmpname, "$page->path/orig/$file");
+    rename($tmpname, "$file_path/$page->path/orig/$file");
     print "Scaling to {$index_res}x{$index_res}<br>\n";
     flush(); ob_flush();
 
-    system("nice convert -resize {$index_res}x{$index_res} $convert_options $page->path/orig/$file $page->path/$index_res/$file");
-    $f=fopen("$page->path/fotocfg.txt", "a");
+    system("nice convert -resize {$index_res}x{$index_res} $convert_options $file_path/$page->path/orig/$file $file_path/$page->path/$index_res/$file");
+    $f=fopen("$file_path/$page->path/fotocfg.txt", "a");
 
     if($desc)
       fputs($f, "$file $desc\n");
@@ -101,24 +104,52 @@ function upload_file($file, $tmpname, $desc) {
         print "Scaling to {$r}x{$r}<br>\n";
         flush(); ob_flush();
 
-        system("nice convert -resize {$r}x{$r} $convert_options $page->path/orig/$file $page->path/$r/$file");
+        system("nice convert -resize {$r}x{$r} $convert_options $file_path/$page->path/orig/$file $file_path/$page->path/$r/$file");
       }
     }
   }
 }
 
-print_r($_REQUEST);
+function process_upload_file($p, $f) {
+  global $page;
+  global $file_path;
+  global $orig_path;
+
+  print_r($f);
+
+  if(eregi("^(.*)\.(jpg|jpeg|png|gif)$", $f)) {
+    if($keep)
+      copy("$p/$f", "$file_path/$page->path/$orig_path/$f");
+    else
+      system("convert -resize 1280x1280 $p/$f $file_path/$page->path/$orig_path/$f");
+    print "Imported $f.<br>\n";
+  }
+
+  if(eregi("^(.*)\.(mov|avi|mpeg|mpg)", $f, $m)) {
+    if($keep)
+      copy("$p/$f", "$file_path/$page->path/$orig_path/$f");
+    else
+      system("mencoder -oac copy -ovc lavc -o $file_path/$page->path/$orig_path/$f $p/$f");
+      
+    system("cd /tmp ; mplayer -vo png -ao none -ss 1 -frames 1 -ss 1 $p/$f");
+    system("convert -resize 410x450 /tmp/00000001.png /tmp/00000001.png");
+    system("composite -compose atop -gravity center /tmp/00000001.png /home/skunk/public_html/photos/images/filmstrip.png $file_path/$page->path/$orig_path/$m[1].jpg");
+    print "Imported $f.<br>\n";
+  }
+
+  flush(); ob_flush();
+}
+
 if($_REQUEST["dir"]) {
-  if(!file_exists("$page->path/$orig_path"))
-    mkdir("$page->path/$orig_path");
+  if(!file_exists("$file_path/$page->path/$orig_path"))
+    mkdir("$file_path/$page->path/$orig_path");
 
   $d=opendir("$upload_path/$_REQUEST[dir]");
   while($f=readdir($d)) {
-    if(eregi("\.(jpg|jpeg)$", $f)) {
-      print "Copying $f<br>\n";
-      flush(); ob_flush();
-      copy("$upload_path/$_REQUEST[dir]/$f", "$page->path/$orig_path/$f");
-    }
+    //if(eregi("\.(jpg|jpeg)$", $f)) {
+      //print "Copying $f<br>\n";
+      process_upload_file("$upload_path/$_REQUEST[dir]", "$f");
+    //}
   }
 
   autoconvert();
@@ -160,6 +191,7 @@ print "<a href='".url_script($page, $series, "page_edit.php", null)."'>Edit Page
 print "<p>\n";
 print "<form action='upload_image.php' method='post' ".
       "enctype='multipart/form-data'>\n";
+print "<input type='hidden' name='page' value='$page->path'>\n";
 //print "<table>\n";
 //print "<tr><td>Bild oder ZIP-Datei angeben:</td><td><input type='file' name='image'></td></tr>";
 //print "<tr><td>Beschreibung:</td><td><input name='desc'></td></tr>";
