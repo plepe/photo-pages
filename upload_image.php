@@ -116,7 +116,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
     if($keep)
       copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
     else
-      system("nice convert -resize {$maxres}x{$maxres} $convert_options $orig_file $file_path/$page->path/$orig_path/$file");
+      system("nice convert -resize {$max_res}x{$max_res} $convert_options $orig_file $file_path/$page->path/$orig_path/$file");
 
     $orig="$file_path/$page->path/$orig_path/$file";
     $name="$file";

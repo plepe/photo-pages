@@ -6,7 +6,7 @@ INSTALLATION
   Create a directory where your images will be put. This directory shouldn't be
   reachable via your webserver (for security-reasons). It has to be writeable
   for the webserver (you won't be able to edit your photopages).
-  Copy the files passwd and group from the templates-directory to this directory.
+  Copy all files from the templates-directory to this directory.
   See below for a description of these files.
 
   Create a second directory (the upload directory), where you can put images
@@ -17,6 +17,11 @@ INSTALLATION
   Type the address of your new photopages into the address bar of your
   preferred browser. You should be able to login as user 'admin' and password
   'admin'.
+
+fotocfg.txt
+-----------
+  This file holds the definition of the current page.
+  There's a short description in the file DOCU.
 
 passwd / group
 --------------

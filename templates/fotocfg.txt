@@ -1,0 +1,5 @@
+TITLE Your new photo pages
+
+[rights]
+admin view,announce,edit,editdesc
+anonymous view,announce

@@ -23,23 +23,44 @@
  *
  */
 
-// Set Paths
+// *** Set Paths ***
+
+// This is the path, were your photos reside. This directory should not be
+// reachable for the webserver for security reasons.
 $file_path="/home/skunk/photos";
+
+// This is the WWW-path of your scripts
 $web_path="/~skunk/photo_scripts/";
+
+// This is the file system path, were you can upload pictures. They can be
+// imported with Upload Pictures.
 $upload_path="/home/skunk/photos";
+
+// This are the paths of your passwd and group files
 $passwd_file="$file_path/passwd";
 $group_file ="$file_path/group";
+
+// *** Definition of Resolutions ***
 
 // In which directory are the original files
 $orig_path="orig";
 
-// Which resolutions are used per default
+// Which resolutions are used per default ...
+// ... for the album view
 $index_res=200;
+// ... for the image view
 $normal_res=600;
+// ... for page editing
 $thumb_res=64;
+// ... for importing. Usually the original file is dropped, just a scaled down
+// version is kept.
+$max_res=1280;
 
 // Which resolutions should be produced when uploading files
+// The resolutions defined in the lines above have to be included here (except
+// $max_res)
 $resolutions=array(64, 200, 600);
+
 // Which options should be used when rescaling
 $convert_options="-filter Hamming -quality 85 -interlace PLANE";
 
@@ -47,6 +68,7 @@ $convert_options="-filter Hamming -quality 85 -interlace PLANE";
 $no_main_picture="black.png";
 
 // The header-fields
+// TODO: Should be moved to the language files
 $fields=array("TITLE"=>"Titel", "PHOTOS_BY"=>"Photographiert von", 
               "DATE"=>"Datum", "WELCOME_TEXT"=>"Begr&uuml;&szlig;ungstext",
               "MAIN_PICTURE"=>"Hauptbild");
@@ -65,7 +87,7 @@ umask(0000);
 //<li> useradmin - BenutzerIn darf Gruppenzugehoerigkeiten editieren, weitere Benutzer anlegen und auch wieder loeschen
 
 // Which is the default language
-$language="de";
+$language="en";
 
 // Which rights does every user and anonymous have, if nothing else is defined
 $default_rights=array("view", "announce");
