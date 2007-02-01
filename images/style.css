@@ -550,3 +550,45 @@ td.edit_img_connect {
   height: 150px;
   z-index: 1;
 }
+div.filelisting {
+  overflow: auto;
+  height: 300px;
+  width: 500px;
+  background: white;
+  border: inset 2px #707070;
+}
+table.filelisting {
+  border-collapse: collapse;
+}
+tr.filelisting_0 {
+  background: #DDDDDD;
+}
+tr.filelisting_1 {
+  background: #FFFFFF;
+}
+a.upload_dir:link {
+  text-decoration: none;
+  color: #0000FF;
+}
+a.upload_dir:visited {
+  text-decoration: none;
+  color: #0000FF;
+}
+a.upload_dir:hover {
+  text-decoration: none;
+  color: #FF0000;
+}
+a.upload_dir:active {
+  text-decoration: none;
+  color: #FF0000;
+}
+span.upload_file {
+  color: #000000;
+}
+span.upload_file_marked {
+  color: #FFFFFF;
+  background: #0000FF;
+}
+input.upload_file {
+  display: none;
+}

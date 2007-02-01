@@ -2290,9 +2290,12 @@ function rights_merge($rights, $addrights) {
 
 function list_dir($dir) {
   global $upload_path;
+  global $lang_str;
+  if(!$dir)
+    $dir="/";
   $ret="";
 
-  $ret.="Verzeichnis: ";
+  $ret.="$lang_str[upload_image_dir]: ";
   $l=array();
   $l[]="<a href='javascript:list_dir(\"/\")'>$upload_path</a>";
   $di="";
@@ -2303,22 +2306,45 @@ function list_dir($dir) {
   $ret.=implode("/", $l);
   $ret.="<input type='hidden' name='dir' value='$dir'>\n";
 
-  $ret.="<table>\n";
+  $ret.="<div class='filelisting'>\n";
+  $ret.="<table class='filelisting' width='100%'>\n";
   $d=opendir("$upload_path/$dir");
+  $odd=0;
+  $list_dir=array();
+  $list_file=array();
   while($x=readdir($d)) {
     if(substr($x, 0, 1)!=".") {
       if(is_dir("$upload_path/$dir/$x"))
-	$ret.="<tr><td><a href='javascript:list_dir(\"$dir/$x\")'>$x/</a></td>\n";
+        $list_dir[]=$x;
       else
-	$ret.="<tr><td>$x</td>\n";
-      $st=stat("$upload_path/$dir/$x");
-      $ret.="<td>";
-      //$ret.=print_r($st, 1);
-      $ret.="</td>\n";
-      $ret.="</tr>\n";
+        $list_file[]=$x;
     }
   }
-  $ret.="</table>\n";
+
+  foreach($list_dir as $x) {
+    $odd=($odd+1)%2;
+    $ret.="<tr class='filelisting_$odd'>";
+    $ret.="<td><a class='upload_dir' href='javascript:list_dir(\"$dir/$x\")'>$x/</a></td>\n";
+    $st=stat("$upload_path/$dir/$x");
+    $ret.="<td>";
+    //$ret.=print_r($st, 1);
+    $ret.="</td>\n";
+    $ret.="</tr>\n";
+  }
+
+  foreach($list_file as $x) {
+    $odd=($odd+1)%2;
+    $ret.="<tr class='filelisting_$odd'>";
+    $ret.="<td><span class='upload_file' onClick='upload_image_mark(this)'><input type='checkbox' name='upload_file[]' value='$x' class='upload_file'>$x</span></td>\n";
+    $st=stat("$upload_path/$dir/$x");
+    $ret.="<td>";
+    //$ret.=print_r($st, 1);
+    $ret.="</td>\n";
+    $ret.="</tr>\n";
+
+  }
+
+  $ret.="</table></div>\n";
   closedir($d);
 
   return $ret;

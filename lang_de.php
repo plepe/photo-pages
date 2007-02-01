@@ -73,5 +73,13 @@ $lang_str=array(
   "error_invald_auth"=>"Username oder Passwort falsch!",
 
   "new_page_no_dot"=>"Verzeichnisse dürfen nicht mit einem . beginnen",
-  "new_page_no_page_name"=>"Die Kurzbezeichnung darf nicht leer sein"
+  "new_page_no_page_name"=>"Die Kurzbezeichnung darf nicht leer sein",
+
+  "upload_image_upload"=>"Bild oder ZIP-Datei mit Bildern raufladen",
+  "upload_image_readdir"=>"Bilder oder ZIP-Datei aus Upload-Verzeichnis lesen",
+  "upload_image_upload_file"=>"Datei angeben:",
+  "upload_image_upload_desc"=>"Beschreibung:",
+  "upload_image_dir"=>"Verzeichnis",
+  "upload_image_mark"=>"Alle Dateien markieren",
+  "upload_image_submit"=>"Dateien importieren"
 );

@@ -71,6 +71,13 @@ $lang_str=array(
   "error_notexist_pict"=>"Picture does not exist",
   "error_invalid_series"=>"Invalid series name, using standard",
   "error_invalid_chars"=>"has invalid characters",
-  "error_invalid_auth"=>"Wrong username or password!"
+  "error_invalid_auth"=>"Wrong username or password!",
 
+  "upload_image_upload"=>"Upload image or ZIP-file",
+  "upload_image_readdir"=>"Read images or zip-file from upload-directory",
+  "upload_image_upload_file"=>"File:",
+  "upload_image_upload_desc"=>"Description:",
+  "upload_image_dir"=>"Directory",
+  "upload_image_mark"=>"Mark all files",
+  "upload_image_submit"=>"Import files"
 );

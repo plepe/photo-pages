@@ -40,17 +40,6 @@ use_javascript("upload_image");
 <?
 print $page->header();
 
-echo $page->path;
-echo("$file_path/$page->path/$orig_path");
-if(!file_exists("$file_path/$page->path/$orig_path"))
-  mkdir("$file_path/$page->path/$orig_path");
-
-foreach($resolutions as $r) {
-  if(!file_exists("$file_path/$page->path/$r"))
-    mkdir("$file_path/$page->path/$r");
-}
-
-
 function autoconvert() {
   global $page;
   global $resolutions;
@@ -70,6 +59,7 @@ function autoconvert() {
   closedir($list);
 }
 
+/*
 function upload_file($file, $tmpname, $desc) {
   global $index_res;
   global $resolutions;
@@ -109,58 +99,91 @@ function upload_file($file, $tmpname, $desc) {
     }
   }
 }
+*/
 
-function process_upload_file($p, $f) {
+function process_upload_file($file, $orig_file, $desc=0) {
   global $page;
   global $file_path;
   global $orig_path;
+  global $script_path;
+  global $resolutions;
+  global $convert_options;
+  global $max_res;
 
-  print_r($f);
-
-  if(eregi("^(.*)\.(jpg|jpeg|png|gif)$", $f)) {
+  print "Importing $file ...";
+  flush(); ob_flush();
+  if(eregi("^(.*)\.(jpg|jpeg|png|gif)$", $file)) {
     if($keep)
-      copy("$p/$f", "$file_path/$page->path/$orig_path/$f");
+      copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
     else
-      system("convert -resize 1280x1280 $p/$f $file_path/$page->path/$orig_path/$f");
-    print "Imported $f.<br>\n";
+      system("nice convert -resize {$maxres}x{$maxres} $convert_options $orig_file $file_path/$page->path/$orig_path/$file");
+
+    $orig="$file_path/$page->path/$orig_path/$file";
+    $name="$file";
   }
 
-  if(eregi("^(.*)\.(mov|avi|mpeg|mpg)", $f, $m)) {
+  if(eregi("^(.*)\.(mov|avi|mpeg|mpg)", $file, $m)) {
     if($keep)
-      copy("$p/$f", "$file_path/$page->path/$orig_path/$f");
-    else
-      system("mencoder -oac copy -ovc lavc -o $file_path/$page->path/$orig_path/$f $p/$f");
-      
-    system("cd /tmp ; mplayer -vo png -ao none -ss 1 -frames 1 -ss 1 $p/$f");
-    system("convert -resize 410x450 /tmp/00000001.png /tmp/00000001.png");
-    system("composite -compose atop -gravity center /tmp/00000001.png /home/skunk/public_html/photos/images/filmstrip.png $file_path/$page->path/$orig_path/$m[1].jpg");
-    print "Imported $f.<br>\n";
+      copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
+
+    // In FLV konvertieren
+    system("nice ffmpeg -y -i $orig_file -ar 11025 $file_path/$page->path/$orig_path/$m[1].flv");
+
+    // Filmstrip generieren
+    system("cd /tmp ; ffmpeg -y -i $orig_file -vframes 1 -f image2 /tmp/tmp.jpg");
+    system("nice convert -resize 410x450 /tmp/tmp.jpg /tmp/tmp.jpg");
+    system("nice composite -compose atop -gravity center /tmp/tmp.jpg $script_path/images/filmstrip.png $file_path/$page->path/$orig_path/$m[1].jpg");
+    system("rm /tmp/tmp.jpg");
+
+    $orig="$file_path/$page->path/$orig_path/$m[1].jpg";
+    $file="$m[1].jpg";
+    $name="$m[1].flv";
   }
 
+  $f=fopen($page->filename, "a");
+  if($desc)
+    fputs($f, "$name $desc\n");
+  else
+    fputs($f, "$name\n");
+  fclose($f);
+
+  $maxr=getimagesize($orig);
+  if($maxr[0]>$maxr[1])
+    $maxr=$maxr[0];
+  else
+    $maxr=$maxr[1];
+
+  foreach($resolutions as $r) {
+    if($r<$maxr)
+      system("nice convert -resize {$r}x{$r} $convert_options $orig $file_path/$page->path/$r/$file");
+    elseif($r==$maxr)
+      copy("$orig", "$file_path/$page->path/$r/$file");
+  }
+
+  print " done<br>\n";
   flush(); ob_flush();
 }
 
+if(!file_exists("$file_path/$page->path/$orig_path"))
+  mkdir("$file_path/$page->path/$orig_path");
+
+foreach($resolutions as $r) {
+  if(!file_exists("$file_path/$page->path/$r"))
+    mkdir("$file_path/$page->path/$r");
+}
+
 if($_REQUEST["dir"]) {
-  if(!file_exists("$file_path/$page->path/$orig_path"))
-    mkdir("$file_path/$page->path/$orig_path");
-
-  $d=opendir("$upload_path/$_REQUEST[dir]");
-  while($f=readdir($d)) {
-    //if(eregi("\.(jpg|jpeg)$", $f)) {
-      //print "Copying $f<br>\n";
-      process_upload_file("$upload_path/$_REQUEST[dir]", "$f");
-    //}
+  foreach($_REQUEST[upload_file] as $f) {
+    process_upload_file($f, "$upload_path/$_REQUEST[dir]/$f");
   }
-
-  autoconvert();
 }
 
 if($_FILES[image]) {
   print "<p>";
 
   $n=$_FILES[image][name];
-  if(eregi("\.(png|jpg|gif)$", $n)) {
-    upload_file($n, $_FILES[image][tmp_name], $_REQUEST[desc]);
+  if(eregi("\.(png|jpg|gif|jpeg|avi|mov|mpeg|mpg|flv)$", $n)) {
+    process_upload_file($n, $_FILES[image][tmp_name], $_REQUEST[desc]);
   }
   elseif(eregi("\.(zip)$", $n)) {
     $tmpname=tempnam("/tmp", "UPLOAD");
@@ -173,7 +196,7 @@ if($_FILES[image]) {
     unlink($_FILES[image][tmp_name]);
     $tmpdir=opendir($tmpname);
     while($f=readdir($tmpdir)) {
-      upload_file($f, "$tmpname/$f", 0);
+      process_upload_file($f, "$tmpname/$f");
       @unlink("$tmpname/$f");
     }
     closedir($tmpdir);
@@ -181,30 +204,40 @@ if($_FILES[image]) {
   }
   else {
   }
-
-  print "<br>Finished.<br>\n";
 }
 
-print "<p>\n";
-print "<a href='".url_page($page, $series, "index.php")."'>Back</a> /\n";
-print "<a href='".url_script($page, $series, "page_edit.php", null)."'>Edit Page</a>\n";
-print "<p>\n";
-print "<form action='upload_image.php' method='post' ".
-      "enctype='multipart/form-data'>\n";
-print "<input type='hidden' name='page' value='$page->path'>\n";
-//print "<table>\n";
-//print "<tr><td>Bild oder ZIP-Datei angeben:</td><td><input type='file' name='image'></td></tr>";
-//print "<tr><td>Beschreibung:</td><td><input name='desc'></td></tr>";
-//print "</table>\n";
+if((!$_REQUEST["dir"])&&(!$_FILES[image])) {
+  print "<p>\n";
+  print "<a href='".url_page($page, $series, "index.php")."'>Back</a> /\n";
+  print "<a href='".url_script($page, $series, "page_edit.php", null)."'>Edit Page</a>\n";
+  print "<p>\n";
+  print "<form action='upload_image.php' method='post' ".
+        "enctype='multipart/form-data'>\n";
+  print "<input type='hidden' name='page' value='$page->path'>\n";
+  print "<input type='hidden' name='series' value='$page->series'>\n";
 
-$dir="";
-print "<div id='dir_list' class='upload_image_dir_list'>\n";
-print list_dir($_REQUEST[dir]);
-print "</div>\n";
+  print "<h4>$lang_str[upload_image_upload]</h4>\n";
+  print "<table>\n";
+  print "<tr><td>$lang_str[upload_image_upload_file]</td><td><input type='file' name='image'></td></tr>";
+  print "<tr><td>$lang_str[upload_image_upload_desc]</td><td><input name='desc'></td></tr>";
+  print "</table>\n";
+  print "<input type='submit' value='$lang_str[upload_image_submit]'>\n";
 
-print "<tr><td colspan='2'><input type='submit' value='Import all images'></td></tr>\n";
-print "</form>\n";
+  print "<h4>$lang_str[upload_image_readdir]</h4>\n";
+  $dir="";
+  print "<div id='dir_list' class='upload_image_dir_list'>\n";
+  print list_dir($_REQUEST["dir"]);
+  print "</div>\n";
 
+  print "<tr><td colspan='2'>\n";
+  print "<input type='button' value='$lang_str[upload_image_mark]' onClick='upload_image_mark_all()'>\n";
+  print "<input type='submit' value='$lang_str[upload_image_submit]'>\n";
+  print "</td></tr>\n";
+  print "</form>\n";
+}
+else {
+  print "<br>Finished.<br>\n";
+}
 ?>
 </body>
 </html>
