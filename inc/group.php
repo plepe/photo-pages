@@ -1,6 +1,7 @@
 <?
-/* data.php
- * - Parses the fotocfg.txt or a series.lst and stores data in $cfg
+/* group.php
+ * - User Administration (Group)
+ *
  * Copyright (c) 1998-2006 Stephan Plepelits <skunk@xover.mud.at>
  *
  * This file is part of Skunks' Photosscripts 

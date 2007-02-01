@@ -2,7 +2,7 @@
 /* conf.php
  * - Configuration
  *
- * Copyright (c) 1998-2006 Stephan Plepelits <skunk@xover.mud.at>
+ * Copyright (c) 1998-2007 Stephan Plepelits <skunk@xover.mud.at>
  *
  * This file is part of Skunks' Photosscripts 
  * - http://xover.mud.at/~skunk/proj/photo
@@ -27,8 +27,8 @@
 $file_path="/home/skunk/photos";
 $web_path="/~skunk/photo_scripts/";
 $upload_path="/home/skunk/photos";
-$passwd_file="$file_path/.htpasswd";
-$group_file ="$file_path/.htgroup";
+$passwd_file="$file_path/passwd";
+$group_file ="$file_path/group";
 
 // In which directory are the original files
 $orig_path="orig";

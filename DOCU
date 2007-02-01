@@ -26,16 +26,6 @@ DATE
 WELCOME_TEXT
   Ein Text, der auf der Mainpage dargestellt wird.
 
-HIDE (yes/no)
-  Wenn HIDE=yes ist, wird dieses Photopage nicht in der Uebersicht angezeigt.
-
-SORT alpha (std) | explicit
-  Bei SORT alpha werden alle Photos dargestellt, die im index/ gefunden
-  werden. Die Dateien werden alphabetisch sortiert. Photos die im fotocfg.txt
-  nicht gefunden werden, werden ohne Kommentar dargestellt.
-  Bei SORT explicit werden nur die Photos dargestellt, die im fotocfg.txt
-  stehen und die Reihenfolge der Auflistung wird beibehalten.
-
 BODY
 ====
 Nach der Leerzeile kommt fuer jedes File ein Eintrag. Als Variablenname

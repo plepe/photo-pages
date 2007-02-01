@@ -4,30 +4,26 @@ INSTALLATION
   (e.g. apache).
 
   Create a directory where your images will be put. This directory shouldn't be
-  reachable via your webserver (for security-reasons). It should be writeable
-  for the webserver (so you won't be able to edit your photopages).
+  reachable via your webserver (for security-reasons). It has to be writeable
+  for the webserver (you won't be able to edit your photopages).
+  Copy the files passwd and group from the templates-directory to this directory.
+  See below for a description of these files.
 
-CREATING A PHOTOPAGE
-Using the shell
----------------
-1) Create a subdirectory, where the pictures shall reside
-1) Copy all photos in high resolution to the subdirectory orig/
-2) Start mk_photopage (this will take some minutes)
-   This will create the directories 600/ and 200/ (or others, see conf.php)
-   and put rescaled versions of all the images there
-   as last part it will create a fotocfg.txt
-4) Edit fotocfg.txt
-   - You can put comments to your pictures:
-     "photo_1.jpg This is Picture one."
-   - You can put text there, according to "DOCU"
-5) Ready.
+  Create a second directory (the upload directory), where you can put images
+  for the photopages, that can be imported (via the "Upload pictures"-Page).
 
-Using the webpage
------------------
-1) Log in with a user that may create pages
-2) Click on "Edit Page".
-3) Drop a new subdirectory to your current page
-4) Enter the data
-5) Save
-6) Go to the newly create page, use "Upload images" to upload images. This can
-   take a little while, the images will be scaled to the other resolutions.
+  Copy conf.php-dist to conf.php and fill with correct values.
+
+  Type the address of your new photopages into the address bar of your
+  preferred browser. You should be able to login as user 'admin' and password
+  'admin'.
+
+passwd / group
+--------------
+  You can use the program htpasswd to change passwords and add users.
+  Type 'htpasswd /path/to/passwd username' to change a password or create a new
+  user.
+
+  In the group-file you can add users to a group. Each line starts with the
+  name of a group, followed by a : and a space-seperated list of users:
+  groupname:user1 user2 user3
