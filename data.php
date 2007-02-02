@@ -1979,7 +1979,7 @@ class Page {
 //
 //      }
       print "<div class='edit_img_spacer' edit_type='spacer' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'></div>\n";
-      print "<div class='edit_img_chunk' id='chunk_$d->id' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onClick='page_edit_img_chunk_clicked(event, this)'>\n";
+      print "<div class='edit_img_chunk' id='chunk_$d->id' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onMouseDown='page_edit_img_chunk_clicked(event, this)'>\n";
       print "<input type='hidden' name='data[chunk_order][]' value='$d->id'>\n";
       print $d->edit_show();
       print "</div>\n\n";
@@ -2003,7 +2003,7 @@ class Page {
     print "$lang_str[page_edit_pict_unused]:<br>\n";
     foreach($unused as $d) {
       print "<div class='edit_img_spacer' edit_type='spacer' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'></div>\n";
-      print "<div class='edit_img_chunk' id='chunk_$d->id' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onClick='page_edit_img_chunk_clicked(event, this)'>\n";
+      print "<div class='edit_img_chunk' id='chunk_$d->id' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onMouseDown='page_edit_img_chunk_clicked(event, this)'>\n";
       print "<input type='hidden' name='data[chunk_order][]' value='$d->id'>\n";
       print $d->edit_show();
       print "</div>\n\n";
