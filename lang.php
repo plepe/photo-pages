@@ -23,4 +23,17 @@
  *
  */
 
+if($_REQUEST[language]) {
+  session_register("language");
+  $_SESSION[language]=$_REQUEST[language];
+}
+
+if($_SESSION[language])
+  $language=$_SESSION[language];
+
 include "lang_$language.php";
+
+function lang_list() {
+  return array("de"=>"Deutsch", "en"=>"English");
+}
+

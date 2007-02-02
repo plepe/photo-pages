@@ -26,6 +26,8 @@
 $lang_str=array(
   "nav_back"=>"Zur&uuml;ck",
   "nav_columns"=>"Spalten",
+  "nav_language"=>"Sprache",
+  "nav_ok"=>"Ok",
   "nav_save"=>"Speichern",
   "nav_home"=>"&Uuml;bersicht (alt-shift-h)",
   "nav_frame"=>"Spaltenansicht",

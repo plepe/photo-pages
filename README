@@ -1,7 +1,23 @@
-INSTALLATION
+Skunk photo pages
+-----------------
 
+About
+-----
+  The original version of these photo pages were started in 1998. It has been
+  rewritten several times, though the version number 4.
+
+  If you want to contact the author, it's Stephan Plepelits from Vienna, Austria.
+  You can send me e-mail via skunk@xover.mud.at.
+
+  If you think this software is cool and fancy, then please write me. If you've
+  got ideas for improvements, then don't hesitate and write me. I'd also
+  appreciate your bits of code, that could improve this software. Your name in
+  the Acknowledgement-Section of this file is guaranted (if I can use it).
+
+Installation
+------------
   Install the scripts to a directory, that is reachable for your webserver
-  (e.g. apache).
+  (e.g. apache). It needs PHP to run, no database servers are used.
 
   Create a directory where your images will be put. This directory shouldn't be
   reachable via your webserver (for security-reasons). It has to be writeable
@@ -18,13 +34,26 @@ INSTALLATION
   preferred browser. You should be able to login as user 'admin' and password
   'admin'.
 
-fotocfg.txt
------------
+Upgrading
+---------
+  Save the conf.php, get rid of the old installation and copy conf.php back to
+  the new installation. Check this section of this file for changes to the
+  conf.php.
+
+Dependencies
+------------
+  The Photo Pages use other software for image operations.
+  - ImageMagick
+  - exiftran
+  - ffmpeg
+
+Files in templates/
+-------------------
+- fotocfg.txt
   This file holds the definition of the current page.
   There's a short description in the file DOCU.
 
-passwd / group
---------------
+- passwd / group
   You can use the program htpasswd to change passwords and add users.
   Type 'htpasswd /path/to/passwd username' to change a password or create a new
   user.
@@ -32,3 +61,23 @@ passwd / group
   In the group-file you can add users to a group. Each line starts with the
   name of a group, followed by a : and a space-seperated list of users:
   groupname:user1 user2 user3
+
+Acknowledgements
+----------------
+  Peter Pacher
+  Florian Scholz
+  Ulrike "Utx" Trexler (it's Helm now)
+  Florian "Loki" Cech
+  Naemi Luckner
+    Testusers of my software and really good friends
+
+  Andreas "Andyl" Weiner
+    Has a similar script and I copied the original format of fotocfg.txt from
+    him. And he keeps poking me to write documentation.
+
+  Alex "Asgaard" Piskernik
+    keeps telling me, that my code is easily readable. So it's his fault if you
+    find not enough comments ;)
+
+  Prof. Werner Purgathofer
+    One of the first real testusers for the edit-mode (and my chef)

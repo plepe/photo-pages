@@ -26,6 +26,8 @@
 $lang_str=array(
   "nav_back"=>"Back",
   "nav_columns"=>"Columns",
+  "nav_language"=>"Language",
+  "nav_ok"=>"Ok",
   "nav_save"=>"Save",
   "nav_home"=>"Home (alt-shift-h)",
   "nav_frame"=>"Frame",

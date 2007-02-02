@@ -26,6 +26,7 @@
  // http://xover.mud.at/~florian/testbed/p1/svg-map.js
 
 
+session_start();
 require "conf.php";
 require "lang.php";
 
@@ -189,7 +190,37 @@ class SubdirChunk extends Chunk {
   }
 
   function imageview_show() {
-    return "bla\n";
+    global $pfad;
+    global $web_path;
+    global $no_main_picture;
+    global $lang_str;
+    $ret="";
+
+    $this->get_subpage();
+    $subdata=$this->subpage->cfg;
+
+    $ret.="<a href='".url_page($this->subpage->path, "", "index.php")."'>";
+    if($subdata[MAIN_PICTURE])
+      $ret.="<img class='album_series' src='".url_photo($this->subpage->path, "", "index.php", "main", "main.jpg", 200, $_SESSION[img_version][$this->img])."' align='left'>";
+    else
+      $ret.="<img class='album_series' src='".url_img($no_main_picture)."' align='left'>";
+    $ret.="</a>\n";
+
+    $ret.="<a href='".url_page($this->subpage->path, "", "index.php")."'>";
+    $ret.="$subdata[TITLE]</a><br>";
+    $ret.="$subdata[DATE]<br>";
+/*
+    $ret.="<span class='album_subdir_count'>";
+
+    $c=$this->subpage->count_pictures();
+    $ret.="$c&nbsp;".($c==1?"$lang_str[nav_pict]":"$lang_str[nav_picts]");
+    $ret.=", ";
+
+    $c=$this->subpage->count_subdirs();
+    $ret.="$c&nbsp;".($c==1?"$lang_str[nav_subdir]":"$lang_str[nav_subdirs]");
+    $ret.="</span>\n";
+    */
+    return $ret;
   }
 
   function edit_show($text=0) {
@@ -260,7 +291,7 @@ class SeriesChunk extends Chunk {
     $ret.="<a href='".url_page($this->subpage->path, $this->subpage->series, "index.php")."'>";
 
     if($subdata[MAIN_PICTURE])
-      $ret.="<img class='album_series' src='$web_path$subdata[MAIN_PICTURE]' align='left'>";
+      $ret.="<img class='album_series' src='".url_photo($this->subpage->path, $this->subpage->series, "index.php", "main", "main.jpg", 200, $_SESSION[img_version][$this->img])."' align='left'>";
     else
       $ret.="<img class='album_series' src='".url_img($no_main_picture)."' align='left'>";
     $ret.="</a>\n";
@@ -274,11 +305,11 @@ class SeriesChunk extends Chunk {
     $ret.="<a href='frame.php?series=$this->dir'><img src='$img_path/view_frame.png' class='viewmode' alt='*'> Spaltenansicht</a><br>";
     */
 
-    $ret.="<span class='album_subdir_count'>";
-
-    $c=$this->subpage->count_pictures();
-    $ret.="$c&nbsp;".($c==1?"$lang_str[nav_pict]":"$lang_str[nav_picts]");
-    $ret.="</span>\n";
+//    $ret.="<span class='album_subdir_count'>";
+//
+//    $c=$this->subpage->count_pictures();
+//    $ret.="$c&nbsp;".($c==1?"$lang_str[nav_pict]":"$lang_str[nav_picts]");
+//    $ret.="</span>\n";
  
     return $ret;
   }
@@ -286,7 +317,42 @@ class SeriesChunk extends Chunk {
   function count_as_picture() { return 0; }
 
   function imageview_show() {
-    return $this->text;
+    global $pfad;
+    global $web_path;
+    global $no_main_picture;
+    global $lang_str;
+    $ret="";
+
+    $this->get_subpage();
+    $subdata=$this->subpage->cfg;
+
+    $this->get_subpage();
+    $subdata=$this->subpage->cfg;
+
+    $ret.="<a href='".url_page($this->subpage->path, $this->subpage->series, "index.php")."'>";
+
+    if($subdata[MAIN_PICTURE])
+      $ret.="<img class='album_series' src='".url_photo($this->subpage->path, $this->subpage->series, "index.php", "main", "main.jpg", 200, $_SESSION[img_version][$this->img])."' align='left'>";
+    else
+      $ret.="<img class='album_series' src='".url_img($no_main_picture)."' align='left'>";
+    $ret.="</a>\n";
+
+    $ret.="$lang_str[nav_view]: ";
+    $ret.="<a href='".url_page($this->subpage->path, $this->subpage->series, "index.php")."'>";
+    $ret.="$subdata[TITLE]</a><br>\n";
+    /*
+    $ret.="<a href='album.php?series=$this->dir'><img src='$img_path/view_album.png' class='viewmode' alt='*'> Albumansicht</a><br>";
+    $ret.="<a href='image.php?series=$this->dir'><img src='$img_path/view_slide.png' class='viewmode' alt='*'> Diaansicht</a><br>";
+    $ret.="<a href='frame.php?series=$this->dir'><img src='$img_path/view_frame.png' class='viewmode' alt='*'> Spaltenansicht</a><br>";
+    */
+
+//    $ret.="<span class='album_subdir_count'>";
+//
+//    $c=$this->subpage->count_pictures();
+//    $ret.="$c&nbsp;".($c==1?"$lang_str[nav_pict]":"$lang_str[nav_picts]");
+//    $ret.="</span>\n";
+ 
+    return $ret;
   }
 
   function edit_show($text=0) {
@@ -1184,14 +1250,18 @@ class Page {
 //    if($this->count_pictures()&&($this->cfg["VIEWHIDE"]!="yes"))
 //      $this->cfg["LIST"][]=new SeriesChunk($this, $this, &$subindex, &$id);
 
-    $id=$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->id+1;
-    if($dir=@opendir($this->path)) while($file=readdir($dir)) {
-      if(ereg("^(.*)\.lst$", $file, $m)) {
-        if(!in_array($m[1], $list)) {
-          $n=&new SeriesChunk(&$this, "$m[1]@", &$subindex, &$id);
-          $m=$n->get_subpage();
-          if($m->cfg["VIEWHIDE"]!="yes")
-            $this->cfg["LIST"][]=$n;
+    if(!$this->series) {
+      // Die weiteren Ansichten einlesen (nur in der Hauptansicht)
+      $id=$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->id+1;
+      $subindex=$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->index+1;
+      if($dir=@opendir($this->path)) while($file=readdir($dir)) {
+        if(ereg("^(.*)\.lst$", $file, $m)) {
+          if(!in_array($m[1], $list)) {
+            $n=&new SeriesChunk(&$this, "$m[1]@", &$subindex, &$id);
+            $m=$n->get_subpage();
+            if(($m->cfg["VIEWHIDE"]!="yes")&&($m->get_right($_SESSION[current_user], "announce")))
+              $this->cfg["LIST"][]=$n;
+          }
         }
       }
     }
@@ -1432,6 +1502,7 @@ class Page {
   function toolbox() {
     global $cols;
     global $lang_str;
+    global $language;
 
     $ret.="<div class='toolbox_main'>\n";
     $ret.="$lang_str[nav_columns]:\n";
@@ -1440,6 +1511,20 @@ class Page {
       $ret.=($cols==$i?"toolbox_input_active":"toolbox_input");
       $ret.="' onClick='change_cols($i)' id='cols_$i' value='$i'/>\n";
     }
+    $ret.="<br>\n";
+    $ret.="<form name='choose_language' method='get'>\n";
+    $ret.="$lang_str[nav_language]:\n";
+    $ret.="<input type='hidden' name='page' value='$this->path'>\n";
+    $ret.="<input type='hidden' name='series' value='$this->series'>\n";
+    $ret.="<select name='language' class='toolbox_input' onChange='document.choose_language.submit()'>\n";
+    foreach(lang_list() as $l=>$lname) {
+      $ret.="<option value='$l'";
+      if($l==$language)
+        $ret.=" selected";
+      $ret.=">$lname</option>\n";
+    }
+    $ret.="</select>\n";
+    $ret.="<input type='submit' value='$lang_str[nav_ok]' class='toolbox_input'>\n";
     $ret.="</div>\n";
 
     if($this->get_right($_SESSION[current_user], "edit")) {
@@ -2190,7 +2275,6 @@ function get_all_subdirs($cfg) {
 
 // Here starts the basic initialisation of vars
 $_SESSION[current_user]=get_user("anonymous");
-session_start();
 
 chdir("$file_path");
 

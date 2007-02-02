@@ -30,7 +30,7 @@ if(!$img)
 start_html_header("{$page->cfg[TITLE]} :: Bild ".($img+1));
 use_javascript("image");
 use_javascript("magnify");
-use_javascript("url");
+urls_write();
 end_html_header();
 
 ?>
