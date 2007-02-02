@@ -55,8 +55,8 @@ function page_edit_mouse_enter(event, ob) {
   if(!ob)
     ob=this;
 
-  var debug=document.getElementById("debug");
-  debug.innerHTML=ob.id;
+//  var debug=document.getElementById("debug");
+//  debug.innerHTML=ob.id;
 
   if(page_edit_enlarged) {
     page_edit_enlarged.style.height="3px";
@@ -384,7 +384,7 @@ function page_edit_show_pic(img, chunk, pict_url, pict_orig_url) {
 }
 
 function page_edit_photo_click(event) {
-  debug_write("BLA");
+  //debug_write("BLA");
   page_edit_fix_large=1;
 
   //fuer magnify
