@@ -44,10 +44,16 @@ class Group {
   }
 
   function is_member($name) {
+    global $anon_user;
+    global $default_group;
+
     if(is_string($name))
       $username=$name;
     else
       $username=$name->username;
+
+    if(($name!=$anon_user)&&($this->groupname=="$default_group"))
+      return 1;
 
     return in_array($username, $this->members);
   }

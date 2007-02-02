@@ -884,6 +884,7 @@ class MovieChunk extends ImgChunk {
     global $orig_path;
     global $file_path;
     global $lang_str;
+    global $web_path;
     $ret="";
 
     if(!$res)
@@ -945,8 +946,6 @@ class MovieChunk extends ImgChunk {
 //    $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $normal_res, $_SESSION[img_version][$this->img])."' target='_top' ";
 //    $ret.="id='img' class='imageview_image' width='$iw' height='$ih' onLoad='notify_img_load()'>";
 // 
-    $url=(url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->mov, "movie", $_SESSION[img_version][$this->img]));
-    $url.="&foo=bar";
     $tmp_id=rand(0, 4000);
     $_SESSION["tmp_$tmp_id"]["page"]=$this->page->path;
     $_SESSION["tmp_$tmp_id"]["series"]=$this->page->series;
@@ -954,7 +953,7 @@ class MovieChunk extends ImgChunk {
     $_SESSION["tmp_$tmp_id"]["size"]="movie";
     session_register("tmp_$tmp_id");
 
-    $url="/photo_scripts/get_image.php?tmp_id=$tmp_id";
+    $url="$web_path/get_image.php?tmp_id=$tmp_id";
     //$url=htmlentities($url);
 
 ?>
