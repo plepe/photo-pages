@@ -113,7 +113,13 @@ function process_upload_file($file, $orig_file, $desc=0) {
   print "Importing $file ...";
   flush(); ob_flush();
   if(eregi("^(.*)\.(jpg|jpeg|png|gif)$", $file)) {
-    if($keep)
+    $maxr=getimagesize($orig);
+    if($maxr[0]>$maxr[1])
+      $maxr=$maxr[0];
+    else
+      $maxr=$maxr[1];
+
+    if($maxr<$max_res)
       copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
     else
       system("nice convert -resize {$max_res}x{$max_res} $convert_options $orig_file $file_path/$page->path/$orig_path/$file");
@@ -154,11 +160,18 @@ function process_upload_file($file, $orig_file, $desc=0) {
   else
     $maxr=$maxr[1];
 
+  $lastr=$orig_path;
+
+  rsort($resolutions);
   foreach($resolutions as $r) {
-    if($r<$maxr)
-      system("nice convert -resize {$r}x{$r} $convert_options $orig $file_path/$page->path/$r/$file");
-    elseif($r==$maxr)
+    if($r<$maxr) {
+      system("nice convert -resize {$r}x{$r} $convert_options $file_path/$page->path/$lastr/$file $file_path/$page->path/$r/$file");
+      $lastr=$r;
+    }
+    elseif($r==$maxr) {
       copy("$orig", "$file_path/$page->path/$r/$file");
+      $lastr=$r;
+    }
   }
 
   print " done<br>\n";
@@ -197,8 +210,10 @@ if($_FILES[image]) {
     unlink($_FILES[image][tmp_name]);
     $tmpdir=opendir($tmpname);
     while($f=readdir($tmpdir)) {
-      process_upload_file($f, "$tmpname/$f");
-      @unlink("$tmpname/$f");
+      if(substr($f, 0, 1)!=".") {
+        process_upload_file($f, "$tmpname/$f");
+        @unlink("$tmpname/$f");
+      }
     }
     closedir($tmpdir);
     rmdir($tmpname);
