@@ -27,6 +27,15 @@
 
 require "conf.php";
 
+// Default picture, if no main_picture is set
+$no_main_picture="black.png";
+
+// The header-fields
+// TODO: Should be moved to the language files
+$fields=array("TITLE"=>"Titel", "PHOTOS_BY"=>"Photographiert von", 
+              "DATE"=>"Datum", "WELCOME_TEXT"=>"Begr&uuml;&szlig;ungstext",
+              "MAIN_PICTURE"=>"Hauptbild");
+
 if(!defined("DATA_PHP")) {
   define("DATA_PHP", TRUE);
 
