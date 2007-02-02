@@ -1,5 +1,7 @@
 TITLE Your new photo pages
 
 [rights]
-admin view,announce,edit,editdesc
-anonymous view,announce
+admin view,announce,addcomment,edit,editdesc
+anonymous view,announce,addcomment
+
+[imglist]
