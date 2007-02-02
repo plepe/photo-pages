@@ -1971,7 +1971,7 @@ class Page {
     print "<img src='' border='0'>";
     print "</div>\n";
 
-    print "<div class='edit_img_list' id='edit_img_list'>\n";
+    print "<div class='edit_img_list' id='edit_img_list' onClick='page_edit_img_list_clicked(event, this)'>\n";
     print "$lang_str[page_edit_pict_list]:<br>\n";
     foreach($data["LIST"] as $d) {
 //      if(($i=array_search($d->file_name(), $full_list))!==false) {
@@ -1980,7 +1980,7 @@ class Page {
 //
 //      }
       print "<div class='edit_img_spacer' edit_type='spacer' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'></div>\n";
-      print "<div class='edit_img_chunk' id='chunk_$d->id' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'>\n";
+      print "<div class='edit_img_chunk' id='chunk_$d->id' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onClick='page_edit_img_chunk_clicked(event, this)'>\n";
       print "<input type='hidden' name='data[chunk_order][]' value='$d->id'>\n";
       print $d->edit_show();
       print "</div>\n\n";
@@ -2000,11 +2000,11 @@ class Page {
     print "</div>\n";
 
     print "<input type='hidden' name='data[chunk_order][]' value='start_unused'>\n";
-    print "<div class='edit_img_list' id='unused_img_list'>\n";
+    print "<div class='edit_img_list' id='unused_img_list' onClick='page_edit_img_list_clicked(event, this)'>\n";
     print "$lang_str[page_edit_pict_unused]:<br>\n";
     foreach($unused as $d) {
       print "<div class='edit_img_spacer' edit_type='spacer' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'></div>\n";
-      print "<div class='edit_img_chunk' id='chunk_$d->id' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'>\n";
+      print "<div class='edit_img_chunk' id='chunk_$d->id' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onClick='page_edit_img_chunk_clicked(event, this)'>\n";
       print "<input type='hidden' name='data[chunk_order][]' value='$d->id'>\n";
       print $d->edit_show();
       print "</div>\n\n";

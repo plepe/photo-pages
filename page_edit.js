@@ -97,18 +97,39 @@ function page_edit_mouse_leave(event) {
 function page_edit_mouse_down(event) {
   page_edit_button_down=1;
 
+//  if(!event.ctrlKey) {
+//    if(!in_array(page_edit_current_over, page_edit_marked))
+//      page_edit_clear_marked();
+//  }
+
+//  if(page_edit_current_over&&(page_edit_current_over.getAttribute("edit_type")=="chunk")) {
+//    page_edit_current_over.className="edit_mark_img_chunk";
+//    page_edit_marked.push(page_edit_current_over);
+//  }
+
+//  if(page_edit_over_input)
+//    return true;
+  return true;
+}
+
+function page_edit_img_list_clicked(event, list) {
   if(!event.ctrlKey) {
     if(!in_array(page_edit_current_over, page_edit_marked))
       page_edit_clear_marked();
   }
 
-  if(page_edit_current_over&&(page_edit_current_over.getAttribute("edit_type")=="chunk")) {
-    page_edit_current_over.className="edit_mark_img_chunk";
-    page_edit_marked.push(page_edit_current_over);
+  return true;
+}
+
+function page_edit_img_chunk_clicked(event, ob) {
+  if(!event.ctrlKey) {
+    if(!in_array(ob, page_edit_marked))
+      page_edit_clear_marked();
   }
 
-//  if(page_edit_over_input)
-//    return true;
+  ob.className="edit_mark_img_chunk";
+  page_edit_marked.push(page_edit_current_over);
+
   return true;
 }
 
