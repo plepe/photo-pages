@@ -25,19 +25,10 @@
  */
  // http://xover.mud.at/~florian/testbed/p1/svg-map.js
 
-
-session_start();
 require "conf.php";
-require "lang.php";
-
 
 if(!defined("DATA_PHP")) {
   define("DATA_PHP", TRUE);
-
-  include "inc/user.php";
-  include "inc/group.php";
-  include "inc/html_header.php";
-  include "inc/url.php";
 
 class Chunk {
   var $index;
@@ -1538,10 +1529,8 @@ class Page {
       $ret.="' onClick='change_cols($i)' id='cols_$i' value='$i'/>\n";
     }
     $ret.="<br>\n";
-    $ret.="<form name='choose_language' method='get'>\n";
+    $ret.="<form name='choose_language' method='post'>\n";
     $ret.="$lang_str[nav_language]:\n";
-    $ret.="<input type='hidden' name='page' value='$this->path'>\n";
-    $ret.="<input type='hidden' name='series' value='$this->series'>\n";
     $ret.="<select name='language' class='toolbox_input' onChange='document.choose_language.submit()'>\n";
     foreach(lang_list() as $l=>$lname) {
       $ret.="<option value='$l'";
@@ -1550,7 +1539,10 @@ class Page {
       $ret.=">$lname</option>\n";
     }
     $ret.="</select>\n";
+    $ret.="<input type='hidden' name='page' value='$this->path'>\n";
+    $ret.="<input type='hidden' name='series' value='$this->series'>\n";
     $ret.="<input type='submit' value='$lang_str[nav_ok]' class='toolbox_input'>\n";
+    $ret.="</form>\n";
     $ret.="</div>\n";
 
     if($this->get_right($_SESSION[current_user], "edit")) {
@@ -2300,7 +2292,15 @@ function get_all_subdirs($cfg) {
 }
 
 // Here starts the basic initialisation of vars
-$_SESSION[current_user]=get_user("anonymous");
+include "inc/user.php";
+if(!$_SESSION[current_user])
+  $_SESSION[current_user]=get_user("anonymous");
+
+session_start();
+include "inc/group.php";
+include "lang.php";
+include "inc/html_header.php";
+include "inc/url.php";
 
 chdir("$file_path");
 
@@ -2312,6 +2312,7 @@ if($_REQUEST[username]) {
 }
 
 if(!$_SESSION[current_user]) {
+  session_register("current_user");
   $_SESSION[current_user]=get_user("anonymous");
 }
 
