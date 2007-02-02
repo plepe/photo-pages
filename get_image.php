@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-session_start();
+include "data.php";
 
 if($_REQUEST[tmp_id]) {
   $tmp_id=$_REQUEST[tmp_id];
@@ -30,15 +30,15 @@ if($_REQUEST[tmp_id]) {
   $_REQUEST["page"]=$_SESSION["tmp_$tmp_id"]["page"];
   $_REQUEST["series"]=$_SESSION["tmp_$tmp_id"]["series"];
   $_REQUEST["size"]=$_SESSION["tmp_$tmp_id"]["size"];
+  $page=get_page($_REQUEST[page], $_REQUEST[series]);
+  $page->get_viewlist();
 }
-
-include "data.php";
 
 if($_REQUEST[img]==="main") {
   $filename=$page->cfg["MAIN_PICTURE"];
 }
 else {
-  if($_REQUEST[img]>=sizeof($page->cfg["LIST"])) {
+  if($_REQUEST["img"]>=sizeof($page->cfg["LIST"])) {
     if($page->get_right($_SESSION[current_user], "edit")) {
       $unused=$page->page_edit_load_unused_images(1);
       $img=$unused[$_REQUEST[img]-sizeof($page->cfg["LIST"])];

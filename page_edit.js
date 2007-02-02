@@ -127,8 +127,10 @@ function page_edit_img_chunk_clicked(event, ob) {
       page_edit_clear_marked();
   }
 
-  ob.className="edit_mark_img_chunk";
-  page_edit_marked.push(page_edit_current_over);
+  if(!in_array(ob, page_edit_marked)) {
+    page_edit_marked.push(ob);
+    ob.className="edit_mark_img_chunk";
+  }
 
   return true;
 }
@@ -491,7 +493,7 @@ function init_page_edit() {
 
 function move_to_list(list) {
   var i;
-
+  var new_marked=new Array();
   var moveto_list=document.getElementById(list);
 
   // Suchen, wo wir einfuegen wollen
@@ -515,8 +517,8 @@ function move_to_list(list) {
     }
   }
 
-  for(i=0; i<page_edit_was_marked.length; i++) {
-    var ob=page_edit_was_marked[i];
+  for(i=0; i<page_edit_marked.length; i++) {
+    var ob=page_edit_marked[i];
 
     var m=next_sibl(ob);
     if((m.nodeType!=1)||(m.getAttribute("edit_type")=="spacer")) {
@@ -524,7 +526,7 @@ function move_to_list(list) {
     }
 
     ob.className="edit_mark_img_chunk";
-    page_edit_marked.push(ob);
+    new_marked.push(ob);
 
     if(bef!=null) {
       moveto_list.insertBefore(ob, bef);
@@ -535,5 +537,7 @@ function move_to_list(list) {
       moveto_list.appendChild(page_edit_new_spacer());
     }
   }
+
+  page_edit_marked=new_marked;
 }
 

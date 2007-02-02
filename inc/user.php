@@ -29,8 +29,11 @@ class User {
   var $auth;
   var $pass;
 
-  function User($username) {
+  function User($username=0) {
     global $passwd_file;
+
+    if(!$username)
+      return;
 
     if($username=="anonymous") {
       $this->username="anonymous";
