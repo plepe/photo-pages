@@ -835,7 +835,7 @@ class MovieChunk extends ImgChunk {
 //    $r=getimagesize("{$this->page->path}/$orig_path/$this->img");
 //    $e=exif_read_data("{$this->page->path}/$orig_path/$this->img");
 
-    $ret["filename"]="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->mov, $orig_path, $_SESSION[img_version][$this->img])."'>$this->mov</a>";
+    $ret["filename"]="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->mov, "movie", $_SESSION[img_version][$this->img])."'>$this->mov</a>";
 
     //$ret["filename"]="<a href='orig/$this->img'>$this->img</a>";
     $ret["filesize"]=sprintf("%.1f kB", filesize("{$this->page->path}/$orig_path/$this->mov")/1024.0);
@@ -947,13 +947,39 @@ class MovieChunk extends ImgChunk {
       $ih=$imgres[1];
     }
 
-    $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."' target='_top'>";
+    //$ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."' target='_top'>";
 
 //    $ret.="<a href='$orig_path/$this->img?{$_SESSION[img_version][$this->img]}' target='_top'>".
     //$ret.="<img src='$normal_res/$this->img?{$_SESSION[img_version][$this->img]}' ";
-    $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $normal_res, $_SESSION[img_version][$this->img])."' target='_top' ";
-    $ret.="id='img' class='imageview_image' width='$iw' height='$ih' onLoad='notify_img_load()'></a>";
+//    $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $normal_res, $_SESSION[img_version][$this->img])."' target='_top' ";
+//    $ret.="id='img' class='imageview_image' width='$iw' height='$ih' onLoad='notify_img_load()'>";
 // 
+    $url=(url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->mov, "movie", $_SESSION[img_version][$this->img]));
+    $url.="&foo=bar";
+    $tmp_id=rand(0, 4000);
+    $_SESSION["tmp_$tmp_id"]["page"]=$this->page->path;
+    $_SESSION["tmp_$tmp_id"]["series"]=$this->page->series;
+    $_SESSION["tmp_$tmp_id"]["img"]=$this->id;
+    $_SESSION["tmp_$tmp_id"]["size"]="movie";
+    session_register("tmp_$tmp_id");
+
+    $url="/photo_scripts/get_image.php?tmp_id=$tmp_id";
+    //$url=htmlentities($url);
+
+?>
+    <object type="application/x-shockwave-flash" data="FlowPlayer.swf" 
+            width="600" height="480" id="FlowPlayer">
+      <param name="allowScriptAccess" value="sameDomain" />
+      <param name="movie" value="FlowPlayer.swf" />
+      <param name="quality" value="high" />
+      <param name="scale" value="noScale" />
+      <param name="wmode" value="transparent" />
+      <param name="flashvars" value="config={videoFile: '<?=$url?>', initialScale: 'fit'}" />
+    </object>
+<?
+      //<param name="flashvars" value="config={videoFile='<?=? >'}" />
+    //$ret.="</a>\n";
+
 
     $ret.="<div class='toolbox'>\n";
 
@@ -968,7 +994,7 @@ class MovieChunk extends ImgChunk {
 
     $ret.="<br style='clear: left;'>\n";
 
-    $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->mov, $orig_path, $_SESSION[img_version][$this->img])."'>Movie downloaden</a><br>\n";
+    $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->mov, "movie", $_SESSION[img_version][$this->img])."'>Movie downloaden</a><br>\n";
 
     if($this->text) {
       $ret.="<div class='imageview_image_desc' id='desc'>".

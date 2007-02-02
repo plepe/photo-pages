@@ -22,11 +22,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+session_start();
 
+if($_REQUEST[tmp_id]) {
+  $tmp_id=$_REQUEST[tmp_id];
+  $_REQUEST["img"]=$_SESSION["tmp_$tmp_id"]["img"];
+  $_REQUEST["page"]=$_SESSION["tmp_$tmp_id"]["page"];
+  $_REQUEST["series"]=$_SESSION["tmp_$tmp_id"]["series"];
+  $_REQUEST["size"]=$_SESSION["tmp_$tmp_id"]["size"];
+}
 
 include "data.php";
-//print_r($_SERVER);
-if($_REQUEST[img]=="main") {
+
+if($_REQUEST[img]==="main") {
   $filename=$page->cfg["MAIN_PICTURE"];
 }
 else {
@@ -39,7 +47,10 @@ else {
   else {
     $img=$page->cfg["LIST"][$_REQUEST[img]];
   }
-  $filename="$_REQUEST[page]/$_REQUEST[size]/$img->img";
+  if($_REQUEST[size]=="movie")
+    $filename="$_REQUEST[page]/$orig_path/$img->mov";
+  else
+    $filename="$_REQUEST[page]/$_REQUEST[size]/$img->img";
 }
 //print $filename;
 

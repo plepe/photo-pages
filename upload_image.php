@@ -128,6 +128,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
 
     // In FLV konvertieren
     system("nice ffmpeg -y -i $orig_file -ar 11025 $file_path/$page->path/$orig_path/$m[1].flv");
+    // TODO: flvtool2 verwenden, um metadaten zum video hinzuzufuegen
 
     // Filmstrip generieren
     system("cd /tmp ; ffmpeg -y -i $orig_file -vframes 1 -f image2 /tmp/tmp.jpg");

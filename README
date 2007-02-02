@@ -43,9 +43,11 @@ Upgrading
 Dependencies
 ------------
   The Photo Pages use other software for image operations.
+  - php (>= 4.3)
   - ImageMagick
   - exiftran
-  - ffmpeg
+  - ffmpeg (to transcode videos)
+for future release:  - flvtool2 (to add metadata to videos)
 
 Files in templates/
 -------------------
@@ -61,6 +63,11 @@ Files in templates/
   In the group-file you can add users to a group. Each line starts with the
   name of a group, followed by a : and a space-seperated list of users:
   groupname:user1 user2 user3
+
+Included Software
+-----------------
+- FlowPlayer
+  Plays Videos as Flash - http://flowplayer.sourceforge.net/
 
 Acknowledgements
 ----------------
