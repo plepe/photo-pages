@@ -51,10 +51,6 @@ function page_edit_input_leave(ob) {
   page_edit_over_input=null;
 }
 
-function page_edit_bla(event, ob) {
-  return false;
-}
-
 function page_edit_mouse_enter(event, ob) {
   if(!ob)
     ob=this;
@@ -113,7 +109,7 @@ function page_edit_mouse_down(event) {
 
 //  if(page_edit_over_input)
 //    return true;
-  return true;
+  return false;
 }
 
 function page_edit_img_list_clicked(event, list) {
