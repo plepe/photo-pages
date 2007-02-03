@@ -109,11 +109,13 @@ function process_upload_file($file, $orig_file, $desc=0) {
   global $resolutions;
   global $convert_options;
   global $max_res;
+  global $extensions_images;
+  global $extensions_movies;
 
   print "Importing $file ...";
   flush(); ob_flush();
-  if(eregi("^(.*)\.(jpg|jpeg|png|gif)$", $file)) {
-    $maxr=getimagesize($orig);
+  if(eregi("^(.*)\.(".implode("|", $extensions_images).")$", $file)) {
+    $maxr=getimagesize($orig_file);
     if($maxr[0]>$maxr[1])
       $maxr=$maxr[0];
     else
@@ -128,7 +130,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
     $name="$file";
   }
 
-  if(eregi("^(.*)\.(mov|avi|mpeg|mpg)", $file, $m)) {
+  if(eregi("^(.*)\.(".implode("|", $extensions_movies).")", $file, $m)) {
     if($keep)
       copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
 
@@ -196,7 +198,7 @@ if($_FILES[image]) {
   print "<p>";
 
   $n=$_FILES[image][name];
-  if(eregi("\.(png|jpg|gif|jpeg|avi|mov|mpeg|mpg|flv)$", $n)) {
+  if(eregi("\.(".implode("|", array_merge($extensions_images, $extensions_movies)).")$", $n)) {
     process_upload_file($n, $_FILES[image][tmp_name], $_REQUEST[desc]);
   }
   elseif(eregi("\.(zip)$", $n)) {

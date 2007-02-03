@@ -25,8 +25,6 @@
  */
  // http://xover.mud.at/~florian/testbed/p1/svg-map.js
 
-require "conf.php";
-
 // Default picture, if no main_picture is set
 $no_main_picture="black.png";
 
@@ -35,6 +33,12 @@ $no_main_picture="black.png";
 $fields=array("TITLE"=>"Titel", "PHOTOS_BY"=>"Photographiert von", 
               "DATE"=>"Datum", "WELCOME_TEXT"=>"Begr&uuml;&szlig;ungstext",
               "MAIN_PICTURE"=>"Hauptbild");
+
+// Accepted Filename-Extensions
+$extensions_images=array("jpg", "jpeg", "gif", "png");
+$extensions_movies=array("avi", "mov", "flv", "mpeg", "mpg");
+
+require "conf.php";
 
 if(!defined("DATA_PHP")) {
   define("DATA_PHP", TRUE);
@@ -758,7 +762,7 @@ class ImgChunk extends Chunk {
           "onMouseOut='page_edit_dont_show_pic()' ".
           "onMouseMove='page_edit_move_pic(event)' ".
 	  "onClick='page_edit_photo_click(event)' ".
-	  "onDrag='page_edit_photo_drag(event)'>\n";
+	  ">\n";
     $ret.="<img src='".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, 64, $_SESSION[img_version][$this->img])."'>";
     $ret.="</div>\n";
     $ret.="<input type='hidden' name='data[LIST][$this->id][img]' value='$this->img'>\n";
@@ -1068,7 +1072,7 @@ class MovieChunk extends ImgChunk {
           "onMouseOut='page_edit_dont_show_pic()' ".
           "onMouseMove='page_edit_move_pic(event)' ".
 	  "onClick='page_edit_photo_click(event)' ".
-	  "onDrag='page_edit_photo_drag(event)'>\n";
+	  ">\n";
     $ret.="<img src='".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, 64, $_SESSION[img_version][$this->img])."'>";
     $ret.="</div>\n";
     $ret.="<input type='hidden' name='data[LIST][$this->id][mov]' value='$this->mov'>\n";
@@ -1333,6 +1337,9 @@ class Page {
   }
 
   function read_list() {
+    global $extensions_images;
+    global $extensions_movies;
+
     if($this->cfg["LIST"])
       return;
     $section="global";
@@ -1371,13 +1378,13 @@ class Page {
       }
       elseif(($section=="imglist")||($section=="subdir")) {
         //print "<!-- xxx mem used ".memory_get_usage()." byte ; diff: ".(memory_get_usage()-$lastmem)." -- $f -->\n";
-        if(eregi("^[^ ]*\.(jpg|png|gif)", $f)) {
+        if(eregi("^[^ ]*\.(".implode("|", $extensions_images).")", $f)) {
           if(!eregi("^index_", $f))
             $this->cfg["LIST"][]=new ImgChunk(&$this, $f, &$index, &$id);
           else
             $this->cfg["LIST"][]=new HeaderChunk($this, $f, &$index, &$id);
         }
-        elseif(eregi("^[^ ]*\.(avi|mov|mpg|mpeg|flv)", $f)) {
+        elseif(eregi("^[^ ]*\.(".implode("|", $extensions_movies).")", $f)) {
           $this->cfg["LIST"][]=new MovieChunk(&$this, $f, &$index, &$id);
         }
         elseif(eregi("^=", $f)) {
@@ -1409,7 +1416,7 @@ class Page {
       if($dir=@opendir($path."$index_res/")) {
         $filelist=array();
         while($file=readdir($dir)) {
-          if(eregi("(gif|png|jpg)$", $file)) {
+          if(eregi("(".implode("|", array_merge($extensions_images, $extensions_movies)).")$", $file)) {
             $filelist[]=$file;
           }
         }
@@ -1420,8 +1427,10 @@ class Page {
 
       foreach($filelist as $file) {
         if(!in_array($file, $list))
-          $this->cfg["LIST"][]=new ImgChunk($file);
-          // TODO: MovieChunk
+          if(eregi("\.(".implode("|", $extensions_images).")$", $file))
+            $this->cfg["LIST"][]=new ImgChunk($file);
+          else
+            $this->cfg["LIST"][]=new MovieChunk($file);
       }
     }
 
@@ -1885,6 +1894,8 @@ class Page {
 
   function page_edit_load_unused_images($quiet=0) {
     global $orig_path;
+    global $extensions_images;
+    global $extensions_movies;
 
     $data=$this->cfg;
 
@@ -1892,7 +1903,7 @@ class Page {
     $full_list=array();
     if(@$d=opendir("$this->path/$orig_path")) {
       while($f=readdir($d)) {
-        if(eregi("\.(jpg|jpeg|png|gif|mpeg|mpg|avi|flv|mov)$", $f))
+        if(eregi("\.(".implode("|", array_merge($extensions_images, $extensions_movies)).")$", $f))
           $full_list[]=$f;
       }
       closedir($d);
@@ -1909,7 +1920,7 @@ class Page {
 
     $unused=array();
     foreach($full_list as $f) {
-      if(eregi("\.(jpg|jpeg|png|gif)$", $f))
+      if(eregi("\.(".implode("|", $extensions_images).")$", $f))
         $d=new ImgChunk($this, $f, $index, $max_id+1);
       else
         $d=new MovieChunk($this, $f, $index, $max_id+1);
@@ -2229,76 +2240,6 @@ class Page {
 
 }
 
-function get_all_files($cfg, $path="") {
-  global $index_res;
-  if($this->cfg[SORT]=="explicit") {
-    $files=$this->cfg["LIST"];
-  }
-  elseif(($this->cfg[SORT]=="alpha")||(!$this->cfg[SORT])) {
-    if($dir = @opendir($path."$index_res/")) {
-      while($file = readdir($dir)) {
-        if(eregi("(gif|png|jpg)$", $file)) {
-          $files[]=$file;
-        }
-      }
-      closedir($dir);
-    
-      if(sizeof($files))
-        sort($files);
-    }
-  }
-  elseif($this->cfg[SORT]=="expl_alpha") {
-    if($dir = @opendir("$index_res/")) {
-      while($file = readdir($dir)) {
-        if(eregi("(gif|png|jpg)$", $file)) {
-          $files[]=$file;
-        }
-      }
-      closedir($dir);
-    
-      sort($files);
-    }
-#    $files=array_merge($this->cfg["LIST"], array_diff($files, $this->cfg["LIST"]));
-  }
-
-  return $files;
-}
-
-function get_all_subdirs($cfg) {
-  global $index_res;
-
-  if($this->cfg[SORT]=="explicit") {
-    $files=$this->cfg["LIST"];
-  }
-  elseif(($this->cfg[SORT]=="alpha")||(!$this->cfg[SORT])) {
-    if($dir = @opendir("./")) {
-      while($file = readdir($dir)) {
-        if(is_dir($file)) {
-          $files[]=$file;
-        }
-      }
-      closedir($dir);
-    
-      sort($files);
-    }
-  }
-  elseif($this->cfg[SORT]=="expl_alpha") {
-    if($dir = @opendir("$index_res/")) {
-      while($file = readdir($dir)) {
-        if(eregi("(gif|png|jpg)$", $file)) {
-          $files[]=$file;
-        }
-      }
-      closedir($dir);
-    
-      sort($files);
-    }
-#    $files=array_merge($this->cfg[SUBLIST], array_diff($files, $this->cfg[SUBLIST]));
-  }
-
-  return $files;
-}
-
 // Here starts the basic initialisation of vars
 include "inc/user.php";
 if(!$_SESSION[current_user])
@@ -2410,6 +2351,9 @@ function rights_merge($rights, $addrights) {
 function list_dir($dir) {
   global $upload_path;
   global $lang_str;
+  global $extensions_images;
+  global $extensions_movies;
+  
   if(!$dir)
     $dir="/";
   $ret="";
@@ -2435,10 +2379,13 @@ function list_dir($dir) {
     if(substr($x, 0, 1)!=".") {
       if(is_dir("$upload_path/$dir/$x"))
         $list_dir[]=$x;
-      else
+      elseif(eregi("\.(".implode("|", array_merge($extensions_images, $extensions_movies)).")$", $x))
         $list_file[]=$x;
     }
   }
+
+  sort($list_dir);
+  sort($list_file);
 
   foreach($list_dir as $x) {
     $odd=($odd+1)%2;

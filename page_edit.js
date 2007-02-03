@@ -51,6 +51,10 @@ function page_edit_input_leave(ob) {
   page_edit_over_input=null;
 }
 
+function page_edit_bla(event, ob) {
+  return false;
+}
+
 function page_edit_mouse_enter(event, ob) {
   if(!ob)
     ob=this;
@@ -118,7 +122,7 @@ function page_edit_img_list_clicked(event, list) {
       page_edit_clear_marked();
   }
 
-  return true;
+  return false;
 }
 
 function page_edit_img_chunk_clicked(event, ob) {
@@ -132,7 +136,7 @@ function page_edit_img_chunk_clicked(event, ob) {
     ob.className="edit_mark_img_chunk";
   }
 
-  return true;
+  return false;
 }
 
 function page_edit_clear_marked() {
@@ -389,10 +393,8 @@ function page_edit_photo_click(event) {
 
   //fuer magnify
   start_mag();
-}
 
-function page_edit_photo_drag(event) {
-  return true;
+  return false;
 }
 
 function page_edit_move_pic(event) {
