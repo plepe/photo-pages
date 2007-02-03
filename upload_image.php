@@ -226,9 +226,6 @@ if($_FILES[image]) {
 
 if((!$_REQUEST["dir"])&&(!$_FILES[image])) {
   print "<p>\n";
-  print "<a href='".url_page($page, $series, "index.php")."'>Back</a> /\n";
-  print "<a href='".url_script($page, $series, "page_edit.php", null)."'>Edit Page</a>\n";
-  print "<p>\n";
   print "<form action='upload_image.php' method='post' ".
         "enctype='multipart/form-data'>\n";
   print "<input type='hidden' name='page' value='$page->path'>\n";
@@ -242,21 +239,24 @@ if((!$_REQUEST["dir"])&&(!$_FILES[image])) {
   print "$lang_str[upload_image_max_size]: ".ini_get("upload_max_filesize")."<br>\n";
   print "<input type='submit' value='$lang_str[upload_image_submit]'>\n";
 
-  print "<h4>$lang_str[upload_image_readdir]</h4>\n";
-  $dir="";
-  print "<div id='dir_list' class='upload_image_dir_list'>\n";
-  print list_dir($_REQUEST["dir"]);
-  print "</div>\n";
+  if($upload_path) {
+    print "<h4>$lang_str[upload_image_readdir]</h4>\n";
+    $dir="";
+    print "<div id='dir_list' class='upload_image_dir_list'>\n";
+    print list_dir($_REQUEST["dir"]);
+    print "</div>\n";
 
-  print "<tr><td colspan='2'>\n";
-  print "<input type='button' value='$lang_str[upload_image_mark]' onClick='upload_image_mark_all()'>\n";
-  print "<input type='submit' value='$lang_str[upload_image_submit]'>\n";
-  print "</td></tr>\n";
+    print "<input type='button' value='$lang_str[upload_image_mark]' onClick='upload_image_mark_all()'>\n";
+    print "<input type='submit' value='$lang_str[upload_image_submit]'>\n";
+  }
   print "</form>\n";
 }
 else {
   print "<br>Finished.<br>\n";
 }
+print "<p>\n";
+print "<a href='".url_page($page, $series, "index.php")."'>Back</a> /\n";
+print "<a href='".url_script($page, $series, "page_edit.php", null)."'>Edit Page</a>\n";
 ?>
 </body>
 </html>

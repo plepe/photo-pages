@@ -104,6 +104,6 @@ $lang_str=array(
   "upload_image_upload_desc"=>"Description:",
   "upload_image_dir"=>"Directory",
   "upload_image_mark"=>"Mark all files",
-  "upload_image_submit"=>"Import files"
+  "upload_image_submit"=>"Import files",
   "upload_image_max_size"=>"Max. filesize"
 );

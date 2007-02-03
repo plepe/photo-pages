@@ -30,6 +30,7 @@ var page_edit_was_marked=new Array();
 var page_edit_enlarged=null;
 var page_edit_over_input;
 var page_edit_fix_large=0;
+var page_edit_page;
 
 function page_edit_new_spacer() {
   var ret;
@@ -109,7 +110,11 @@ function page_edit_mouse_down(event) {
 
 //  if(page_edit_over_input)
 //    return true;
-  return false;
+
+  if(page_edit_page=="page2")
+    return false;
+  else
+    return true;
 }
 
 function page_edit_img_list_clicked(event, list) {
@@ -286,6 +291,8 @@ function page_edit_show_page(page) {
 
   var ob=document.getElementById(page);
   ob.style.display="block";
+
+  page_edit_page=page;
 }
 
 function page_edit_modify_rights(user, right) {
@@ -487,6 +494,7 @@ function input_get_focus() {
 function init_page_edit() {
   var ob=document.getElementById("wait_screen");
   ob.parentNode.removeChild(ob);
+  page_edit_page="page1";
 }
 
 function move_to_list(list) {
