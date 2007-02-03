@@ -239,6 +239,7 @@ if((!$_REQUEST["dir"])&&(!$_FILES[image])) {
   print "<tr><td>$lang_str[upload_image_upload_file]</td><td><input type='file' name='image'></td></tr>";
   print "<tr><td>$lang_str[upload_image_upload_desc]</td><td><input name='desc'></td></tr>";
   print "</table>\n";
+  print "$lang_str[upload_image_max_size]: ".ini_get("upload_max_filesize")."<br>\n";
   print "<input type='submit' value='$lang_str[upload_image_submit]'>\n";
 
   print "<h4>$lang_str[upload_image_readdir]</h4>\n";
