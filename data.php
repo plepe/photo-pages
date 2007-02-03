@@ -34,6 +34,9 @@ $fields=array("TITLE"=>"Titel", "PHOTOS_BY"=>"Photographiert von",
               "DATE"=>"Datum", "WELCOME_TEXT"=>"Begr&uuml;&szlig;ungstext",
               "MAIN_PICTURE"=>"Hauptbild");
 
+$rights=array("announce", "view", "addcomment", "editdesc", "new", "edit", "rights");
+$global_rights=array("newusers", "useradmin");
+
 // Accepted Filename-Extensions
 $extensions_images=array("jpg", "jpeg", "gif", "png");
 $extensions_movies=array("avi", "mov", "flv", "mpeg", "mpg");
