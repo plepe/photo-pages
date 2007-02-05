@@ -114,3 +114,5 @@ print $lang_str["hint_colour_age"];
 ?>
 </body>
 </html>
+<?
+html_footer();

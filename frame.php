@@ -54,7 +54,4 @@ Photos by <? echo $cfg[PHOTOS_BY]; ?></p>
 <p>
 <?
 print "Here you have <a href=\"".url_script($page->path, $page->series, "list.php", "")."\">the list of Pictures</a></P>\n";
-?>
-
-</BODY>
-</HTML>
+html_footer();

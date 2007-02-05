@@ -48,3 +48,9 @@ function end_html_header() {
 </head>
   <?
 }
+
+function html_footer() {
+  global $lang_str;
+  print "<div class='footer'>$lang_str[footer]</div>\n";
+  print "</body></html>\n";
+}

@@ -64,3 +64,5 @@ foreach($page->cfg["LIST"] as $el) {
 <div class='message' id='message'>
 no message
 </div>
+<?
+html_footer();

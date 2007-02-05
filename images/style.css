@@ -484,6 +484,18 @@ td.edit_img_connect {
 }
 .page_edit_choose_page {
   border: 1px solid #666666;
+  color: #ffff00;
+  margin-right: 2px;
+  padding-left: 2px;
+  padding-top: 2px;
+  padding-right: 2px;
+}
+.page_edit_choose_page_chose {
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  border-right: 1px solid #666666;
+  border-bottom: 1px solid #000000;
+  color: #ffff00;
   margin-right: 2px;
   padding-left: 2px;
   padding-top: 2px;
@@ -591,4 +603,9 @@ span.upload_file_marked {
 }
 input.upload_file {
   display: none;
+}
+.footer {
+  border: 1px solid #666666;
+  background: #333333;
+  text-align: center;
 }

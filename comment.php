@@ -70,6 +70,4 @@ foreach($page->cfg["LIST"] as $el) {
     echo "$lang_str[hint_comment]\n";
   }
 //}
-?>
-</body>
-</html>
+html_footer();

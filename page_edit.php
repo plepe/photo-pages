@@ -47,6 +47,4 @@ else {
   $page->show_page_edit_form();
 }
 
-?>
-</body>
-</html>
+html_footer();

@@ -289,6 +289,13 @@ function page_edit_show_page(page) {
       obs[i].style.display="none";
   }
 
+  for(i=1;i<=3;i++) {
+    var ob=document.getElementById("tab_page"+i);
+    ob.className='page_edit_choose_page';
+  }
+  var ob=document.getElementById("tab_"+page);
+  ob.className='page_edit_choose_page_chose';
+
   var ob=document.getElementById(page);
   ob.style.display="block";
 

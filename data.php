@@ -1950,9 +1950,9 @@ class Page {
     //print_r($data);
 
     print "<div class='page_edit'>\n";
-    print "<span class='page_edit_choose_page' onClick='page_edit_show_page(\"page1\")'>$lang_str[page_edit_page_main]</span>";
-    print "<span class='page_edit_choose_page' onClick='page_edit_show_page(\"page2\")'>$lang_str[page_edit_page_pict]</span>\n";
-    print "<span class='page_edit_choose_page' onClick='page_edit_show_page(\"page3\")'>$lang_str[page_edit_page_rights]</span>";
+    print "<span id='tab_page1' class='page_edit_choose_page_chose' onClick='page_edit_show_page(\"page1\")'>$lang_str[page_edit_page_main]</span>";
+    print "<span id='tab_page2' class='page_edit_choose_page' onClick='page_edit_show_page(\"page2\")'>$lang_str[page_edit_page_pict]</span>\n";
+    print "<span id='tab_page3' class='page_edit_choose_page' onClick='page_edit_show_page(\"page3\")'>$lang_str[page_edit_page_rights]</span>";
     print "<form action='page_edit.php' method='post' id='page_edit_form'>\n";
     print "<input type='hidden' name='page' value=\"$this->path\">\n";
     print "<input type='hidden' name='series' value=\"$this->series\">\n";

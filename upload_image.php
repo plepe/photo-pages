@@ -255,8 +255,6 @@ else {
   print "<br>Finished.<br>\n";
 }
 print "<p>\n";
-print "<a href='".url_page($page, $series, "index.php")."'>Back</a> /\n";
-print "<a href='".url_script($page, $series, "page_edit.php", null)."'>Edit Page</a>\n";
-?>
-</body>
-</html>
+print "<a href='".url_page($page->path, $page->series, "index.php")."'>Back</a> /\n";
+print "<a href='".url_script($page->path, $page->series, "page_edit.php", null)."'>Edit Page</a>\n";
+html_footer();

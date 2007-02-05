@@ -35,3 +35,4 @@ setlocale(LC_ALL, "de_AT");
 $width=$_REQUEST[width];
 
 print $page->header();
+html_footer();

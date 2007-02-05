@@ -73,7 +73,4 @@ if(!$_REQUEST[data]) {
   print "</form>\n";
 }
 
-?>
-</body>
-</html>
-
+html_footer();

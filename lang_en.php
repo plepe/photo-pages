@@ -24,6 +24,7 @@
  */
 
 $lang_str=array(
+  "footer"=>"This page is powered by <a href='http://xover.mud.at/~skunk/photo_pages/'>Photo Pages</a>.",
   "nav_back"=>"Back",
   "nav_columns"=>"Columns",
   "nav_language"=>"Language",
