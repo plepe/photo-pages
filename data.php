@@ -592,8 +592,8 @@ class ImgChunk extends Chunk {
     
     $ret1="";
     if($this->page->get_right($_SESSION[current_user], "edit")) {
-      $ret1.="<input class='toolbox_input' type='submit' name='rot_left' value='$lang_str[tool_rotate_left]' onClick='start_rotate(\"toolbox.php?todo=rot_left&img=$this->img\", \"$this->img\", this)'><br>\n";
-      $ret1.="<input class='toolbox_input' type='submit' name='rot_right' value='$lang_str[tool_rotate_right]' onClick='start_rotate(\"toolbox.php?todo=rot_right&img=$this->img\", \"$this->img\", this)'><br>\n";
+      $ret1.="<input class='toolbox_input' type='submit' name='rot_left' value='$lang_str[tool_rotate_left]' onClick='start_rotate(\"".url_script($this->page->path, $this->page->series, "toolbox.php", $this->id)."&todo=rot_left\", this)'><br>\n";
+      $ret1.="<input class='toolbox_input' type='submit' name='rot_right' value='$lang_str[tool_rotate_right]' onClick='start_rotate(\"".url_script($this->page->path, $this->page->series, "toolbox.php", $this->id)."&todo=rot_right\", this)'><br>\n";
     }
     if($this->page->get_right($_SESSION[current_user], "editdesc")) {
       $ret1.="<input accesskey='e' class='toolbox_input' type='submit' id='toolbox_input_desc' value='$lang_str[tool_editdesc_name]' onClick='start_desc_edit()'><br>\n";
@@ -624,12 +624,15 @@ class ImgChunk extends Chunk {
 
     $imgres=getimagesize("$file_path/{$this->page->path}/$normal_res/$this->img");
 
+    if(!$_SESSION[img_version][$this->img])
+      $_SESSION[img_version][$this->img]=0;
+
     $ret.="<script type='text/javascript'>\n".
           "<!--\n".
-          "var img_version=\"{$_SESSION[img_version][$this->img]}\";\n".
+          "var img_version={$_SESSION[img_version][$this->img]};\n".
           "var img_orig=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."\";\n".
           "var img_size_url=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, "%SIZE%", $_SESSION[img_version][$this->img])."\";\n".
-          "var imgurl=\"$this->img\";\n".
+          "var img_url=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, $normal_res, $_SESSION[img_version][$this->img])."\";\n".
           "var cur_res=\"$normal_res\";\n".
           "var series=\"$series\";\n".
           "var page=\"{$this->page->path}\";\n".
@@ -876,8 +879,8 @@ class MovieChunk extends ImgChunk {
     
     $ret1="";
     if($this->page->get_right($_SESSION[current_user], "edit")) {
-      $ret1.="<input class='toolbox_input' type='submit' name='rot_left' value='$lang_str[tool_rotate_left]' onClick='start_rotate(\"toolbox.php?todo=rot_left&img=$this->img\", \"$this->img\", this)'><br>\n";
-      $ret1.="<input class='toolbox_input' type='submit' name='rot_right' value='$lang_str[tool_rotate_right]' onClick='start_rotate(\"toolbox.php?todo=rot_right&img=$this->img\", \"$this->img\", this)'><br>\n";
+      $ret1.="<input class='toolbox_input' type='submit' name='rot_left' value='$lang_str[tool_rotate_left]' onClick='start_rotate(\"toolbox.php?todo=rot_left&img=$this->img\", this)'><br>\n";
+      $ret1.="<input class='toolbox_input' type='submit' name='rot_right' value='$lang_str[tool_rotate_right]' onClick='start_rotate(\"toolbox.php?todo=rot_right&img=$this->img\", this)'><br>\n";
     }
     if($this->page->get_right($_SESSION[current_user], "editdesc")) {
       $ret1.="<input accesskey='e' class='toolbox_input' type='submit' id='toolbox_input_desc' value='$lang_str[tool_editdesc_name]' onClick='start_desc_edit()'><br>\n";

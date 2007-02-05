@@ -24,9 +24,6 @@
 var xmlhttp_req;
 var xmlhttp_callback;
 
-var imgurl; // todo: weg
-var img_version; // todo: weg
-
 function get_abs_pos(ob) {
   var p=new Array(2);
 
@@ -68,13 +65,18 @@ function processReqChange() {
 
       if(img) {
         img_version++;
-        img.src=cur_res + "/" + imgurl + "?" + img_version;
+        img.src=img_url + img_version;
+//        img.style.width=img.width+"px";
+//        img.style.height=img.height+"px";
+        var x=img.width;
+        img.width=img.height;
+        img.height=x;
       }
 
-      if(parent.list) {
-        img=parent.list.document.getElementById(imgurl);
-        img.src="$orig_path/" + imgurl + "?" + img_version;
-      }
+//      if(parent.list) {
+//        img=parent.list.document.getElementById(img_url);
+//        img.src="$orig_path/" + img_url + "?" + img_version;
+//      }
 
       w=img_width;
       img_width=img_height;

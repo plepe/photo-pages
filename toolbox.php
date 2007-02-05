@@ -32,9 +32,10 @@ function scale() {
   global $resolutions;
   global $orig_path;
   global $page;
+  global $file_path;
 
   foreach($resolutions as $res) {
-    system("convert -resize {$res}x{$res} -filter Hamming -quality 85 -interlace PLANE $page->path/$orig_path/$img $page->path/$res/$img");
+    system("convert -resize {$res}x{$res} -filter Hamming -quality 85 -interlace PLANE $file_path/$page->path/$orig_path/$img->img $file_path/$page->path/$res/$img->img");
   }
 }
 
@@ -46,18 +47,20 @@ print "<todo>$todo</todo>\n";
 
 switch($todo) {
   case "rot_right":
-    system("exiftran -9 -o $page->path/$orig_path/new.$img $page->path/$orig_path/$img");
-    system("mv $page->path/$orig_path/new.$img $page->path/$orig_path/$img");
+    $img=$page->cfg["LIST"][$img];
+    system("exiftran -9 -o $file_path/$page->path/$orig_path/new.$img->img $file_path/$page->path/$orig_path/$img->img");
+    system("mv $file_path/$page->path/$orig_path/new.$img->img $file_path/$page->path/$orig_path/$img->img");
     scale();
-    $_SESSION[img_version][$img]++;
+    $_SESSION[img_version][$img->img->img]++;
     print "<status>success</status>\n";
     print "<changed_image>yes</changed_image>\n";
     break;
   case "rot_left":
-    system("exiftran -2 -o $page->path/$orig_path/new.$img $page->path/$orig_path/$img");
-    system("mv $page->path/$orig_path/new.$img $page->path/$orig_path/$img");
+    $img=$page->cfg["LIST"][$img];
+    system("exiftran -2 -o $file_path/$page->path/$orig_path/new.$img->img $file_path/$page->path/$orig_path/$img->img");
+    system("mv $file_path/$page->path/$orig_path/new.$img->img $file_path/$page->path/$orig_path/$img->img");
     scale();
-    $_SESSION[img_version][$img]++;
+    $_SESSION[img_version][$img->img]++;
     print "<status>success</status>\n";
     print "<changed_image>yes</changed_image>\n";
     break;

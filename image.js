@@ -42,7 +42,7 @@ function set_fullscreen() {
 
 function set_auto_img_size() {
   img=document.getElementById("img");
-  ratio=img_width/img_height;
+  ratio=img.width/img.height;
 
   p=get_abs_pos(img);
 //  h=document.body.clientHeight-p[1]-40;
