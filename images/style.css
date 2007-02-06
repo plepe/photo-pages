@@ -502,7 +502,7 @@ td.edit_img_connect {
   padding-right: 2px;
 }
 .edit_input_headerchunk {
-  background: none;
+  background: #333333;
   color: #ffffff;
   border: 0px;
   font-family: helvetica, arial;
@@ -511,14 +511,14 @@ td.edit_img_connect {
   font-weight: bold;
 }
 .edit_input_textchunk {
-  background: none;
+  background: #333333;
   color: #ffffff;
   border: 0px;
   font-family: helvetica, arial;
   width: 370px;
 }
 .edit_input_imgchunk {
-  background: none;
+  background: #333333;
   color: #ffffff;
   border: 0px;
   font-family: helvetica, arial;

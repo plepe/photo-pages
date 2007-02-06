@@ -244,9 +244,6 @@ function page_edit_mouse_move(event) {
   if((page_edit_button_down)&&(!page_edit_moving)) {
     page_edit_moving=1;
 
-    var page=document.getElementById("page2");
-    page.focus();
-
     while(move_ob.firstChild)
       move_ob.removeChild(move_ob.firstChild);
 
