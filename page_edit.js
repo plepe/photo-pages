@@ -31,6 +31,7 @@ var page_edit_enlarged=null;
 var page_edit_over_input;
 var page_edit_fix_large=0;
 var page_edit_page;
+var page_edit_over_image;
 
 function page_edit_new_spacer() {
   var ret;
@@ -111,7 +112,7 @@ function page_edit_mouse_down(event) {
 //  if(page_edit_over_input)
 //    return true;
 
-  if(page_edit_page=="page2")
+  if((page_edit_page=="page2")&&(page_edit_over_image))
     return false;
   else
     return true;
@@ -357,7 +358,8 @@ function page_edit_show(off) {
 function page_edit_show_pic(img, chunk, pict_url, pict_orig_url) {
 //  if(page_edit_pic_over==img)
 //    return;
-//
+  page_edit_over_image=img;
+
 //  page_edit_dont_show_pic(1);
   end_mag();
 
@@ -398,7 +400,6 @@ function page_edit_show_pic(img, chunk, pict_url, pict_orig_url) {
 }
 
 function page_edit_photo_click(event) {
-  //debug_write("BLA");
   page_edit_fix_large=1;
 
   //fuer magnify
@@ -435,6 +436,12 @@ function page_edit_move_pic(event) {
   }
 
   return true;
+}
+
+function page_edit_leave_image(img) {
+  page_edit_over_image=null;
+
+  page_edit_dont_show_pic();
 }
 
 function page_edit_dont_show_pic(force) {
