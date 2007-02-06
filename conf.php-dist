@@ -27,14 +27,14 @@
 
 // This is the path, were your photos reside. This directory should not be
 // reachable for the webserver for security reasons.
-$file_path="/home/skunk/photos";
+$file_path="/home/user/photos";
 
 // This is the WWW-path of your scripts
-$web_path="/~skunk/photo_scripts/";
+$web_path="/~usr/photos/";
 
 // This is the file system path, were you can upload pictures. They can be
 // imported with Upload Pictures.
-$upload_path="/home/skunk/photos";
+$upload_path="/home/user/upload_photos";
 
 // This are the paths of your passwd and group files
 $passwd_file="$file_path/passwd";
