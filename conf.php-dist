@@ -64,10 +64,6 @@ $resolutions=array(64, 200, 600);
 // Which options should be used when rescaling
 $convert_options="-filter Hamming -quality 85 -interlace PLANE";
 
-// Which rights do exist
-$rights=array("announce", "view", "addcomment", "editdesc", "new", "edit", "rights");
-$global_rights=array("newusers", "useradmin");
-
 // What's the name of the anonymous user?
 $anon_user="anonymous";
 
