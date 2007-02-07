@@ -112,8 +112,13 @@ function process_upload_file($file, $orig_file, $desc=0) {
   global $extensions_images;
   global $extensions_movies;
 
+  // Replace spaces in filename through _
+  $file=implode("_", explode(" ", $file));
+
   print "Importing $file ...";
   flush(); ob_flush();
+
+  // If this is an image ...
   if(eregi("^(.*)\.(".implode("|", $extensions_images).")$", $file)) {
     $maxr=getimagesize($orig_file);
     if($maxr[0]>$maxr[1])
@@ -124,22 +129,23 @@ function process_upload_file($file, $orig_file, $desc=0) {
     if($maxr<$max_res)
       copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
     else
-      system("nice convert -resize {$max_res}x{$max_res} $convert_options $orig_file $file_path/$page->path/$orig_path/$file");
+      system("nice convert -resize {$max_res}x{$max_res} $convert_options \"$orig_file\" $file_path/$page->path/$orig_path/$file");
 
     $orig="$file_path/$page->path/$orig_path/$file";
     $name="$file";
   }
 
+  // If this is a movie ...
   if(eregi("^(.*)\.(".implode("|", $extensions_movies).")", $file, $m)) {
     if($keep)
       copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
 
     // In FLV konvertieren
-    system("nice ffmpeg -y -i $orig_file -ar 11025 $file_path/$page->path/$orig_path/$m[1].flv");
+    system("nice ffmpeg -y -i \"$orig_file\" -ar 11025 $file_path/$page->path/$orig_path/$m[1].flv");
     // TODO: flvtool2 verwenden, um metadaten zum video hinzuzufuegen
 
     // Filmstrip generieren
-    system("cd /tmp ; ffmpeg -y -i $orig_file -vframes 1 -f image2 /tmp/tmp.jpg");
+    system("cd /tmp ; ffmpeg -y -i \"$orig_file\" -vframes 1 -f image2 /tmp/tmp.jpg");
     system("nice convert -resize 410x450 /tmp/tmp.jpg /tmp/tmp.jpg");
     system("nice composite -compose atop -gravity center /tmp/tmp.jpg $script_path/images/filmstrip.png $file_path/$page->path/$orig_path/$m[1].jpg");
     system("rm /tmp/tmp.jpg");
@@ -149,6 +155,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
     $name="$m[1].flv";
   }
 
+  // Add this image to the fotocfg.txt resp. a series
   $f=fopen($page->filename, "a");
   if($desc)
     fputs($f, "$name $desc\n");
@@ -164,6 +171,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
 
   $lastr=$orig_path;
 
+  // Convert Image to thumbnails
   rsort($resolutions);
   foreach($resolutions as $r) {
     if($r<$maxr) {

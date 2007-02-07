@@ -48,13 +48,16 @@ if($data=$_REQUEST[data]) {
       print "$e<br>\n";
   }
   else {
+    // Replace spaces in filename through _
+    $data[page_name]=implode("_", explode(" ", $data[page_name]));
+
     $v="$file_path/$page->path/$data[page_name]";
     mkdir($v);
     $f=fopen("$v/fotocfg.txt", "w");
     fwrite($f, "TITLE $data[title]\n\n");
 
-    print "Verzeichnis angelegt.<br>\n";
-    print "<a href='".url_page("$page->path/$data[page_name]", "", "index.php")."'>&Ouml;ffne Seite</a>\n";
+    print "$lang_str[new_page_done].<br>\n";
+    print "<a href='".url_page("$page->path/$data[page_name]", "", "index.php")."'>$lang_str[new_page_go_there]</a>\n";
   }
 }
 
@@ -66,9 +69,9 @@ if(!$_REQUEST[data]) {
   print "<form action='".url_script($page->path, $page->series, "new_page.php", null)."' method='post' ".
 	"enctype='multipart/form-data'>\n";
   print "<table>\n";
-  print "<tr><td>Titel der Unterseite:</td><td><input name='data[title]'></td></tr>";
-  print "<tr><td>Kurzbezeichnung:</td><td><input name='data[page_name]'></td></tr>";
-  print "<tr><td colspan='2'><input type='submit' value='Ok'></td></tr>\n";
+  print "<tr><td>$lang_str[new_page_title]:</td><td><input name='data[title]'></td></tr>";
+  print "<tr><td>$lang_str[new_page_dir]:</td><td><input name='data[page_name]'></td></tr>";
+  print "<tr><td colspan='2'><input type='submit' value='$lang_str[new_page_ok]'></td></tr>\n";
   print "</table>\n";
   print "</form>\n";
 }

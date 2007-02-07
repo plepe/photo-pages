@@ -106,5 +106,11 @@ $lang_str=array(
   "upload_image_dir"=>"Directory",
   "upload_image_mark"=>"Mark all files",
   "upload_image_submit"=>"Import files",
-  "upload_image_max_size"=>"Max. filesize"
+  "upload_image_max_size"=>"Max. filesize",
+
+  "new_page_title"=>"Title of subpage",
+  "new_page_dir"=>"Directory name",
+  "new_page_done"=>"Directory created",
+  "new_page_go_there"=>"Open page",
+  "new_page_ok"=>"Ok"
 );
