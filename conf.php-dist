@@ -33,7 +33,7 @@ $file_path="/home/user/photos";
 $web_path="/~usr/photos/";
 
 // This is the file system path, were you can upload pictures. They can be
-// imported with Upload Pictures.
+// imported with Upload Pictures. (comment, if you don't like this feature)
 $upload_path="/home/user/upload_photos";
 
 // This are the paths of your passwd and group files

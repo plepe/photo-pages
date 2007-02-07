@@ -1,0 +1,23 @@
+This CHANGELOG includes only important updates.
+
+- svn r36 (2007-02-07)
+  - spaces are converted to _ for uploaded files and new directories
+
+- svn r28 (2007-02-03)
+  - disable local upload, when no upload_path is defined
+
+- svn r14 (2007-02-02)
+  - videos are played with FlowPlayer
+
+- svn r11/r13 (2007-02-02)
+  - include templates
+
+- svn r12 (2007-02-02)
+  - choose language
+
+- svn r3/r8/r10 (2007-02-01)
+  - new feature: upload images/movies from upload-dir
+
+- svn r3 (2007-01-30)
+  - magnifing lens in page edit
+  - feature: create new subpage

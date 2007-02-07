@@ -15,41 +15,6 @@ About
   appreciate your bits of code, that could improve this software. Your name in
   the Acknowledgement-Section of this file is guaranted (if I can use it).
 
-Installation
-------------
-  Install the scripts to a directory, that is reachable for your webserver
-  (e.g. apache). It needs PHP to run, no database servers are used.
-
-  Create a directory where your images will be put. This directory shouldn't be
-  reachable via your webserver (for security-reasons). It has to be writeable
-  for the webserver (you won't be able to edit your photopages).
-  Copy all files from the templates-directory to this directory.
-  See below for a description of these files.
-
-  Create a second directory (the upload directory), where you can put images
-  for the photopages, that can be imported (via the "Upload pictures"-Page).
-
-  Copy conf.php-dist to conf.php and fill with correct values.
-
-  Type the address of your new photopages into the address bar of your
-  preferred browser. You should be able to login as user 'admin' and password
-  'admin'.
-
-Upgrading
----------
-  Save the conf.php, get rid of the old installation and copy conf.php back to
-  the new installation. Check this section of this file for changes to the
-  conf.php.
-
-Dependencies
-------------
-  The Photo Pages use other software for image operations.
-  - php (>= 4.3)
-  - ImageMagick
-  - exiftran
-  - ffmpeg (to transcode videos)
-for future release:  - flvtool2 (to add metadata to videos)
-
 Files in templates/
 -------------------
 - fotocfg.txt
