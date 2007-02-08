@@ -579,27 +579,27 @@ class ImgChunk extends Chunk {
     $res="orig";
     $ret.="<input type='submit' class='";
     $ret.=($normal_res==$res?"toolbox_input_active":"toolbox_input");
-    $ret.="' onClick='set_normal_res(\"$res\")' id='res_$res' value='$res'/>\n";
+    $ret.="' onClick='set_normal_res(\"$res\")' id='res_$res' value='$res' title=\"$lang_str[tooltip_set_res]\"\"/>\n";
 
     //$ret.="<input type='submit' class='toolbox_input' value='orig'/>\n";
     $ret.="<br>\n";
     //$ret.="<a accesskey='m' class='toolbox_input' id='toolbox_input_mag' href='javascript:start_mag()'>$lang_str[tool_magnify_name]</a><br>\n";
-    $ret.="<input accesskey='m' type='submit' class='toolbox_input' id='toolbox_input_mag' onClick='start_mag()' value='$lang_str[tool_magnify_name]'><br>\n";
+    $ret.="<input accesskey='m' type='submit' class='toolbox_input' id='toolbox_input_mag' onClick='start_mag()' value='$lang_str[tool_magnify_name]' title=\"$lang_str[tooltip_mag]\"><br>\n";
     $ret.="<input accesskey='f' class='".
       ($_SESSION[fullscreen_mode]?"toolbox_input_active":"toolbox_input").
-      "' type='submit' id='toolbox_input_fullscreen' value='$lang_str[tool_fullscreen_name]' onClick='set_fullscreen()'><br>\n";
+      "' type='submit' id='toolbox_input_fullscreen' value='$lang_str[tool_fullscreen_name]' onClick='set_fullscreen()' title=\"$lang_str[tooltip_fullscreen]\"><br>\n";
     $ret.="</div>\n";
     
     $ret1="";
     if($this->page->get_right($_SESSION[current_user], "edit")) {
-      $ret1.="<input class='toolbox_input' type='submit' name='rot_left' value='$lang_str[tool_rotate_left]' onClick='start_rotate(\"".url_script($this->page->path, $this->page->series, "toolbox.php", $this->id)."&todo=rot_left\", this)'><br>\n";
-      $ret1.="<input class='toolbox_input' type='submit' name='rot_right' value='$lang_str[tool_rotate_right]' onClick='start_rotate(\"".url_script($this->page->path, $this->page->series, "toolbox.php", $this->id)."&todo=rot_right\", this)'><br>\n";
+      $ret1.="<input class='toolbox_input' type='submit' name='rot_left' value='$lang_str[tool_rotate_left]' onClick='start_rotate(\"".url_script($this->page->path, $this->page->series, "toolbox.php", $this->id)."&todo=rot_left\", this)' title=\"$lang_str[tooltip_rotate]\"><br>\n";
+      $ret1.="<input class='toolbox_input' type='submit' name='rot_right' value='$lang_str[tool_rotate_right]' onClick='start_rotate(\"".url_script($this->page->path, $this->page->series, "toolbox.php", $this->id)."&todo=rot_right\", this)' title=\"$lang_str[tooltip_rotate]\"><br>\n";
     }
     if($this->page->get_right($_SESSION[current_user], "editdesc")) {
-      $ret1.="<input accesskey='e' class='toolbox_input' type='submit' id='toolbox_input_desc' value='$lang_str[tool_editdesc_name]' onClick='start_desc_edit()'><br>\n";
+      $ret1.="<input accesskey='e' class='toolbox_input' type='submit' id='toolbox_input_desc' value='$lang_str[tool_editdesc_name]' onClick='start_desc_edit()' title=\"$lang_str[tooltip_editdesc]\"><br>\n";
     }
     if($this->page->get_right($_SESSION[current_user], "addcomment")) {
-      $ret1.="<form accesskey='c' action='comment.php?id=$this->id' method='post'><input class='toolbox_input' type='submit' id='toolbox_input_comment' value='$lang_str[tool_comments_name]' onClick='start_add_comment()'></form>\n";
+      $ret1.="<form accesskey='c' action='comment.php?id=$this->id' method='post'><input class='toolbox_input' type='submit' id='toolbox_input_comment' value='$lang_str[tool_comments_name]' onClick='start_add_comment()' title=\"$lang_str[tooltip_addcomment]\"></form>\n";
     }
     if(strlen($ret1)>0) {
       $ret.="<div class='toolbox' id='toolbox'>\n";
@@ -1310,8 +1310,10 @@ class Page {
     $this->read_list();
     $this->rights_checked=0;
     $list=array();
+    $id=0;
     foreach($this->cfg["LIST"] as $el) {
       $list[]=$el->file_name();
+      $id=$el->id;
     }
 
     if($dir=@opendir($this->path)) while($file=readdir($dir)) {
@@ -1319,6 +1321,7 @@ class Page {
          is_dir("$this->path/$file")&&
          file_exists("$this->path/{$file}/fotocfg.txt")) {
         if(!in_array("$file", $list)) {
+          $id++;
           $n=&new SubdirChunk(&$this, "$file/", &$subindex, &$id);
           $m=$n->get_subpage();
           //if(($m->cfg["HIDE"]!="yes")&&($m->get_right($_SESSION[current_user], "announce")))
@@ -1547,9 +1550,9 @@ class Page {
     $ret.="<div class='toolbox_main'>\n";
     $ret.="$lang_str[nav_columns]:\n";
     for($i=3;$i<7;$i++) {
-      $ret.="<input type='submit' class='";
+      $ret.="<input type='submit' onClick='change_cols($i)' class='";
       $ret.=($cols==$i?"toolbox_input_active":"toolbox_input");
-      $ret.="' onClick='change_cols($i)' id='cols_$i' value='$i'/>\n";
+      $ret.="' id='cols_$i' title=\"$lang_str[tooltip_change_cols]\" value=\"$i\">\n";
     }
     $ret.="<br>\n";
     $ret.="<form name='choose_language' method='post'>\n";
@@ -1570,6 +1573,7 @@ class Page {
 
     if($this->get_right($_SESSION[current_user], "edit")) {
       $ret.="<div class='toolbox_main'>\n";
+
       $ret.="<form action='".url_script($this->path, $this->series, "page_edit.php", "")."' method='get'>\n";
       $ret.="<input type='hidden' name='page' value=\"$this->path\">\n";
       $ret.="<input type='hidden' name='series' value=\"$this->series\">\n";
@@ -1780,6 +1784,10 @@ class Page {
       return 0;
     }
 
+print "<pre>\n";
+print_r($data);
+print "</pre>\n";
+
     foreach($data as $k=>$v) {
       // Die Werte von einigen Keys nicht abspeichern
       if(!in_array($k, array("LIST", "RIGHTS", "chunk_order"))) {
@@ -1843,7 +1851,7 @@ class Page {
 	      fputs($f, "$v[mov]\n");
 	    break;
           case "SubdirChunk":
-            if(preg_match("/^[a-z0-9_][a-z0-9_\-\.]*$/", $v[dir])) {
+            if(preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*$/", $v[dir])) {
               fputs($f, "$v[dir]/\n");
 
               if(!file_exists("$this->path/$v[dir]/")) {
@@ -2050,20 +2058,24 @@ class Page {
     print "<a href='javascript: page_edit_new(\"new_subdir\")'>$lang_str[page_edit_pict_new_subdir]</a>\n";
 
     // Template fuer "new text"
-    print "<div style='display: none' class='edit_img_chunk' id='new_text' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'>\n";
-    print "<input type='hidden' name='data[chunk_order][]' value='XXXX'>\n";
-    print "<textarea class='edit_input_textchunk' onKeyUp='resize_textarea(this)' name='data[LIST][XXXX][text]' onFocus='input_get_focus(this)'></textarea>\n";
-    print "<input type='hidden' name='data[LIST][XXXX][type]' value='TextChunk'>\n";
-    print "<br style='clear: left;'>\n";
-    print "</div>\n";
+?>
+<div style='display: none' class='edit_img_chunk' id='new_text' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onMouseDown='page_edit_img_chunk_clicked(event, this)'>
+<input type='hidden' name='data[chunk_order][]' value='XXXX'>
+<textarea class='edit_input_textchunk' onKeyUp='resize_textarea(this)' name='data[LIST][XXXX][text]' onFocus='input_get_focus(this)' onLoad='resize_textarea(this)' onMouseOut='page_edit_input_leave(this)'></textarea>
+<input type='hidden' name='data[LIST][XXXX][type]' value='TextChunk'>
+<br style='clear: left;'>
+</div>
+<?
 
     // Template fuer "new header"
-    print "<div style='display: none' class='edit_img_chunk' id='new_header' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'>\n";
-    print "<input type='hidden' name='data[chunk_order][]' value='XXXX'>\n";
-    print "<textarea class='edit_input_headerchunk' onKeyUp='resize_textarea(this)' name='data[LIST][XXXX][text]' onFocus='input_get_focus(this)'></textarea>\n";
-    print "<input type='hidden' name='data[LIST][XXXX][type]' value='HeaderChunk'>\n";
-    print "<br style='clear: left;'>\n";
-    print "</div>\n";
+?>
+<div style='display: none' class='edit_img_chunk' id='new_header' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onMouseDown='page_edit_img_chunk_clicked(event, this)'>
+<input type='hidden' name='data[chunk_order][]' value='XXXX'>
+<input name='data[LIST][XXXX][text]' class='edit_input_headerchunk' value='' onFocus='input_get_focus(this)' onMouseOver='page_edit_input_enter(this)' onMouseOut='page_edit_input_leave(this)'>
+<input type='hidden' name='data[LIST][XXXX][type]' value='HeaderChunk'>
+<br style='clear: left;'>
+</div>
+<?
 
     // Template fuer "new series"
     print "<div style='display: none' class='edit_img_chunk' id='new_series' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'>\n";

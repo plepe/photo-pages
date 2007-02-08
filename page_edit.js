@@ -149,6 +149,48 @@ function page_edit_clear_marked() {
   page_edit_marked=new Array();
 }
 
+function page_edit_return_moving() {
+  var move_ob=document.getElementById("move_img_list");
+
+  // Zurueck zu den Originalplaetzen
+  for(var i=move_ob.childNodes.length-1;i>=0;i--) {
+    var m=move_ob.childNodes[i];
+    if((m.nodeType!=3)&&(m.getAttribute("edit_type")=="spacer")) {
+      move_ob.removeChild(m);
+    }
+    else if(m.nodeType!=3) {
+      var n=m.getAttribute("page_edit_next_img");
+      if(n) {
+        n=document.getElementById(n);
+        n.parentNode.insertBefore(m, n);
+
+        var s=page_edit_new_spacer();
+        n.parentNode.insertBefore(s, n);
+      }
+      else {
+        var list=m.getAttribute("page_edit_list");
+        if(list) {
+          list=document.getElementById(list);
+          list.appendChild(m);
+
+          var s=page_edit_new_spacer();
+          list.appendChild(s);
+        }
+        else {
+          m.parentNode.removeChild(m);
+        }
+      }
+    }
+  }
+
+  page_edit_moving=0;
+
+  if(page_edit_enlarged) {
+    page_edit_enlarged.style.height="3px";
+    page_edit_enlarged=null;
+  }
+}
+
 function page_edit_mouse_up(event) {
   page_edit_button_down=0;
   var move_ob=document.getElementById("move_img_list");
@@ -196,31 +238,7 @@ function page_edit_mouse_up(event) {
       }
     }
     else {
-      // Zurueck zu den Originalplaetzen
-      for(var i=move_ob.childNodes.length-1;i>=0;i--) {
-        var m=move_ob.childNodes[i];
-        if(m.getAttribute("edit_type")=="spacer") {
-          move_ob.removeChild(m);
-        }
-        else {
-          var n=m.getAttribute("page_edit_next_img");
-          if(n) {
-            n=document.getElementById(n);
-            n.parentNode.insertBefore(m, n);
-
-            var s=page_edit_new_spacer();
-            n.parentNode.insertBefore(s, n);
-          }
-          else {
-             var list=m.getAttribute("page_edit_list");
-             list=document.getElementById(list);
-             list.appendChild(m);
-
-             var s=page_edit_new_spacer();
-             list.appendChild(s);
-           }
-         }
-      }
+      page_edit_return_moving();
     }
     page_edit_clear_marked();
     page_edit_moving=0;
@@ -322,11 +340,19 @@ function page_edit_modify_rights(user, right) {
   }
 }
 
+function page_edit_key_down(event) {
+  if((page_edit_moving)&&(event.keyCode==27)) {
+    page_edit_return_moving();
+  }
+}
+
 document.captureEvents(Event.MOUSEMOVE);
 document.onmousemove=page_edit_mouse_move;
 document.captureEvents(Event.MOUSEDOWN | Event.MOUSEUP);
 document.onmousedown=page_edit_mouse_down;
 document.onmouseup  =page_edit_mouse_up;
+document.captureEvents(Event.KEYDOWN);
+document.onkeydown=page_edit_key_down;
 
 var page_edit_pic_timeout;
 var page_edit_pic_over;

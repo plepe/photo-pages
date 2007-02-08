@@ -64,7 +64,7 @@ $lang_str=array(
   "comments_write"=>"Enter comment for this picture",
   "comments_name_anon"=>"John Doe",
 
-  "tool_magnify_name"=>"Magnify",
+  "tool_magnify_name"=>"Magnifying glass",
   "tool_fullscreen_name"=>"Fullscreen",
   "tool_rotate_left"=>"Rotate left",
   "tool_rotate_right"=>"Rotate right",
@@ -112,5 +112,14 @@ $lang_str=array(
   "new_page_dir"=>"Directory name",
   "new_page_done"=>"Directory created",
   "new_page_go_there"=>"Open page",
-  "new_page_ok"=>"Ok"
+  "new_page_ok"=>"Ok",
+  "new_page_dir_exists"=>"Directory already exists",
+
+  "tooltip_change_cols"=>"Changes count of columns on the page",
+  "tooltip_rotate"=>"Rotate image",
+  "tooltip_mag"=>"Move your mouse over the image to magnify parts",
+  "tooltip_fullscreen"=>"Zooms the image to nearly windowsize",
+  "tooltip_editdesc"=>"Edit the description of the image",
+  "tooltip_addcomment"=>"Add a comment to the image",
+  "tooltip_set_res"=>"Sets your preferred resolution"
 );

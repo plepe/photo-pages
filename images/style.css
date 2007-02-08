@@ -343,6 +343,7 @@ table.album_table {
   padding-top: 0px;
   padding-bottom: 0px;
 }
+
 .toolbox_input_active {
   font-family: sans;
   font-size: 10pt;
@@ -354,6 +355,8 @@ table.album_table {
   padding-right: 6px;
   padding-top: 0px;
   padding-bottom: 0px;
+}
+a.toolbox_input {
 }
 a.toolbox_input:link {
   color: white;

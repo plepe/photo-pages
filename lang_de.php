@@ -114,5 +114,14 @@ $lang_str=array(
   "new_page_dir"=>"Verzeichnisname",
   "new_page_done"=>"Verzeichnis angelegt",
   "new_page_go_there"=>"&Ouml;ffne Seite",
-  "new_page_ok"=>"Ok"
+  "new_page_ok"=>"Ok",
+  "new_page_dir_exists"=>"Verzeichnis existiert bereits",
+
+  "tooltip_change_cols"=>"&Auml;ndert die Anzahl der Spalten auf der Seite",
+  "tooltip_rotate"=>"Rotiere das Bild",
+  "tooltip_mag"=>"Bewege die Maus &uuml;ber das Bild, um Teile zu vergr&ouml;&szlig;ern",
+  "tooltip_fullscreen"=>"Zoomt das Bild ann&auml;hernd zur Fenstergr&ouml;&szlig;e",
+  "tooltip_editdesc"=>"Ver&auml;ndere die Beschreibung des Bildes",
+  "tooltip_addcomment"=>"F&uuml;gt dem Bild ein Kommentar hinzu",
+  "tooltip_set_res"=>"Bevorzugte Aufl&ouml;sung festlegen"
 );

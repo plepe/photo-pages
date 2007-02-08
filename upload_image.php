@@ -137,6 +137,15 @@ function process_upload_file($file, $orig_file, $desc=0) {
 
   // If this is a movie ...
   if(eregi("^(.*)\.(".implode("|", $extensions_movies).")", $file, $m)) {
+    $orig="$file_path/$page->path/$orig_path/$m[1].jpg";
+#    $orig_tmp="$file_path/$page->path/$orig_path/$m[1].%REPLACE%.jpg";
+#    $orig_mov=
+#    $i=0;
+#    while(file_exists($orig)) {
+#      $i++;
+#      $orig=strtr($orig_tmp, "%REPLACE%", $i);
+#    }
+
     if($keep)
       copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
 
@@ -147,10 +156,9 @@ function process_upload_file($file, $orig_file, $desc=0) {
     // Filmstrip generieren
     system("cd /tmp ; ffmpeg -y -i \"$orig_file\" -vframes 1 -f image2 /tmp/tmp.jpg");
     system("nice convert -resize 410x450 /tmp/tmp.jpg /tmp/tmp.jpg");
-    system("nice composite -compose atop -gravity center /tmp/tmp.jpg $script_path/images/filmstrip.png $file_path/$page->path/$orig_path/$m[1].jpg");
+    system("nice composite -compose atop -gravity center /tmp/tmp.jpg $script_path/images/filmstrip.png $orig");
     system("rm /tmp/tmp.jpg");
 
-    $orig="$file_path/$page->path/$orig_path/$m[1].jpg";
     $file="$m[1].jpg";
     $name="$m[1].flv";
   }

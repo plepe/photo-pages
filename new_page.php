@@ -36,21 +36,33 @@ setlocale(LC_ALL, "de_AT");
 <?
 print $page->header();
 
-if($data=$_REQUEST[data]) {
+$data=$_REQUEST[data];
+if($_REQUEST[submit_ok]) {
+  $data[title]=stripslashes($data[title]);
+  $data[page_name]=stripslashes($data[page_name]);
+  // Replace spaces in filename through _
+  $data[page_name]=implode("_", explode(" ", $data[page_name]));
+
+
   $error=array();
+  if(is_dir("$file_path/$page->path/$data[page_name]")) {
+    $error[]="$lang_str[new_page_dir_exists]";
+  }
+
   if($data[page_name]=="")
     $error[]=$lang_str[new_page_no_page_name];
   if(substr($data[page_name], 0, 1)==".")
     $error[]=$lang_str[new_page_no_dot];
+  if(preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*$/", $data[page_name])) {
+    $error[]=$lang_str[error_invalid_chars];
+  }
 
   if(sizeof($error)) {
     foreach($error as $e)
       print "$e<br>\n";
+    unset($_REQUEST[submit_ok]);
   }
   else {
-    // Replace spaces in filename through _
-    $data[page_name]=implode("_", explode(" ", $data[page_name]));
-
     $v="$file_path/$page->path/$data[page_name]";
     mkdir($v);
     $f=fopen("$v/fotocfg.txt", "w");
@@ -60,8 +72,11 @@ if($data=$_REQUEST[data]) {
     print "<a href='".url_page("$page->path/$data[page_name]", "", "index.php")."'>$lang_str[new_page_go_there]</a>\n";
   }
 }
+else {
+  $data=array();
+}
 
-if(!$_REQUEST[data]) {
+if(!$_REQUEST[submit_ok]) {
   print "<p>\n";
   print "<a href='".url_page($page->path, $page->series, "index.php")."'>Back</a> /\n";
   print "<a href='".url_script($page->path, $page->series, "page_edit.php", null)."'>Edit Page</a>\n";
@@ -69,9 +84,9 @@ if(!$_REQUEST[data]) {
   print "<form action='".url_script($page->path, $page->series, "new_page.php", null)."' method='post' ".
 	"enctype='multipart/form-data'>\n";
   print "<table>\n";
-  print "<tr><td>$lang_str[new_page_title]:</td><td><input name='data[title]'></td></tr>";
-  print "<tr><td>$lang_str[new_page_dir]:</td><td><input name='data[page_name]'></td></tr>";
-  print "<tr><td colspan='2'><input type='submit' value='$lang_str[new_page_ok]'></td></tr>\n";
+  print "<tr><td>$lang_str[new_page_title]:</td><td><input name='data[title]' value=\"$data[title]\"></td></tr>";
+  print "<tr><td>$lang_str[new_page_dir]:</td><td><input name='data[page_name]' value=\"$data[page_name]\"></td></tr>";
+  print "<tr><td colspan='2'><input type='submit' name='submit_ok' value='$lang_str[new_page_ok]'></td></tr>\n";
   print "</table>\n";
   print "</form>\n";
 }
