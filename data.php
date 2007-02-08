@@ -1784,9 +1784,9 @@ class Page {
       return 0;
     }
 
-print "<pre>\n";
-print_r($data);
-print "</pre>\n";
+    //print "<pre>\n";
+    //print_r($data);
+    //print "</pre>\n";
 
     foreach($data as $k=>$v) {
       // Die Werte von einigen Keys nicht abspeichern
@@ -2078,7 +2078,7 @@ print "</pre>\n";
 <?
 
     // Template fuer "new series"
-    print "<div style='display: none' class='edit_img_chunk' id='new_series' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'>\n";
+    print "<div style='display: none' class='edit_img_chunk' id='new_series' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onMouseDown='page_edit_img_chunk_clicked(event, this)'>\n";
     print "<input type='hidden' name='data[chunk_order][]' value='XXXX'>\n";
     print "Neue Ansicht:<br>\n";
     print "Kurzbezeichnung: <input name='data[LIST][XXXX][dir]' value=''><br>\n";
@@ -2088,7 +2088,7 @@ print "</pre>\n";
     print "</div>\n";
 
     // Template fuer "new subdir"
-    print "<div style='display: none' class='edit_img_chunk' id='new_subdir' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'>\n";
+    print "<div style='display: none' class='edit_img_chunk' id='new_subdir' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onMouseDown='page_edit_img_chunk_clicked(event, this)'>\n";
     print "<input type='hidden' name='data[chunk_order][]' value='XXXX'>\n";
     print "Neue Ansicht:<br>\n";
     print "Kurzbezeichnung: <input name='data[LIST][XXXX][dir]' value=''><br>\n";
