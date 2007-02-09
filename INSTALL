@@ -37,3 +37,9 @@ Upgrading
   Save the conf.php, get rid of the old installation and copy conf.php back to
   the new installation. Check this section of this file for changes to the
   conf.php.
+
+  Version >= r41
+  -------------
+  - URLs have a new syntax. Please look at the lines in the
+    conf.php-dist and update your conf.php accordingly
+
