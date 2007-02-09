@@ -52,7 +52,7 @@ function processReqChange() {
     var xmldata=xmlhttp_req.responseXML;
 
     var status=xmldata.getElementsByTagName('status');
-    if((status.length>0)&&(status[0].length>0)) {
+    if((status.length>0)&&(status[0].firstChild.nodeValue.length>0)) {
       status=status[0].firstChild.nodeValue;
       if(status!="success") {
         alert(status);

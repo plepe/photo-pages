@@ -23,6 +23,10 @@
  *
  */
 require "data.php";
+if($_REQUEST[submit][ok]) {
+  if($page->set_page_edit_data($_REQUEST[data]))
+    print $lang_str[page_edit_saved];
+}
 start_html_header($page->cfg[TITLE]);
 use_javascript("page_edit");
 use_javascript("magnify");
@@ -39,8 +43,6 @@ if($_REQUEST[submit][ok]) {
 }
 
 if($_REQUEST[submit][ok]) {
-  if($page->set_page_edit_data($_REQUEST[data]))
-    print $lang_str[page_edit_saved];
   print "<br><br><a href='".url_page($page->path, $page->series, "index.php")."'>Zur&uuml;ck</a>.";
 }
 else {

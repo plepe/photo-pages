@@ -41,8 +41,7 @@ if($_REQUEST[submit_ok]) {
   $data[title]=stripslashes($data[title]);
   $data[page_name]=stripslashes($data[page_name]);
   // Replace spaces in filename through _
-  $data[page_name]=implode("_", explode(" ", $data[page_name]));
-
+  $data[page_name]=replace_invalid_chars($data[page_name]);
 
   $error=array();
   if(is_dir("$file_path/$page->path/$data[page_name]")) {
@@ -54,7 +53,7 @@ if($_REQUEST[submit_ok]) {
   if(substr($data[page_name], 0, 1)==".")
     $error[]=$lang_str[new_page_no_dot];
   if(!preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*$/", $data[page_name]))
-    $error[]=$lang_str[error_invalid_chars];
+    $error[]="\"$data[page_name]\" $lang_str[error_invalid_chars]";
 
   if(sizeof($error)) {
     foreach($error as $e)
@@ -83,8 +82,8 @@ if(!$_REQUEST[submit_ok]) {
   print "<form action='".url_script($page->path, $page->series, "new_page.php", null)."' method='post' ".
 	"enctype='multipart/form-data'>\n";
   print "<table>\n";
-  print "<tr><td>$lang_str[new_page_title]:</td><td><input name='data[title]' value=\"$data[title]\"></td></tr>";
   print "<tr><td>$lang_str[new_page_dir]:</td><td><input name='data[page_name]' value=\"$data[page_name]\"></td></tr>";
+  print "<tr><td>$lang_str[new_page_title]:</td><td><input name='data[title]' value=\"$data[title]\"></td></tr>";
   print "<tr><td colspan='2'><input type='submit' name='submit_ok' value='$lang_str[new_page_ok]'></td></tr>\n";
   print "</table>\n";
   print "</form>\n";

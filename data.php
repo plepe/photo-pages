@@ -51,6 +51,7 @@ class Chunk {
   var $id;
   var $page;
   var $type;
+  var $index_id;
 
   function colspan() { return 0; }
   function is_shown() { return 0; }
@@ -112,8 +113,9 @@ class SubdirChunk extends Chunk {
   var $dir;
   var $subpage;
   var $page;
+  var $path;
 
-  function SubdirChunk(&$page, $text, $i, $j) {
+  function SubdirChunk(&$page, $text, &$i, &$j) {
     $this->type="SubdirChunk";
     $this->index=$i++;
     $this->id=$j++;
@@ -122,11 +124,28 @@ class SubdirChunk extends Chunk {
     if(is_object($text)) {
       $this->subpage=$text;
     }
-    if(is_dir("$page->path/$text")) {
-      $this->dir=$text;
-    }
-    if(eregi("^(.*)/$", $this->dir, $m)) {
+    //if(is_dir("$page->path/$text")) {
+    $this->dir=$text;
+    //}
+
+    if(eregi("^/([^/]*)/$", $this->dir, $m)) {
+      $this->path="";
       $this->dir=$m[1];
+    }
+    elseif(eregi("^(/.*)/([^/]*)/$", $this->dir, $m)) {
+      $this->path=$m[1];
+      $this->dir=$m[2];
+    }
+    elseif(eregi("^(.*)/([^/]*)/$", $this->dir, $m)) {
+      $this->path=$this->page->path."/".$m[1];
+      $this->dir=$m[2];
+    }
+    elseif(eregi("^(.*)/$", $this->dir, $m)) {
+      $this->path=$this->page->path;
+      $this->dir=$m[1];
+    }
+    else {
+      $this->path=$this->page->path;
     }
   }
 
@@ -150,10 +169,12 @@ class SubdirChunk extends Chunk {
   }
 
   function get_subpage() {
+    global $file_path;
+
     if($this->subpage)
       return $this->subpage;
 
-    return $this->subpage=get_page("{$this->page->path}/$this->dir");
+    return $this->subpage=get_page("{$this->path}/$this->dir");
   }
 
   function album_show() {
@@ -252,6 +273,7 @@ class SubdirChunk extends Chunk {
 class SeriesChunk extends Chunk {
   var $dir;
   var $subpage;
+  var $path;
 
   function SeriesChunk($page, $text, $i, $j) {
     $this->type="SeriesChunk";
@@ -266,6 +288,18 @@ class SeriesChunk extends Chunk {
     $this->index=$i++;
     $this->id=$j++;
     $this->page=$page;
+
+    if(eregi("^(/.*)/([^/]*)$", $this->dir, $m)) {
+      $this->path=$m[1];
+      $this->dir=$m[2];
+    }
+    elseif(eregi("^(.*)/([^/]*)$", $this->dir, $m)) {
+      $this->path=$this->page->path."/".$m[1];
+      $this->dir=$m[2];
+    }
+    else {
+      $this->path=$this->page->path;
+    }
   }
 
   function file_name() {
@@ -274,7 +308,7 @@ class SeriesChunk extends Chunk {
 
   function get_subpage() {
     if(!$this->subpage)
-      $this->subpage=get_page($this->page->path, $this->dir);
+      $this->subpage=get_page($this->path, $this->dir);
 
     return $this->subpage;
   }
@@ -441,6 +475,7 @@ class ImgChunk extends Chunk {
   var $text;
   var $img;
   var $comments;
+  var $path;
 
   function ImgChunk($page, $text, &$i, $j) {
     $this->type="ImgChunk";
@@ -454,6 +489,20 @@ class ImgChunk extends Chunk {
     $this->index=$i++;
     $this->id=$j++;
     $this->page=$page;
+    if(eregi("^(/.*)/([^/]*)$", $this->img, $m)) {
+      $this->path=$m[1];
+      $this->img=$m[2];
+    }
+    elseif(eregi("^(.*)/([^/]*)$", $this->img, $m)) {
+      $this->path=$this->page->path."/".$m[1];
+      $this->img=$m[2];
+    }
+    else {
+      $this->path=$this->page->path;
+    }
+//print $this->path." ".$this->img."<br>\n";
+
+    $this->index_id="$this->id-$this->img";
   }
 
   function count_as_picture() { return 1; }
@@ -510,8 +559,9 @@ class ImgChunk extends Chunk {
   function album_show() {
     global $series;
     global $index_res;
+    global $file_path;
 
-    $r=getimagesize("{$this->page->path}/$index_res/$this->img");
+    $r=getimagesize("$file_path/{$this->path}/$index_res/$this->img");
 
     $ret ="<a href='".url_script($this->page->path, $this->page->series, "image.php", $this->index)."'>";
     $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $index_res, $_SESSION[img_version][$this->img])."'";
@@ -535,14 +585,15 @@ class ImgChunk extends Chunk {
 
   function get_image_details() {
     global $orig_path;
+    global $file_path;
 
-    $r=getimagesize("{$this->page->path}/$orig_path/$this->img");
-    $e=exif_read_data("{$this->page->path}/$orig_path/$this->img");
+    $r=getimagesize("$file_path/{$this->path}/$orig_path/$this->img");
+    $e=exif_read_data("$file_path/{$this->path}/$orig_path/$this->img");
 
-    $ret["filename"]="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."'>$this->img</a>";
+    $ret["filename"]="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."'>".implode(" ", explode("_", $this->img))."</a>";
 
     //$ret["filename"]="<a href='orig/$this->img'>$this->img</a>";
-    $ret["filesize"]=sprintf("%.1f kB", filesize("{$this->page->path}/$orig_path/$this->img")/1024.0);
+    $ret["filesize"]=sprintf("%.1f kB", filesize("$file_path/{$this->path}/$orig_path/$this->img")/1024.0);
     if($e[DateTime])
       $ret["taketime"]=$e[DateTime];
 
@@ -622,7 +673,7 @@ class ImgChunk extends Chunk {
     if(!$res)
       $res=$normal_res;
 
-    $imgres=getimagesize("$file_path/{$this->page->path}/$normal_res/$this->img");
+    $imgres=getimagesize("$file_path/{$this->path}/$normal_res/$this->img");
 
     if(!$_SESSION[img_version][$this->img])
       $_SESSION[img_version][$this->img]=0;
@@ -636,6 +687,7 @@ class ImgChunk extends Chunk {
           "var cur_res=\"$normal_res\";\n".
           "var series=\"$series\";\n".
           "var page=\"{$this->page->path}\";\n".
+          "var index_id=\"{$this->index_id}\";\n".
           "var imgchunk=\"$this->index\";\n";
 
     if($_SESSION[window_width])
@@ -707,7 +759,7 @@ class ImgChunk extends Chunk {
     }
     $ret.="<div class='imageview_image_desc_edit' id='desc_edit'>";
     $ret.="<form action='javascript: save_desc_edit(\"{$this->page->series}\")'>\n";
-    $ret.="<input id='input_img_desc' value='$this->text' class='input_desc_edit'>\n";
+    $ret.="<textarea id='input_img_desc' class='input_desc_edit'>$this->text</textarea>\n";
     $ret.="<input type='submit' value='$lang_str[nav_save]'>\n";
     $ret.="</form>\n";
     $ret.="</div>";
@@ -805,6 +857,22 @@ class MovieChunk extends ImgChunk {
     $this->index=$i++;
     $this->id=$j++;
     $this->page=$page;
+
+    if(eregi("^(/.*)/([^/]*).(avi|mov|flv|mpg|mpeg)$", $this->img, $m)) {
+      $this->path=$m[1];
+      $this->mov=$m[2].$m[3];
+      $this->img=$m[2]."jpg";
+    }
+    elseif(eregi("^(.*)/([^/]*)$", $this->img, $m)) {
+      $this->path=$this->page->path."/".$m[1];
+      $this->mov=$m[2].$m[3];
+      $this->img=$m[2]."jpg";
+    }
+    else {
+      $this->path=$this->page->path;
+    }
+
+    $this->index_id="$this->id-$this->mov";
   }
 
   function html_class() {
@@ -815,7 +883,7 @@ class MovieChunk extends ImgChunk {
     global $series;
     global $index_res;
 
-    $r=getimagesize("{$this->page->path}/$index_res/$this->img");
+    $r=getimagesize("{$this->path}/$index_res/$this->img");
 
     $ret ="<a href='".url_script($this->page->path, $this->page->series, "image.php", $this->index)."'>";
     $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $index_res, $_SESSION[img_version][$this->img])."'";
@@ -920,6 +988,7 @@ class MovieChunk extends ImgChunk {
           "var cur_res=\"$normal_res\";\n".
           "var series=\"$series\";\n".
           "var page=\"{$this->page->path}\";\n".
+          "var index_id=\"{$this->index_id}\";\n".
           "var imgchunk=\"$this->index\";\n";
 
     if($_SESSION[window_width])
@@ -1096,13 +1165,14 @@ class MovieChunk extends ImgChunk {
 function show_path() {
   global $text_pfad;
   global $lang_str;
+  global $file_path;
 
   print "<div class='pathinfo'>$lang_str[nav_path]: ";
   if(!$text_pfad) {
     $path_to_me=array();
     $tp=null;
 
-    while(is_file($tp."fotocfg.txt")) {
+    while(is_file($file_path.$tp."fotocfg.txt")) {
       $subpage=get_page($tp, "");
       $subdata=$subpage->cfg; //get_values($tp."fotocfg.txt");
       if(!$subdata[TITLE])
@@ -1194,7 +1264,8 @@ class Page {
   var $hidden_files;
 
   function last_modified() {
-    $x=stat("$this->filename");
+    global $file_path;
+    $x=stat("$file_path/$this->filename");
     return $x[mtime];
   }
 
@@ -1271,6 +1342,8 @@ class Page {
   }
 
   function get_viewlist() {
+    global $file_path;
+
     $this->read_list();
 
     if(!$this->rights_checked) {
@@ -1289,7 +1362,7 @@ class Page {
       // Die weiteren Ansichten einlesen (nur in der Hauptansicht)
       $id=$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->id+1;
       $subindex=$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->index+1;
-      if($dir=@opendir($this->path)) while($file=readdir($dir)) {
+      if($dir=@opendir("$file_path/$this->path")) while($file=readdir($dir)) {
         if(ereg("^(.*)\.lst$", $file, $m)) {
           if(!in_array($m[1], $list)) {
             $n=&new SeriesChunk(&$this, "$m[1]@", &$subindex, &$id);
@@ -1307,21 +1380,22 @@ class Page {
   }
 
   function get_sublist() {
+    global $file_path;
+
     $this->read_list();
     $this->rights_checked=0;
     $list=array();
-    $id=0;
     foreach($this->cfg["LIST"] as $el) {
       $list[]=$el->file_name();
-      $id=$el->id;
     }
 
-    if($dir=@opendir($this->path)) while($file=readdir($dir)) {
+    if($dir=@opendir("$file_path/$this->path")) while($file=readdir($dir)) {
       if(!ereg("^\.", $file)&&
-         is_dir("$this->path/$file")&&
-         file_exists("$this->path/{$file}/fotocfg.txt")) {
+         is_dir("$file_path/$this->path/$file")&&
+         file_exists("$file_path/$this->path/{$file}/fotocfg.txt")) {
+        $id=$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->id+1;
+        $subindex=$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->index+1;
         if(!in_array("$file", $list)) {
-          $id++;
           $n=&new SubdirChunk(&$this, "$file/", &$subindex, &$id);
           $m=$n->get_subpage();
           //if(($m->cfg["HIDE"]!="yes")&&($m->get_right($_SESSION[current_user], "announce")))
@@ -1336,7 +1410,7 @@ class Page {
   }
 
   function get_parent() {
-    if(!$this->parent_path)
+    if($this->parent_path===null)
       return null;
 
     if(!$this->parent)
@@ -1348,6 +1422,7 @@ class Page {
   function read_list() {
     global $extensions_images;
     global $extensions_movies;
+    global $file_path;
 
     if($this->cfg["LIST"])
       return;
@@ -1358,7 +1433,7 @@ class Page {
     $id=0;
     $subindex=0;
 
-    $fp=fopen("$this->filename", "r");
+    $fp=fopen("$file_path/$this->filename", "r");
     while($f=fgets($fp, 8192)) {
       $f=chop($f);
       //print "$f\n";
@@ -1422,7 +1497,7 @@ class Page {
         $list[]=$el->file_name();
       }
 
-      if($dir=@opendir($path."$index_res/")) {
+      if($dir=@opendir("$file_path/$path/$index_res/")) {
         $filelist=array();
         while($file=readdir($dir)) {
           if(eregi("(".implode("|", array_merge($extensions_images, $extensions_movies)).")$", $file)) {
@@ -1489,7 +1564,7 @@ class Page {
     $id=0;
     $subindex=0;
 
-    $fp=fopen("$this->filename", "r");
+    $fp=fopen("$file_path/$this->filename", "r");
     while($f=fgets($fp, 8192)) {
       $f=chop($f);
 
@@ -1634,7 +1709,8 @@ class Page {
       return "";
 
     $ret ="<div class='welcome_text'>\n";
-    $ret.=$this->cfg[WELCOME_TEXT];
+    $ret.=strtr($this->cfg[WELCOME_TEXT], array("\n"=>"<br>\n"))."</div>\n";
+    //$ret.=$this->cfg[WELCOME_TEXT];
     $ret.="</div>\n";
 
     return $ret;
@@ -1775,11 +1851,119 @@ class Page {
     return $ret;
   }
 
+  function load_data() {
+    $this->get_viewlist();
+    return $this->cfg;
+  }
+
+  function save_data($data) {
+    global $fields;
+    global $file_path;
+
+    $save="";
+
+    foreach(array_keys($fields) as $k) {
+      $v=$data[$k];
+      // Die Werte von einigen Keys nicht abspeichern
+      if(!in_array($k, array("LIST", "RIGHTS", "chunk_order"))) {
+        $v=stripslashes($v);
+        if(strpos($v, "\n"))
+          $save.="$k \"\"\"$v\"\"\"\n";
+        else
+          $save.="$k $v\n";
+      }
+    }
+
+    $save.="[rights]\n";
+    foreach($data["RIGHTS"] as $k=>$v) {
+      $save.="$k ".implode(",", $v)."\n";
+    }
+
+    $save.="[imglist]\n";
+    foreach($data["LIST"] as $k=>$v) {
+
+      if(is_object($v))
+        $v=get_object_vars($v);
+
+      switch($v[type]) {
+        case "ImgChunk":
+          $v[text]=stripslashes($v[text]);
+          if($v[text]) {
+            if(strpos($v[text], "\n")===false)
+              $save.="$v[img] $v[text]\n";
+            else
+              $save.="$v[img] \"\"\"$v[text]\"\"\"\n";
+          }
+          else
+            $save.="$v[img]\n";
+          break;
+        case "MovieChunk":
+          $v[text]=stripslashes($v[text]);
+          if($v[text]) {
+            if(strpos($v[text], "\n")===false)
+              $save.="$v[mov] $v[text]\n";
+            else
+              $save.="$v[mov] \"\"\"$v[text]\"\"\"\n";
+          }
+          else
+            $save.="$v[mov]\n";
+          break;
+        case "SubdirChunk":
+          if(preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*$/", $v[dir])) {
+            $save.="$v[dir]/\n";
+
+            if(!file_exists("$this->path/$v[dir]/")) {
+              mkdir("$this->path/$v[dir]");
+              $newseries=fopen("$this->path/$v[dir]/fotocfg.txt", "w");
+              fputs($newseries, "TITLE $v[TITLE]\n");
+              fputs($newseries, "\n");
+              fclose($newseries);
+            }
+          }
+          else {
+            print "\"$v[dir]\" $lang_str[error_invalid_chars].<br>\n";
+          }
+          break;
+        case "SeriesChunk":
+          if(eregi("^[a-z0-9_\\-]+$", $v[dir])) {
+            $save.="$v[dir]@\n";
+
+            if(!file_exists("$v[dir].lst")) {
+              $newseries=fopen("$v[dir].lst", "w");
+              fputs($newseries, "TITLE $v[TITLE]\n");
+              fclose($newseries);
+            }
+          }
+          else {
+            print "\"$v[dir]\" $lang_str[error_invalid_chars].<br>\n";
+          }
+          break;
+        case "TextChunk":
+          if(strpos($v[text], "\n")===false)
+            $save.="\"$v[text]\"\n";
+          else
+            $save.="\"\"\"$v[text]\"\"\"\n";
+          break;
+        case "HeaderChunk":
+          $save.="=$v[text]=\n";
+          break;
+      }
+    }
+
+    if(!($f=fopen("$file_path/$this->filename", "w"))) {
+      return "Can't open file for writing";
+    }
+    fputs($f, $save);
+    fclose($f);
+    return 0;
+  }
+
   function set_page_edit_data($data) {
     global $lang_str;
+    global $file_path;
 
     $str="";
-    if(!($f=fopen($this->filename, "w"))) {
+    if(!($f=fopen("$file_path/$this->filename", "w"))) {
       print "<status>Can't open file for writing</status>\n";
       return 0;
     }
@@ -1858,7 +2042,6 @@ class Page {
                 mkdir("$this->path/$v[dir]");
                 $newseries=fopen("$this->path/$v[dir]/fotocfg.txt", "w");
                 fputs($newseries, "TITLE $v[TITLE]\n");
-                fputs($newseries, "DATE $v[DATE]\n");
                 fputs($newseries, "\n");
                 fclose($newseries);
               }
@@ -1910,12 +2093,13 @@ class Page {
     global $orig_path;
     global $extensions_images;
     global $extensions_movies;
+    global $file_path;
 
     $data=$this->cfg;
 
     $max_id=0;
     $full_list=array();
-    if(@$d=opendir("$this->path/$orig_path")) {
+    if(@$d=opendir("$file_path/$this->path/$orig_path")) {
       while($f=readdir($d)) {
         if(eregi("\.(".implode("|", array_merge($extensions_images, $extensions_movies)).")$", $f))
           $full_list[]=$f;
@@ -2080,9 +2264,9 @@ class Page {
     // Template fuer "new series"
     print "<div style='display: none' class='edit_img_chunk' id='new_series' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onMouseDown='page_edit_img_chunk_clicked(event, this)'>\n";
     print "<input type='hidden' name='data[chunk_order][]' value='XXXX'>\n";
-    print "Neue Ansicht:<br>\n";
-    print "Kurzbezeichnung: <input name='data[LIST][XXXX][dir]' value=''><br>\n";
-    print "Beschreibung: <input name='data[LIST][XXXX][TITLE]' value=''>\n";
+    print "$lang_str[page_edit_pict_chunk_new_view]:<br>\n";
+    print "$lang_str[new_page_view]: <input name='data[LIST][XXXX][dir]' value=''><br>\n";
+    print "$lang_str[new_page_title]: <input name='data[LIST][XXXX][TITLE]' value=''><br>\n";
     print "<input type='hidden' name='data[LIST][XXXX][type]' value='SeriesChunk'>\n";
     print "<br style='clear: left;'>\n";
     print "</div>\n";
@@ -2090,10 +2274,9 @@ class Page {
     // Template fuer "new subdir"
     print "<div style='display: none' class='edit_img_chunk' id='new_subdir' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onMouseDown='page_edit_img_chunk_clicked(event, this)'>\n";
     print "<input type='hidden' name='data[chunk_order][]' value='XXXX'>\n";
-    print "Neue Ansicht:<br>\n";
-    print "Kurzbezeichnung: <input name='data[LIST][XXXX][dir]' value=''><br>\n";
-    print "Beschreibung: <input name='data[LIST][XXXX][TITLE]' value=''><br>\n";
-    print "Ort/Datum: <input name='data[LIST][XXXX][DATE]' value=''>\n";
+    print "$lang_str[page_edit_pict_chunk_new_subdir]:<br>\n";
+    print "$lang_str[new_page_dir]: <input name='data[LIST][XXXX][dir]' value=''><br>\n";
+    print "$lang_str[new_page_title]: <input name='data[LIST][XXXX][TITLE]' value=''><br>\n";
     print "<input type='hidden' name='data[LIST][XXXX][type]' value='SubdirChunk'>\n";
     print "<br style='clear: left;'>\n";
     print "</div>\n";
@@ -2202,12 +2385,6 @@ class Page {
     $td_size=100.0/$cols;
     unset($cur_index);
 
-    print "<script type='text/javascript'>\n".
-          "<!--\n".
-          "var series=\"{$this->series}\";\n".
-          "var page=\"{$this->path}\";\n".
-          "//-->\n</script>\n";
-
     print "<table class='album_table' width='100%' id='table_album'>\n";
     $pos=$cols;
     $i=0;
@@ -2229,7 +2406,7 @@ class Page {
         print "<tr>\n";
 
       print "  <td colspan='$colspan' class='album_".$el->html_class()."' width='".
-            ($td_size*$colspan)."%' id='chunk_$i'>\n";
+            ($td_size*$colspan)."%' id='chunk_$i' photopages_id='$el->id' photopages_index='$el->index'>\n";
 
       if($el->get_index()!=$cur_index) {
         $cur_index=$el->get_index();
@@ -2512,4 +2689,17 @@ function html_export_var($vars) {
       html_add_formated_text($key, html_var_to_js($value));
     }
   //}
+}
+
+function replace_invalid_chars($name) {
+  $res="";
+
+  for($i=0; $i<strlen($name); $i++) {
+    if(eregi("^[a-zA-Z0-9_\-\.]*$", substr($name, $i, 1)))
+      $res.=substr($name, $i, 1);
+    else
+      $res.="_";
+  }
+
+  return $res;
 }

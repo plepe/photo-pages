@@ -174,14 +174,16 @@ function save_desc_edit(series) {
                "series="+series+"&"+
                "data=" + el1.value +"&"+
                "orig_data=" + el.firstChild.nodeValue); */
-  start_xmlreq("toolbox.php?img=" + imgurl + "&"+
+  start_xmlreq(url_script({ script: "toolbox.php", page: page, series: series, data: el1.value, orig_data: el.firstChild.nodeValue, todo: "edit_desc", index_id: index_id }), "Beschreibung wird gespeichert", end_desc_edit);
+ /* 
+  "toolbox.php?img=" + imgurl + "&"+
                "todo=edit_desc&" + 
                "page="+page+"&"+
                "series="+series+"&"+
                "data=" + el1.value +"&"+
                "orig_data=" + el.firstChild.nodeValue, 
                "Beschreibung wird gespeichert",
-               end_desc_edit);
+               end_desc_edit); */
 }
 
 function start_add_comment() {
@@ -225,10 +227,12 @@ function end_comment(xmldata) {
 function save_comment(series) {
   var el1=document.getElementById("input_comment_name");
   var el2=document.getElementById("input_comment");
-  start_xmlreq("toolbox.php?img=" + imgurl + "&todo=add_comment&" + "series="+series+"&"+
+  start_xmlreq(url_script({ script: "toolbox.php", page: page, series: series, comment_name: el1.value, comment: el2.value, todo: "add_comment", index_id: index_id }), "Beschreibung wird gespeichert", end_comment);
+
+  /*start_xmlreq("toolbox.php?img=" + imgurl + "&todo=add_comment&" + "series="+series+"&"+
                "comment_name=" + el1.value + "&comment=" + el2.value, 
                "Kommentar wird gespeichert",
-               end_comment);
+               end_comment); */
 }
 
 function notify_list() {

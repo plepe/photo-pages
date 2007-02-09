@@ -52,7 +52,7 @@ print $page->get_path();
 $list=$page->cfg["LIST"];
 foreach($page->cfg["LIST"] as $el) {
   if($el->get_index()==$img) {
-    print "<div class='imageview_".$el->html_class()."'>\n";
+    print "<div index='$img' class='imageview_".$el->html_class()."'>\n";
     print $el->imageview_show();
     print "</div>\n";
   }
@@ -60,6 +60,7 @@ foreach($page->cfg["LIST"] as $el) {
 
     print "<div id='debug'>\n";
     print "&nbsp;</div>\n";
+
 ?>
 <div class='message' id='message'>
 no message

@@ -83,7 +83,7 @@ $lang_str=array(
   "page_edit_page_main"=>"Hauptinfos",
   "page_edit_page_pict"=>"Bilder",
   "page_edit_page_rights"=>"Rechte",
-  "page_edit_pict_list"=>"Bilderliste",
+  "page_edit_pict_list"=>"Liste der Seitenelemente",
   "page_edit_pict_unused"=>"Unbenutzte Bilder",
   "page_edit_pict_new"=>"Neu ...",
   "page_edit_pict_new_text"=>"Text",
@@ -91,6 +91,8 @@ $lang_str=array(
   "page_edit_pict_new_series"=>"Ansicht",
   "page_edit_pict_new_subdir"=>"Unterverzeichnis",
   "page_edit_saved"=>"Gespeichert.",
+  "page_edit_pict_chunk_new_subdir"=>"Neues Unterverzeichnis",
+  "page_edit_pict_chunk_new_view"=>"Neue Ansicht",
 
   "error_invalid_pictname"=>"Ung&uuml;ltiger Bildname",
   "error_notexist_pict"=>"Dieses Bild existiert nicht",
@@ -112,6 +114,7 @@ $lang_str=array(
 
   "new_page_title"=>"Titel der Unterseite",
   "new_page_dir"=>"Verzeichnisname",
+  "new_page_view"=>"Kurzbezeichnung",
   "new_page_done"=>"Verzeichnis angelegt",
   "new_page_go_there"=>"&Ouml;ffne Seite",
   "new_page_ok"=>"Ok",

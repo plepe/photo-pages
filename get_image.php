@@ -35,7 +35,7 @@ if($_REQUEST[tmp_id]) {
 }
 
 if($_REQUEST[img]==="main") {
-  $filename=$page->cfg["MAIN_PICTURE"];
+  $filename="$file_path/{$page->cfg[MAIN_PICTURE]}";
 }
 else {
   if($_REQUEST["img"]>=sizeof($page->cfg["LIST"])) {
@@ -48,9 +48,9 @@ else {
     $img=$page->cfg["LIST"][$_REQUEST[img]];
   }
   if($_REQUEST[size]=="movie")
-    $filename="$_REQUEST[page]/$orig_path/$img->mov";
+    $filename="$file_path/$img->path/$orig_path/$img->mov";
   else
-    $filename="$_REQUEST[page]/$_REQUEST[size]/$img->img";
+    $filename="$file_path/$img->path/$_REQUEST[size]/$img->img";
 }
 //print $filename;
 

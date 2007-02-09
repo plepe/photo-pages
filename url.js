@@ -21,19 +21,40 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+function build_url(template, params) {
+  var p=new Array();
+  var erg=template;
+
+  for(var key in params) {
+    if(erg.search("%"+key+"%")!=-1)
+      erg=erg.replace("%"+key+"%", params[key]);
+    else
+      p.push(key+"="+encodeURIComponent(params[key]));
+  }
+
+  if(p.length)
+    return erg+"?"+p.join("&");
+  else
+    return erg;
+}
+
 function url_page(path, series, skript) {
 }
 
 function url_photo(path, series, skript, imgnum, imgname, size, imgversion) {
 }
 
-function url_script(path, series, skript, imgnum) {
+function url_script(path, series, skript, imgnum, todo) {
   ret=v_url_script;
 
-  ret=ret.replace("%1$s", path);
-  ret=ret.replace("%2$s", series);
-  ret=ret.replace("%3$s", skript);
-  ret=ret.replace("%4$s", imgnum);
+  if(typeof path=="object")
+    ret=build_url(ret, path);
+  else
+    ret=build_url(ret, { "page": path, "series": series, "script": script, "imgnum": imgnum, "todo": todo });
+//  ret=ret.replace("%1$s", path);
+//  ret=ret.replace("%2$s", series);
+//  ret=ret.replace("%3$s", skript);
+//  ret=ret.replace("%4$s", imgnum);
 
   return ret;
 }

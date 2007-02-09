@@ -33,6 +33,7 @@ setlocale(LC_ALL, "de_AT");
 <?
 use_javascript("global");
 use_javascript("upload_image");
+urls_write();
 ?>
 <title><?=$cfg[TITLE]?></title>
 </head>
@@ -113,7 +114,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
   global $extensions_movies;
 
   // Replace spaces in filename through _
-  $file=implode("_", explode(" ", $file));
+  $file=replace_invalid_chars($file);
 
   print "Importing $file ...";
   flush(); ob_flush();

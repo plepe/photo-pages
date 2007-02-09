@@ -70,64 +70,70 @@ switch($todo) {
     error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
     //print "<status>$page->filename</status>\n";
     $error=0;
-    if($_REQUEST[series]) {
-      if(eregi("^\.", $_REQUEST[series])) {
-        print "<status>Invalid Seriesname</status>\n";
-        $error=1;
-        print "</xml>\n";
-        exit;
-      }
-      else
-        $filename="$_REQUEST[series].lst";
-    }
-    else {
-      $filename="fotocfg.txt";
-    }
+//    if($_REQUEST[series]) {
+//      if(eregi("^\.", $_REQUEST[series])) {
+//        print "<status>Invalid Seriesname</status>\n";
+//        $error=1;
+//        print "</xml>\n";
+//        exit;
+//      }
+//      else
+//        $filename="$_REQUEST[series].lst";
+//    }
+//    else {
+//      $filename="fotocfg.txt";
+//    }
 
-    $str="";
-    if(!($f=fopen($page->filename, "r"))) {
-      print "<status>Can't open file for reading</status>\n";
-      print "</xml>\n";
-      exit;
-    }
+//    $str="";
+//    if(!($f=fopen($page->filename, "r"))) {
+//      print "<status>Can't open file for reading</status>\n";
+//      print "</xml>\n";
+//      exit;
+//    }
 
     $success=0;
-    while($r=fgets($f, 8192)) {
-      if(strpos($r, $_REQUEST[img])===0) {
-        $str.="$_REQUEST[img] $data\n";
+    $page_data=$page->load_data();
+    foreach($page_data["LIST"] as $k=>$v) {
+      if($v->index_id==$_REQUEST[index_id]) {
+        $page_data["LIST"][$k]->text=$_REQUEST[data];
         $success=1;
       }
-      else
-        $str.=$r;
     }
-    fclose($f);
 
-    if(!($f=fopen($page->filename, "w"))) {
-      print "<status>Can't open file for writing</status>\n";
+    if($error=$page->save_data($page_data)) {
+      print "<status>$error</status>\n";
       print "</xml>\n";
       exit;
     }
-
-    fwrite($f, $str);
-    fclose($f);
 
     if($success)
       print "<status>success</status>\n";
     else
-      print "<status>An error occured $page->filename</status>\n";
+      print "<status>Richtiges Feld nicht gefunden</status>\n";
     print "<newdata>".html_entity_decode($data, ENT_QUOTES, "utf-8")."</newdata>\n";
     break;
   case "add_comment":
-    if(!file_exists("$page->path/$orig_path/$img")) {
+    $success=0;
+
+    $page_data=$page->load_data();
+    foreach($page_data["LIST"] as $k=>$v) {
+      if($v->index_id==$_REQUEST[index_id]) {
+        if(!($img=$v->mov))
+          $img=$v->img;
+        $success=1;
+      }
+    }
+
+    if(!file_exists("$file_path/$page->path/$orig_path/$img")) {
       print "<status>Ein solches Bild gibt es nicht, also wird auch kein Kommentar erstellt</status>\n";
     }
     else {
       $datum=time();
-      if(!file_exists("$page->path/comments")) {
-        mkdir("$page->path/comments");
+      if(!file_exists("$file_path/$page->path/comments")) {
+        mkdir("$file_path/$page->path/comments");
       }
 
-      if(!($comm=fopen("$page->path/comments/$img", "a"))) {
+      if(!($comm=fopen("$file_path/$page->path/comments/$img", "a"))) {
         print "<status>Couldn't open file for writing</status>\n";
       }
       $text=htmlentities(stripcslashes($_REQUEST[comment]));

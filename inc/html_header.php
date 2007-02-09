@@ -26,7 +26,7 @@ function use_javascript($file) {
   global $url_javascript;
   global $page;
 
-  print sprintf("<script src='$url_javascript' type='text/javascript'></script>\n", $page->path, $page->series, "$file.js");
+  print "<script src='".url_javascript(array("script"=>"$file.js"))."' type='text/javascript'></script>\n";
 }
 
 function start_html_header($title) {

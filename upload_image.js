@@ -31,7 +31,7 @@ function new_page_new_list(xmldata) {
 }
 
 function list_dir(dir) {
-  start_xmlreq("toolbox.php?todo=read_upload_dir&dir="+dir, "", new_page_new_list);
+  start_xmlreq(url_script({ "page": page, "series": series, "script": "toolbox.php", "todo": "read_upload_dir", "dir": dir }), 0, new_page_new_list);
 }
 
 function upload_image_mark(ob) {

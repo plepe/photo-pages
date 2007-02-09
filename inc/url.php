@@ -22,49 +22,107 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+function build_url($template, $params) {
+  $p=array();
+  $erg=$template;
+
+  foreach($params as $key=>$v) {
+    if(strpos($erg, "%$key%")!==false)
+      $erg=str_replace("%$key%", $v, $erg);
+    elseif(isset($v))
+      array_push($p, "$key=$v");
+  }
+
+  if(sizeof($p))
+    return $erg."?".implode("&", $p);
+  else
+    return $erg;
+}
+
 function urls_write() {
   global $url_page;
   global $url_photo;
   global $url_script;
   global $url_javascript;
   global $url_img;
+  global $page;
 
   use_javascript("url");
   print "<script type='text/javascript'>\n";
+  print "<!--\n";
+  print "var series=\"{$page->series}\";\n";
+  print "var page=\"{$page->path}\";\n";
   print "var v_url_page=\"$url_page\";\n";
   print "var v_url_photo=\"$url_photo\";\n";
   print "var v_url_script=\"$url_script\";\n";
   print "var v_url_javascript=\"$url_javascript\";\n";
   print "var v_url_img=\"$url_img\";\n";
+  print "//-->\n</script>\n";
   print "</script>\n";
 }
 
-function url_page($path, $series, $skript) {
+function url_page($path, $series, $script) {
   global $url_page;
 
-  return sprintf($url_page, $path, $series, $skript);
+  if(is_array($path)) {
+    if($path["page"]->series)
+      $path["series"]=$path["page"]->series;
+    $path["page"]=$path["page"]->path;
+
+    return build_url($url_page, $path);
+  }
+
+  return build_url($url_page, array("page"=>$path, "series"=>$series));
 }
 
 function url_photo($path, $series, $skript, $imgnum, $imgname, $size, $imgversion) {
   global $url_photo;
 
-  return sprintf($url_photo, $path, $series, $skript, $imgnum, $imgname, $size, $imgversion);
+  if(is_array($path)) {
+    if($path["page"]->series)
+      $path["series"]=$path["page"]->series;
+    $path["page"]=$path["page"]->path;
+
+    return build_url($url_photo, $path);
+  }
+
+  return build_url($url_photo, array("page"=>$path, "series"=>$series, "img"=>$imgnum, "imgname"=>$imgname, "size"=>$size, "version"=>$imgversion));
 }
 
-function url_script($path, $series, $skript, $imgnum) {
+function url_script($path, $series=0, $script=0, $imgnum=0) {
   global $url_script;
 
-  return sprintf($url_script, $path, $series, $skript, $imgnum);
+  if(is_array($path)) {
+    if($path["page"]->series)
+      $path["series"]=$path["page"]->series;
+    $path["page"]=$path["page"]->path;
+
+    return build_url($url_script, $path);
+  }
+
+  return build_url($url_script, array("page"=>$path, "series"=>$series, "script"=>$script, "img"=>$imgnum));
 }
 
-function url_javascript($path, $series, $skript, $imgnum) {
+function url_javascript($path, $series=0, $script=0, $imgnum=0) {
   global $url_javascript;
 
-  return sprintf($url_javascript, $path, $series, $skript, $imgnum);
+  if(is_array($path)) {
+    if($path["page"]->series)
+      $path["series"]=$path["page"]->series;
+    $path["page"]=$path["page"]->path;
+
+    return build_url($url_javascript, $path);
+  }
+
+  return build_url($url_javascript, array("page"=>$path, "series"=>$series, "script"=>$script, "img"=>$imgnum));
 }
 
 function url_img($imgfile) {
   global $url_img;
 
-  return sprintf($url_img, $imgfile);
+  if(is_array($imgfile)) {
+    return build_url($url_img, $imgfile);
+  }
+
+  return build_url($url_img, array("imgname"=>$imgfile));
 }
