@@ -169,6 +169,10 @@ switch($todo) {
       }
     }
     break;
+  case "logout":
+    $_SESSION[current_user]=get_user("anonymous");
+    print "<status>success</status>\n";
+    break;
   case "set_window_size":
     session_register("window_width");
     $_SESSION[window_width]=$_REQUEST[window_width];

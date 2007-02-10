@@ -24,8 +24,7 @@
  */
 require "data.php";
 if($_REQUEST[submit][ok]) {
-  if($page->set_page_edit_data($_REQUEST[data]))
-    print $lang_str[page_edit_saved];
+  $result=$page->set_page_edit_data($_REQUEST[data]);
 }
 start_html_header($page->cfg[TITLE]);
 use_javascript("page_edit");
@@ -40,6 +39,8 @@ print "<div class='wait_screen' id='wait_screen'><table width='100%' height='100
 print "<p>\n";
 
 if($_REQUEST[submit][ok]) {
+  if($result)
+    print $lang_str[page_edit_saved];
 }
 
 if($_REQUEST[submit][ok]) {

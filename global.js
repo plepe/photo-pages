@@ -87,12 +87,6 @@ function processReqChange() {
     if(xmlhttp_callback)
       xmlhttp_callback(xmldata);
 
-    switch(todo) {
-      case 'login':
-        location.reload();
-      default:
-    }
-
     var tb=document.getElementById("message");
     if(tb) {
       tb.style.display="none";

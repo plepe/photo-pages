@@ -25,22 +25,29 @@
 function do_authenticate() {
   var el1=document.getElementById("small_login_username");
   var el2=document.getElementById("small_login_password");
-  start_xmlreq(url_script(page, series, "toolbox.php", "")+"&todo=login&username="+el1.value+"&password="+el2.value, "Login-Daten werden ueberprueft", authenticate_finish);
+  start_xmlreq(url_script({ page: page, series: series, script: "toolbox.php", todo: "login", username: el1.value, password: el2.value}), "Login-Daten werden ueberprueft", authenticate_finish);
   return false;
 }
 
-function authenticate_finish(data) {
+function do_logout() {
+  start_xmlreq(url_script({ page: page, series: series, script: "toolbox.php", todo: "logout"}), 0, authenticate_finish);
+  return false;
+}
+
+function authenticate_finish(xmldata) {
+  location.reload();
 }
 
 function authenticate_user(ob) {
   var el=document.getElementById("small_login");
   el.style.display='block';
 
-  var el=document.getElementById("small_login_form");
-  el.onsubmit=do_authenticate;
+  var el=document.getElementById("user_login_submit");
+  el.onclick=do_authenticate;
+
+  var el=document.getElementById("user_login_logout");
+  el.onclick=do_logout;
 
   var el=document.getElementById("small_login_username");
   el.focus();
 }
-
-

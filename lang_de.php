@@ -79,6 +79,7 @@ $lang_str=array(
   "tool_userauth_username"=>"BenutzerIn-name",
   "tool_userauth_password"=>"Passwort",
   "tool_userauth_ok"=>"Einloggen",
+  "tool_userauth_logout"=>"Ausloggen",
 
   "page_edit_page_main"=>"Hauptinfos",
   "page_edit_page_pict"=>"Bilder",

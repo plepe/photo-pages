@@ -80,6 +80,7 @@ $lang_str=array(
   "tool_userauth_username"=>"Username",
   "tool_userauth_password"=>"Password",
   "tool_userauth_ok"=>"Login",
+  "tool_userauth_logout"=>"Logout",
 
   "page_edit_page_main"=>"Main Information",
   "page_edit_page_pict"=>"Pictures",

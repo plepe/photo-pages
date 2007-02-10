@@ -128,10 +128,17 @@ function small_login_form() {
 <table>
 <tr><td><?=$lang_str[tool_userauth_username]?>:</td><td><input name='username' id='small_login_username'></td></tr>
 <tr><td><?=$lang_str[tool_userauth_password]?>:</td><td><input name='password' id='small_login_password' type='password'></td></tr>
-<tr><td colspan='2'><input type='submit' id='user_login_submit' value='<?=$lang_str[tool_userauth_ok]?>'></td></tr>
+<tr><td><input type='submit' id='user_login_submit' value='<?=$lang_str[tool_userauth_ok]?>'></td><td align='right'><input type='submit' id='user_login_logout' value='<?=$lang_str[tool_userauth_logout]?>'></td></tr>
 </table>
 </form>
 </span>
+<script type='text/javascript'>
+<!--
+if(small_login_form=document.forms.small_login_form) {
+  small_login_form.action=null; //'javascript:do_authenticate()';
+}
+//-->
+</script>
 <?
 }
 
@@ -147,6 +154,7 @@ global $lang_str;
 <tr><td colspan='2'><input type='submit' id='login_submit' value='<?=$lang_str[tool_userauth_ok]?>'></td></tr>
 </table>
 </form>
+
 <?
 }
 
