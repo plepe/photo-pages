@@ -151,13 +151,15 @@ function process_upload_file($file, $orig_file, $desc=0) {
       copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
 
     // In FLV konvertieren
-    system("nice ffmpeg -y -i \"$orig_file\" -ar 11025 $file_path/$page->path/$orig_path/$m[1].flv");
+    system("nice ffmpeg -y -i \"$orig_file\" -vcodec flv -acodec pcm_s16le -ar 22050 /tmp/tmp.avi");
+    system("nice ffmpeg -y -i /tmp/tmp.avi -vcodec copy -acodec copy $file_path/$page->path/$orig_path/$m[1].flv");
+    system("rm /tmp/tmp.avi");
     // TODO: flvtool2 verwenden, um metadaten zum video hinzuzufuegen
 
     // Filmstrip generieren
     system("cd /tmp ; ffmpeg -y -i \"$orig_file\" -vframes 1 -f image2 /tmp/tmp.jpg");
     system("nice convert -resize 410x450 /tmp/tmp.jpg /tmp/tmp.jpg");
-    system("nice composite -compose atop -gravity center /tmp/tmp.jpg $script_path/images/filmstrip.png $orig");
+    system("nice composite -compose atop -gravity center /tmp/tmp.jpg images/filmstrip.png $orig");
     system("rm /tmp/tmp.jpg");
 
     $file="$m[1].jpg";
@@ -165,7 +167,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
   }
 
   // Add this image to the fotocfg.txt resp. a series
-  $f=fopen($page->filename, "a");
+  $f=fopen("$file_path/$page->filename", "a");
   if($desc)
     fputs($f, "$name $desc\n");
   else

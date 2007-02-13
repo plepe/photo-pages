@@ -69,6 +69,7 @@ $lang_str=array(
   "tool_rotate_left"=>"Nach links rotieren",
   "tool_rotate_right"=>"Nach rechts rotieren",
   "tool_editdesc_name"=>"Beschreibung bearbeiten",
+  "tool_editdesc_desc"=>"Hier klicken, um die Beschreibung zu bearbeiten",
   "tool_comments_name"=>"Kommentar hinzuf&uuml;gen",
   "tool_edit_page"=>"Seite bearbeiten",
   "tool_new_page"=>"Neue Unterseite anlegen",

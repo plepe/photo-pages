@@ -97,7 +97,7 @@ function page_edit_mouse_leave(event) {
 }
 
 function page_edit_mouse_down(event) {
-  page_edit_button_down=1;
+  //page_edit_button_down=1;
 
 //  if(!event.ctrlKey) {
 //    if(!in_array(page_edit_current_over, page_edit_marked))
@@ -118,6 +118,9 @@ function page_edit_mouse_down(event) {
     return true;
 }
 
+function page_edit_img_list_down(event, list) {
+}
+
 function page_edit_img_list_clicked(event, list) {
   if(!event.ctrlKey) {
     if(!in_array(page_edit_current_over, page_edit_marked))
@@ -128,6 +131,8 @@ function page_edit_img_list_clicked(event, list) {
 }
 
 function page_edit_img_chunk_clicked(event, ob) {
+  page_edit_button_down=1;
+
   if(!event.ctrlKey) {
     if(!in_array(ob, page_edit_marked))
       page_edit_clear_marked();
@@ -344,6 +349,9 @@ function page_edit_key_down(event) {
   if((page_edit_moving)&&(event.keyCode==27)) {
     page_edit_return_moving();
   }
+
+//  if(event.keyCode=='X') {
+//  }
 }
 
 document.captureEvents(Event.MOUSEMOVE);
