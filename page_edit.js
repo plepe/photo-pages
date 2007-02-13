@@ -270,11 +270,11 @@ function page_edit_mouse_move(event) {
     while(move_ob.firstChild)
       move_ob.removeChild(move_ob.firstChild);
 
+    page_edit_dont_show_pic();
+
     for(var i=0;i<page_edit_marked.length;i++) {
       var m=page_edit_marked[i];
       var n;
-
-      page_edit_dont_show_pic();
 
       n=page_edit_marked[i].nextSibling;
       while((n)&&(n.className!="edit_img_chunk")&&(n.className!="edit_mark_img_chunk")) {
@@ -387,8 +387,8 @@ function page_edit_show(off) {
 }
 
 function page_edit_show_pic(img, chunk, pict_url, pict_orig_url) {
-//  if(page_edit_pic_over==img)
-//    return;
+  if(page_edit_over_image==img)
+    return;
   page_edit_over_image=img;
 
 //  page_edit_dont_show_pic(1);
@@ -443,7 +443,7 @@ function page_edit_move_pic(event) {
   if(!page_edit_pic_over)
     return true;
 
-  page_edit_dont_show_pic();
+  //page_edit_dont_show_pic();
 
   clearTimeout(page_edit_pic_timeout);
 
@@ -470,9 +470,10 @@ function page_edit_move_pic(event) {
 }
 
 function page_edit_leave_image(img) {
-  page_edit_over_image=null;
-
-  page_edit_dont_show_pic();
+  if(!page_edit_fix_large) {
+    page_edit_over_image=null;
+    page_edit_dont_show_pic();
+  }
 }
 
 function page_edit_dont_show_pic(force) {
