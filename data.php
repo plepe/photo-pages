@@ -1632,7 +1632,7 @@ class Page {
     }
     $ret.="<br>\n";
     $ret.="$lang_str[nav_rows]:\n";
-    for($i=3;$i<6;$i++) {
+    for($i=4;$i<7;$i++) {
       $ret.="<input type='submit' onClick='change_rows($i)' class='";
       $ret.=($rows==$i?"toolbox_input_active":"toolbox_input");
       $ret.="' id='rows_$i' title=\"$lang_str[tooltip_change_rows]\" value=\"$i\">\n";
