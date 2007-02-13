@@ -27,6 +27,7 @@ $lang_str=array(
   "footer"=>"This page is powered by <a href='http://xover.mud.at/~skunk/photo_pages/'>Photo Pages</a>.",
   "nav_back"=>"Back",
   "nav_columns"=>"Columns",
+  "nav_rows"=>"Rows",
   "nav_language"=>"Language",
   "nav_ok"=>"Ok",
   "nav_save"=>"Save",
@@ -117,6 +118,7 @@ $lang_str=array(
   "new_page_dir_exists"=>"Directory already exists",
 
   "tooltip_change_cols"=>"Changes count of columns on the page",
+  "tooltip_change_rows"=>"Changes count of rows on the page",
   "tooltip_rotate"=>"Rotate image",
   "tooltip_mag"=>"Move your mouse over the image to magnify parts",
   "tooltip_fullscreen"=>"Zooms the image to nearly windowsize",

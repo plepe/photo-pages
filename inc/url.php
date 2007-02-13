@@ -61,7 +61,7 @@ function urls_write() {
   print "</script>\n";
 }
 
-function url_page($path, $series, $script) {
+function url_page($path, $series=0, $script=0) {
   global $url_page;
 
   if(is_array($path)) {

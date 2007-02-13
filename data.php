@@ -1619,6 +1619,7 @@ class Page {
 
   function toolbox() {
     global $cols;
+    global $rows;
     global $lang_str;
     global $language;
 
@@ -1629,6 +1630,16 @@ class Page {
       $ret.=($cols==$i?"toolbox_input_active":"toolbox_input");
       $ret.="' id='cols_$i' title=\"$lang_str[tooltip_change_cols]\" value=\"$i\">\n";
     }
+    $ret.="<br>\n";
+    $ret.="$lang_str[nav_rows]:\n";
+    for($i=3;$i<6;$i++) {
+      $ret.="<input type='submit' onClick='change_rows($i)' class='";
+      $ret.=($rows==$i?"toolbox_input_active":"toolbox_input");
+      $ret.="' id='rows_$i' title=\"$lang_str[tooltip_change_rows]\" value=\"$i\">\n";
+    }
+    $ret.="<input type='submit' onClick='change_rows(-1)' class='";
+    $ret.=($rows==-1?"toolbox_input_active":"toolbox_input");
+    $ret.="' id='rows_-1' title=\"$lang_str[tooltip_change_rows]\" value=\"&infin;\">\n";
     $ret.="<br>\n";
     $ret.="<form name='choose_language' method='post'>\n";
     $ret.="$lang_str[nav_language]:\n";
@@ -1690,6 +1701,11 @@ class Page {
       $ret.="{$this->cfg[DATE]}.<br>\n";
     if($this->cfg[PHOTOS_BY])
       $ret.="$lang_str[info_photosby] {$this->cfg[PHOTOS_BY]}.<br>\n";
+    $c=$this->count_pictures();
+    if($c==1)
+      $ret.="$c $lang_str[nav_pict].";
+    elseif($c>1)
+      $ret.="$c $lang_str[nav_picts].";
     $ret.="</span>\n";
     $ret.="</div>\n";
 
@@ -2378,9 +2394,98 @@ class Page {
     print "</div>\n";
   }
 
+  function split_album_pages() {
+    global $cols;
+    global $rows;
+
+    $album_pages=array();
+    $cur_page=0;
+    $count_rows=0;
+    $count_this_row=0;
+    $list=$this->get_viewlist();
+
+    if($rows==-1)
+      return array($list);
+
+    $pos=$cols;
+    foreach($list as $el) {
+//print "$count_rows $cur_page $pos $cols<br>";
+      $colspan=$el->colspan();
+      if($colspan>$cols)
+        $colspan=$cols;
+
+      if($pos<$colspan) {
+        if($count_rows>=$rows-1) {
+          $cur_page++;
+          $count_rows=0;
+        }
+        else {
+          if($colspan!=$cols)
+            $count_rows++;
+        }
+
+        $pos=$cols;
+      }
+
+      if($pos==$cols) {
+      }
+
+      $album_pages[$cur_page][]=$el;
+      $pos-=$colspan;
+    }
+
+//    foreach($album_pages as $cur_page=>$els) {
+//      print "<h4>$cur_page</h4>\n";
+//      foreach($els as $e) {
+//        print $e->type." ".$e->file_name()."<br>\n";
+//      }
+//    }
+
+    return $album_pages;
+  }
+
+  function album_nav() {
+    global $album_page;
+    $album_pages=$this->split_album_pages();
+    $anz=sizeof($album_pages);
+
+    if($anz<=1)
+      return "";
+
+    $ret.="<table class='album_nav' align='center'>\n";
+    $ret.="<tr><td class='nav_left'>\n";
+    if($album_page==0)
+      $ret.="<img src='".url_img("arrow_left_dark.png")."' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'> ";
+    else
+      $ret.="<a href='".url_page(array("page"=>$this, "album_page"=>$album_page-1))."' accesskey='p'>".
+            "<img src='".url_img("arrow_left.png")."' class='nav_left' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'></a> ";
+    $ret.="</td><td class='nav_text'>\n";
+    for($num=0; $num<$anz; $num++) {
+      if($num==$album_page) {
+        $ret.=($num+1)." ";
+      }
+      else {
+        $ret.="<a href='".url_page(array("page"=>$this, "album_page"=>$num))."'>".($num+1)."</a> ";
+      }
+    }
+    $ret.="</td><td class='nav_right'>\n";
+    if($album_page==$anz-1)
+      $ret.="<img src='".url_img("arrow_right_dark.png")."' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'> ";
+    else
+      $ret.="<a href='".url_page(array("page"=>$this, "album_page"=>$album_page+1))."' accesskey='n'>".
+            "<img src='".url_img("arrow_right.png")."' class='nav_right' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'></a> ";
+
+    $ret.="</td></tr>\n";
+    $ret.="</table>\n";
+
+    return $ret;
+  }
+
   function show_album() {
     global $cols;
+    global $album_page;
 
+    $album_pages=$this->split_album_pages();
     $list=$this->get_viewlist();
     $td_size=100.0/$cols;
     unset($cur_index);
@@ -2388,7 +2493,7 @@ class Page {
     print "<table class='album_table' width='100%' id='table_album'>\n";
     $pos=$cols;
     $i=0;
-    foreach($list as $el) {
+    foreach($album_pages[$album_page] as $el) {
       $colspan=$el->colspan();
       if($colspan>$cols)
         $colspan=$cols;

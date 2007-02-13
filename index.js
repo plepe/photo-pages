@@ -22,6 +22,19 @@
  *
  */
 
+function change_rows(c) {
+  if(ob=document.getElementById("rows_"+rows))
+    ob.className='toolbox_input';
+
+  rows=c;
+  ob=document.getElementById("rows_"+rows);
+  ob.className='toolbox_input_active';
+
+  start_xmlreq("toolbox.php?todo=set_rows&rows="+rows, "Zeilenzahl wird gespeichert");
+
+  location.reload();
+}
+
 function change_cols(c) {
   ob=document.getElementById("table_album");
 

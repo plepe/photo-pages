@@ -82,6 +82,12 @@ td.heading_tools {
   width: 200px;
   vertical-align: top;
 }
+td.heading_spacer {
+  width: 200px;
+}
+td.heading_nav {
+  text-align: center;
+}
 
 
 span.header_head {
@@ -242,6 +248,10 @@ table.nav {
   vertical-align: middle;
   border-collapse: collapse;
   margin-right: 5px;
+}
+table.album_nav {
+  border: 1px solid #666666;
+  border-collapse: collapse;
 }
 img.nav_left {
   border: 0px;

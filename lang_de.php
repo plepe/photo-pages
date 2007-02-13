@@ -27,6 +27,7 @@ $lang_str=array(
   "footer"=>"Diese Seite verwendet <a href='http://xover.mud.at/~skunk/photo_pages/'>Photo Pages</a>.",
   "nav_back"=>"Zur&uuml;ck",
   "nav_columns"=>"Spalten",
+  "nav_rows"=>"Zeilen",
   "nav_language"=>"Sprache",
   "nav_ok"=>"Ok",
   "nav_save"=>"Speichern",
@@ -123,6 +124,7 @@ $lang_str=array(
   "new_page_dir_exists"=>"Verzeichnis existiert bereits",
 
   "tooltip_change_cols"=>"&Auml;ndert die Anzahl der Spalten auf der Seite",
+  "tooltip_change_rows"=>"&Auml;ndert die Anzahl der Zeilen auf der Seite",
   "tooltip_rotate"=>"Rotiere das Bild",
   "tooltip_mag"=>"Bewege die Maus &uuml;ber das Bild, um Teile zu vergr&ouml;&szlig;ern",
   "tooltip_fullscreen"=>"Zoomt das Bild ann&auml;hernd zur Fenstergr&ouml;&szlig;e",

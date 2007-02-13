@@ -33,41 +33,60 @@ end_html_header();
 ?>
 <BODY>
 <?
-if($cols) {
-  $album_cols=$cols;
+if($_REQUEST[cols]) {
+  $_SESSION[album_cols]=$_REQUEST[cols];
   session_register("album_cols");
 }
 
-if(!($cols=$album_cols)) # absichtliche Zuweisung
-  $cols=4;
+if($_REQUEST[rows]) {
+  $_SESSION[album_rows]=$_REQUEST[rows];
+  session_register("album_rows");
+}
 
-print "<script type='text/javascript'>\n<!--\ncols=$cols;\n//-->\n</script>\n";
+$album_page=0;
+if($_REQUEST["album_page"])
+  $album_page=$_REQUEST["album_page"];
+
+if(!($cols=$_SESSION[album_cols])) # absichtliche Zuweisung
+  $cols=4;
+if(!($rows=$_SESSION[album_rows])) # absichtliche Zuweisung
+  $rows=6;
+
+print "<script type='text/javascript'>\n<!--\ncols=$cols;\nrows=$rows;\n//-->\n</script>\n";
 
 print "<table class='heading'>\n";
-print "<tr><td class='heading_info'>\n";
+print "<tr><td class='heading_info' colspan='2'>\n";
 //print $page->show_path();
 print $page->header();
 if($page->get_right($_SESSION[current_user], "view")) {
   print $page->welcome();
 }
 
+
 print "</td>\n";
-print "<td class='heading_tools'>\n";
+print "<td class='heading_tools' rowspan='2'>\n";
 print $_SESSION[current_user]->toolbox();
 print $page->toolbox();
 
-  print "</td>\n";
+  print "</td></tr>\n";
+
+print "<tr><td class='heading_spacer'></td><td class='heading_nav'>\n";
+print $page->album_nav();
+print "</td>\n";
+
   print "</tr></table>\n";
 
-print "<pre>\n";
+//print "<pre>\n";
 //print_r($page->get_rights($_SESSION[current_user]));
 //print_r($_SESSION);
-print "</pre>\n";
+//print "</pre>\n";
 
 if($page->get_right($_SESSION[current_user], "view")) {
   $page->read_list();
 
   $page->show_album();
+
+  print $page->album_nav();
 
   small_login_form();
 }

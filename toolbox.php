@@ -151,6 +151,12 @@ switch($todo) {
     $_SESSION[album_cols]=$_REQUEST[cols];
     session_register("album_cols");
     break;
+  case "set_rows":
+    print "<status>success</status>\n";
+
+    $_SESSION[album_rows]=$_REQUEST[rows];
+    session_register("album_rows");
+    break;
   case "set_normal_res":
     print "<status>success</status>\n";
 
