@@ -1,5 +1,9 @@
 This CHANGELOG includes only important updates.
 
+- svn r52 (2007-02-14)
+  - export to filesystem (not linked - use export.php)
+  - you can also use rar instead of zip
+
 - svn r45 (2007-02-13)
   - album page is seperated to save bandwith
 

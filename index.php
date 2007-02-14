@@ -107,4 +107,5 @@ if((!$page->get_right($_SESSION[current_user], "view"))||
 print $page->show_path();
 
 html_footer();
+
 ?>

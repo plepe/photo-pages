@@ -220,13 +220,19 @@ if($_FILES[image]) {
   if(eregi("\.(".implode("|", array_merge($extensions_images, $extensions_movies)).")$", $n)) {
     process_upload_file($n, $_FILES[image][tmp_name], $_REQUEST[desc]);
   }
-  elseif(eregi("\.(zip)$", $n)) {
+  elseif(eregi("\.(zip|rar)$", $n)) {
     $tmpname=tempnam("/tmp", "UPLOAD");
     unlink($tmpname);
     mkdir($tmpname);
     print "<pre>\n";
-    print("cd $tmpname ; echo -n 'Path: ' ; pwd ; unzip -j -o {$_FILES[image][tmp_name]}");
-    system("cd $tmpname ; echo -n 'Path: ' ; pwd ; unzip -j -o {$_FILES[image][tmp_name]}");
+    if(eregi("\.(zip)$", $n)) {
+      print("cd $tmpname ; echo -n 'Path: ' ; pwd ; unzip -j -o {$_FILES[image][tmp_name]}");
+      system("cd $tmpname ; echo -n 'Path: ' ; pwd ; unzip -j -o {$_FILES[image][tmp_name]}");
+    }
+    elseif(eregi("\.(rar)$", $n)) {
+      print("cd $tmpname ; echo -n 'Path: ' ; pwd ; unrar e {$_FILES[image][tmp_name]}");
+      system("cd $tmpname ; echo -n 'Path: ' ; pwd ; unrar e {$_FILES[image][tmp_name]}");
+    }
     print "</pre>\n";
     unlink($_FILES[image][tmp_name]);
     $tmpdir=opendir($tmpname);

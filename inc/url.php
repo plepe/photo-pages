@@ -22,7 +22,42 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+$export_img=array();
+$url_save_export=0;
+
 function build_url($template, $params) {
+  global $url_relative;
+
+  if($url_relative) {
+    global $url_root;
+    $x=explode("/", $url_relative);
+    $y=explode("/", $params["page"]);
+    $res=array();
+    $anz_same=0;
+
+    for($i=0; $i<sizeof($x); $i++) {
+      if($x[$i]==$y[$i]) {
+        if($i==$anz_same)
+          $anz_same++;
+      }
+    }
+
+    for($i=0; $i<sizeof($x)-$anz_same; $i++)
+      $res[]="..";
+    $params["page"]=implode("/", array_merge($res, array_slice($y, $anz_same)));
+    if($params["page"]=="")
+      $params["page"]=".";
+
+    if(sizeof($y)==sizeof(explode("/", $url_root)))
+      $params["root"]=".";
+    else {
+      for($i=0; $i<sizeof($y)-sizeof(explode("/", $url_root)); $i++)
+        $res[]="..";
+      $params["root"]=implode("/", $res);
+    }
+  }
+
   $p=array();
   $erg=$template;
 
@@ -75,17 +110,23 @@ function url_page($path, $series=0, $script=0) {
   return build_url($url_page, array("page"=>$path, "series"=>$series));
 }
 
-function url_photo($path, $series, $skript, $imgnum, $imgname, $size, $imgversion) {
+function url_photo($path, $series=0, $skript=0, $imgnum=0, $imgname=0, $size=0, $imgversion=0) {
   global $url_photo;
+  global $url_save_export;
+  global $export_img;
 
   if(is_array($path)) {
     if($path["page"]->series)
       $path["series"]=$path["page"]->series;
     $path["page"]=$path["page"]->path;
 
+    if($url_save_export)
+      $export_img[$path[size]][]=$path[imgname];
     return build_url($url_photo, $path);
   }
 
+  if($url_save_export)
+    $export_img[$size][]=$imgname;
   return build_url($url_photo, array("page"=>$path, "series"=>$series, "img"=>$imgnum, "imgname"=>$imgname, "size"=>$size, "version"=>$imgversion));
 }
 
@@ -119,10 +160,14 @@ function url_javascript($path, $series=0, $script=0, $imgnum=0) {
 
 function url_img($imgfile) {
   global $url_img;
+  $path=$imgfile;
 
-  if(is_array($imgfile)) {
-    return build_url($url_img, $imgfile);
+  if(is_array($path)) {
+    $path["page"]=$path["page"]->path;
+
+    return build_url($url_img, $path);
   }
 
   return build_url($url_img, array("imgname"=>$imgfile));
 }
+

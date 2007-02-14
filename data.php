@@ -41,6 +41,9 @@ $global_rights=array("newusers", "useradmin");
 $extensions_images=array("jpg", "jpeg", "gif", "png");
 $extensions_movies=array("avi", "mov", "flv", "mpeg", "mpg");
 
+$export_page=array();
+$exported_pages=array();
+
 require "conf.php";
 
 if(!defined("DATA_PHP")) {
@@ -66,6 +69,8 @@ class Chunk {
   function imageview_show() { return ""; }
   function list_show() { return ""; }
   function edit_show() { return ""; }
+  function export_album() { return ""; }
+  function export_imageview() { return ""; }
 };
 
 class TextChunk extends Chunk {
@@ -107,6 +112,13 @@ class TextChunk extends Chunk {
     return $ret;
   }
 
+  function export_album() {
+    return strtr($this->text, array("\n"=>"<br>\n"));
+  }
+
+  function export_imageview() {
+    return strtr($this->text, array("\n"=>"<br>\n"));
+  }
 };
 
 class SubdirChunk extends Chunk {
@@ -267,6 +279,57 @@ class SubdirChunk extends Chunk {
     return $ret;
   }
 
+
+  function export_album() {
+    global $pfad;
+    global $lang_str;
+    global $no_main_picture;
+    global $export_page;
+    $ret="";
+
+    $this->get_subpage();
+    $subdata=$this->subpage->cfg;
+
+    $ret.="<a href='".url_page(array("page"=>$this->subpage))."'>";
+    if($subdata[MAIN_PICTURE])
+      $ret.="<img class='album_series' src='".substr($this->subpage->path, strrpos($this->subpage->path, "/")+1)."/main.jpg' align='left'>";
+    else
+      $ret.="<img class='album_series' src='".url_img(array("page"=>$this->page, "imgname"=>$no_main_picture))."' align='left'>";
+    $ret.="</a>\n";
+
+    $ret.="<a href='".url_page(array("page"=>$this->subpage))."'>";
+    $ret.="$subdata[TITLE]</a><br>";
+    $ret.="$subdata[DATE]<br>";
+
+    $export_page[]=$this;
+
+    return $ret;
+  }
+
+  function export_imageview() {
+    global $pfad;
+    global $lang_str;
+    global $no_main_picture;
+    $ret="";
+
+    $this->get_subpage();
+    $subdata=$this->subpage->cfg;
+
+    $ret.="<a href='".url_page(array("page"=>$this->subpage))."'>";
+    if($subdata[MAIN_PICTURE])
+      $ret.="<img class='album_series' src='".substr($this->subpage->path, strrpos($this->subpage->path, "/")+1)."/main.jpg' align='left'>";
+    else
+    $ret.="<img class='album_series' src='".url_img(array("page"=>$this->page, "imgname"=>$no_main_picture))."' align='left'>";
+    $ret.="</a>\n";
+
+    $ret.="<a href='".url_page(array("page"=>$this->subpage))."'>";
+    $ret.="$subdata[TITLE]</a><br>";
+    $ret.="$subdata[DATE]<br>";
+
+    $export_page[]=$this;
+
+    return $ret;
+  }
 
 };
 
@@ -443,17 +506,17 @@ class HeaderChunk extends Chunk {
   }
 
   function album_show() {
-    return $this->text;
+    return strtr($this->text, array("\n"=>"<br>\n"));
   }
 
   function count_as_picture() { return 0; }
 
   function imageview_show() {
-    return $this->text;
+    return strtr($this->text, array("\n"=>"<br>\n"));
   }
 
   function list_show() {
-    return $this->text;
+    return strtr($this->text, array("\n"=>"<br>\n"));
   }
 
   function edit_show($text=0) {
@@ -469,6 +532,13 @@ class HeaderChunk extends Chunk {
     return $ret;
   }
 
+  function export_album() {
+    return strtr($this->text, array("\n"=>"<br>\n"));
+  }
+
+  function export_imageview() {
+    return strtr($this->text, array("\n"=>"<br>\n"));
+  }
 };
 
 class ImgChunk extends Chunk {
@@ -833,6 +903,87 @@ class ImgChunk extends Chunk {
   }
 
   function file_name() { return $this->img; }
+
+  function export_album() {
+    global $index_res;
+    global $file_path;
+
+    $r=getimagesize("$file_path/{$this->path}/$index_res/$this->img");
+
+    $ret ="<a href='".url_script(array("page"=>$this->page, "script"=>"image.php", "img"=>$this->index))."'>";
+    $ret.="<img src='".url_photo(array("page"=>$this->page, "script"=>"image.php", "img"=>$this->id, "imgname"=>$this->img, "size"=>$index_res))."'";
+    
+    #$index_res/$this->img?{$_SESSION[img_version][$this->img]}' ".
+    $ret.="class='album_image' width='$r[0]' height='$r[1]'></a><br>";
+    #$ret="<a href='image.php?img=$this->index&series=".$this->page->series.
+    #     "'><img src='$index_res/$this->img?{$_SESSION[img_version][$this->img]}' ".
+    #     "class='album_image'></a><br>";
+
+    if($this->text)
+      $ret.=strtr($this->text, array("\n"=>"<br>\n"))."<br>\n";
+
+    $this->read_comments();
+    if($this->comments) foreach($this->comments as $c) {
+      $ret.="<span class='$c[age_color]'>$c[name]</span>: $c[text]";
+    }
+
+    return $ret;
+  }
+
+  function export_imageview() {
+    global $series;
+    global $_SESSION;
+    global $normal_res;
+    global $orig_path;
+    global $file_path;
+    global $lang_str;
+    $ret="";
+
+    if(!$res)
+      $res=$normal_res;
+
+    $imgres=getimagesize("$file_path/{$this->path}/$normal_res/$this->img");
+
+    $iw=$imgres[0];
+    $ih=$imgres[1];
+
+    $ret.="<a href='".url_photo(array("page"=>$this->page, "img"=>$this->id, "imgname"=>$this->img, "size"=>$orig_path))."' target='_top'>";
+
+//    $ret.="<a href='$orig_path/$this->img?{$_SESSION[img_version][$this->img]}' target='_top'>".
+    //$ret.="<img src='$normal_res/$this->img?{$_SESSION[img_version][$this->img]}' ";
+    $ret.="<img src='".url_photo(array("page"=>$this->page, "img"=>$this->id, "imgname"=>$this->img, "size"=>$normal_res))."' target='_top' ";
+    $ret.="id='img' class='imageview_image' width='$iw' height='$ih'></a>";
+
+    $ret.="<div class='toolbox'>\n";
+
+    $det=$this->get_image_details();
+    $ret.="<table class='imageview_image_details' width='100%'>\n";
+    foreach($det as $name=>$value) {
+      $ret.="<tr><td>".$lang_str["info_$name"].":</td><td>$value</td></tr>\n";
+    }
+    $ret.="</table></div>\n";
+
+    $ret.="<br style='clear: left;'>\n";
+
+    if($this->text) {
+      $ret.="<div class='imageview_image_desc' id='desc'>".
+            strtr($this->text, array("\n"=>"<br>\n"))."</div>\n";
+    }
+    else {
+      $ret.="<div class='imageview_image_desc' id='desc'> </div>\n";
+    }
+
+    $this->read_comments();
+    $ret.="<div class='image_view_comments' id='image_view_comments'>\n";
+    if($this->comments) foreach($this->comments as $c) {
+      $ret.="<span class='$c[age_color]'>$c[name]</span>: $c[text]";
+    }
+    $ret.=" </div>\n";
+
+    return $ret;
+  }
+
+
 };
 
 class MovieChunk extends ImgChunk {
@@ -1844,10 +1995,10 @@ class Page {
     $ret ="<table class='nav'>\n";
     $ret.="<tr><td class='nav_left'>\n";
     if($img==0)
-      $ret.="<img src='".url_img("arrow_left_dark.png")."' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'> ";
+      $ret.="<img src='".url_img(array("page"=>$this, "imgname"=>"arrow_left_dark.png"))."' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'> ";
     else
-      $ret.="<a onClick='notify_list()' href='".url_script($this->path, $this->series, "image.php", $img-1)."' accesskey='p'>".
-            "<img src='".url_img("arrow_left.png")."' class='nav_left' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'></a> ";
+      $ret.="<a onClick='notify_list()' href='".url_script(array("page"=>$this, "script"=>"image.php", "img"=>$img-1))."' accesskey='p'>".
+            "<img src='".url_img(array("page"=>$this, "imgname"=>"arrow_left.png"))."' class='nav_left' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'></a> ";
 
     $ret.="</td><td class='nav_text'>\n";
 
@@ -1857,15 +2008,15 @@ class Page {
     $ret.="</td><td class='nav_right'>\n";
 
     if($img==$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->get_index())
-      $ret.="<img src='".url_img("arrow_right_dark.png")."' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'> ";
+      $ret.="<img src='".url_img(array("page"=>$this, "imgname"=>"arrow_right_dark.png"))."' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'> ";
     else
-      $ret.="<a onClick='notify_list()' href='".url_script($this->path, $this->series, "image.php", $img+1)."' accesskey='n'>".
-            "<img src='".url_img("arrow_right.png")."' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'></a> ";
+      $ret.="<a onClick='notify_list()' href='".url_script(array("page"=>$this, "script"=>"image.php", "img"=>$img+1))."' accesskey='n'>".
+            "<img src='".url_img(array("page"=>$this, "imgname"=>"arrow_right.png"))."' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'></a> ";
 
     $ret.="</td><td class='nav_home'>\n";
 
     $ret.="<a accesskey='h' href='".url_page(array("page"=>$this, "img"=>$img))."#img_$img' target='_top'>".
-          "<img src='".url_img("view_album.png")."' class='nav_home' alt='$lang_str[nav_home]' title='$lang_str[nav_home]'></a>";
+          "<img src='".url_img(array("page"=>$this, "imgname"=>"view_album.png"))."' class='nav_home' alt='$lang_str[nav_home]' title='$lang_str[nav_home]'></a>";
 
     //$ret.="</td><td class='nav_album'>\n";
 
@@ -1873,8 +2024,8 @@ class Page {
 
     $ret.="</td><td class='nav_album'>\n";
 
-    $ret.="<a href='".url_script($this->path, $this->series, "frame.php", $img)."' target='_top' id='nav_frame_a'>".
-          "<img src='".url_img("view_frame.png")."' class='nav_album' ".
+    $ret.="<a href='".url_script(array("page"=>$this, "script"=>"frame.php", "img"=>$img))."' target='_top' id='nav_frame_a'>".
+          "<img src='".url_img(array("page"=>$this, "imgname"=>"view_frame.png"))."' class='nav_album' ".
           "alt='$lang_str[nav_frame]' title='$lang_str[nav_frame]' ".
           "id='nav_frame_img'></a>";
 
@@ -2585,6 +2736,151 @@ class Page {
     }
     print "</tr>\n";
     print "</table>\n";
+  }
+
+  function export_album() {
+    $ret="";
+    $ret.="<html>\n";
+    $ret.="<head><title>{$this->cfg[TITLE]}</title>\n";
+    $ret.="<link rel=stylesheet type='text/css' href='".url_img(array("page"=>$this, "imgname"=>"style.css"))."'>\n";
+    $ret.="</head><body>\n";
+    $ret.=$this->header();
+
+    $cols=4;
+
+    $list=$this->get_viewlist();
+    $td_size=100.0/$cols;
+    unset($cur_index);
+
+    $ret.="<table class='album_table' width='100%' id='table_album'>\n";
+    $pos=$cols;
+    $i=0;
+    foreach($list as $el) {
+      $colspan=$el->colspan();
+      if($colspan>$cols)
+        $colspan=$cols;
+
+      if($pos<$colspan) {
+        while($pos>0) {
+          $ret.="  <td class='imglist_empty' width='$td_size%'></td>\n";
+          $pos--;
+        }
+        $pos=$cols;
+        $ret.="</tr>\n";
+      }
+
+      if($pos==$cols)
+        $ret.="<tr>\n";
+
+      $ret.="  <td colspan='$colspan' class='album_".$el->html_class()."' width='".
+            ($td_size*$colspan)."%' id='chunk_$i' photopages_id='$el->id' photopages_index='$el->index'>\n";
+
+      if($el->get_index()!=$cur_index) {
+        $cur_index=$el->get_index();
+        $ret.="    <a name='img_$cur_index'></a>\n";
+      }
+
+      $ret.="    ".$el->export_album();
+      $ret.="</td>\n";
+
+      $pos-=$colspan;
+      if($pos==0) {
+        $pos=$cols;
+        $ret.="</tr>\n";
+      }
+
+      $i++;
+    }
+
+    while($pos>0) {
+      $ret.="  <td class='imglist_empty' width='$td_size%'></td>\n";
+      $pos--;
+    }
+    $ret.="</tr>\n";
+    $ret.="</table>\n";
+
+    $ret.="</body>\n";
+    $ret.="</html>\n";
+    return $ret;
+  }
+
+
+  function export_image($img) {
+    $ret="";
+    $ret.="<html>\n";
+    $ret.="<head><title>{$this->cfg[TITLE]} :: Bild ".($img+1)."</title>\n";
+    $ret.="<link rel=stylesheet type='text/css' href='".url_img(array("page"=>$this, "imgname"=>"style.css"))."'>\n";
+    $ret.="</head><body>\n";
+
+    $ret.=$this->get_chunk_nav($img);
+    $ret.=$this->get_path();
+
+    foreach($this->cfg["LIST"] as $el) {
+      if($el->get_index()==$img) {
+        $ret.="<div index='$img' class='imageview_".$el->html_class()."'>\n";
+        $ret.=$el->export_imageview();
+        $ret.="</div>\n";
+      }
+    }
+
+    $ret.="</body>\n";
+    $ret.="</html>\n";
+    return $ret;
+  }
+
+  function export_html($export_path, $rel_path="") {
+    global $file_path;
+    global $export_img;
+    global $exported_pages;
+    global $export_page;
+    global $url_relative;
+    $url_relative=$this->path;
+    $export_page_local=array();
+    $export_img=array();
+
+print "starting export: $this->path $this->series -> $export_path<br>\n";
+    $exported_pages[]="$this->path#$this->series";
+
+    if(!$export_path)
+      $export_path="/tmp/export";
+    mkdir($export_path);
+
+    symlink("$file_path/$this->filename", "$export_path/".substr($this->filename, strrpos($this->filename, "/")+1));
+    symlink("$file_path/{$this->cfg["MAIN_PICTURE"]}", "$export_path/main.jpg");
+
+    $f=fopen("$export_path/index.html", "w");
+    fputs($f, $this->export_album());
+    fclose($f);
+
+    $last_img=-1;
+    if(sizeof($this->cfg["LIST"]))
+    for($i=0; $i<$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->get_index(); $i++) {
+      $f=fopen("$export_path/image_$i.html", "w");
+      fputs($f, $this->export_image($i));
+      fclose($f);
+    }
+
+    foreach($export_img as $res=>$img) {
+      mkdir("$export_path/$res");
+      foreach(array_unique($img) as $i) {
+        symlink("$file_path/$this->path/$res/$i", "$export_path/$res/$i");
+      }
+    }
+
+    $export_page_local=$export_page;
+    $export_page=array();
+    foreach($export_page_local as $p) {
+      $p->get_subpage();
+      if(!in_array("{$p->subpage->path}#{$p->subpage->series}", $exported_pages)) {
+        print "exporting {$p->subpage->path}<br>\n";
+        $p->subpage->export_html($export_path."/".
+                 substr($p->subpage->path, strrpos($p->subpage->path, "/")+1));
+      }
+    }
+
+    foreach($exported_pages as $p) {
+      print $p->path."<br>\n";
+    }
   }
 
 }
