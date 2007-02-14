@@ -43,9 +43,9 @@ if($_REQUEST[rows]) {
   session_register("album_rows");
 }
 
-$album_page=0;
-if($_REQUEST["album_page"])
-  $album_page=$_REQUEST["album_page"];
+$img=0;
+if($_REQUEST["img"])
+  $img=$_REQUEST["img"];
 
 if(!($cols=$_SESSION[album_cols])) # absichtliche Zuweisung
   $cols=4;
@@ -71,7 +71,7 @@ print $page->toolbox();
   print "</td></tr>\n";
 
 print "<tr><td class='heading_spacer'></td><td class='heading_nav'>\n";
-print $page->album_nav();
+print $page->album_nav($img);
 print "</td>\n";
 
   print "</tr></table>\n";
@@ -84,9 +84,9 @@ print "</td>\n";
 if($page->get_right($_SESSION[current_user], "view")) {
   $page->read_list();
 
-  $page->show_album();
+  $page->show_album($img);
 
-  print $page->album_nav();
+  print $page->album_nav($img);
 
   small_login_form();
 }

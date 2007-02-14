@@ -1757,6 +1757,7 @@ class Page {
   }
 
   function get_path() {
+    global $page;
     $ret="";
 
     if($this->get_parent()) {
@@ -1767,7 +1768,17 @@ class Page {
         $ret.=" / ";
     }
 
-    $ret.="<a href='".url_page($this->path, $this->series, "index.php")."'>"."{$this->cfg[TITLE]}</a>";
+    $param["page"]=$this;
+    $addparam="";
+    if(($page->path==$this->path)&&($page->series==$this->series)) {
+      global $img;
+
+      if($img) {
+        $param["img"]=$img;
+        $addparam="#img_$img";
+      }
+    }
+    $ret.="<a href='".url_page($param)."$addparam'>"."{$this->cfg[TITLE]}</a>";
 
     return $ret;
   }
@@ -1848,7 +1859,7 @@ class Page {
 
     $ret.="</td><td class='nav_home'>\n";
 
-    $ret.="<a accesskey='h' href='".url_page($this->path, $this->series, "index.php")."#img_$img' target='_top'>".
+    $ret.="<a accesskey='h' href='".url_page(array("page"=>$this, "img"=>$img))."#img_$img' target='_top'>".
           "<img src='".url_img("view_album.png")."' class='nav_home' alt='$lang_str[nav_home]' title='$lang_str[nav_home]'></a>";
 
     //$ret.="</td><td class='nav_album'>\n";
@@ -2444,9 +2455,20 @@ class Page {
     return $album_pages;
   }
 
-  function album_nav() {
-    global $album_page;
+  function find_album_page($img) {
     $album_pages=$this->split_album_pages();
+
+    for($i=1; $i<sizeof($album_pages); $i++) {
+      if($img<$album_pages[$i][0]->get_index())
+        return $i-1;
+    }
+
+    return sizeof($album_pages)-1;
+  }
+
+  function album_nav($img) {
+    $album_pages=$this->split_album_pages();
+    $album_page=$this->find_album_page($img);
     $anz=sizeof($album_pages);
 
     if($anz<=1)
@@ -2457,22 +2479,42 @@ class Page {
     if($album_page==0)
       $ret.="<img src='".url_img("arrow_left_dark.png")."' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'> ";
     else
-      $ret.="<a href='".url_page(array("page"=>$this, "album_page"=>$album_page-1))."' accesskey='p'>".
+      $ret.="<a href='".url_page(array("page"=>$this, "img"=>$album_pages[$album_page-1][0]->get_index()))."' accesskey='p'>".
             "<img src='".url_img("arrow_left.png")."' class='nav_left' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'></a> ";
     $ret.="</td><td class='nav_text'>\n";
-    for($num=0; $num<$anz; $num++) {
+    $start=$album_page-3;
+    $end=$album_page+3;
+    if($start<0) {
+      $end-=$start;
+      $start=0;
+    }
+    if($end>=$anz) {
+      $start+=($anz-$end);
+      $end=$anz-1;
+    }
+    if($start<0)
+      $start=0;
+
+    if($start>0)
+      $ret.="... ";
+
+    for($num=$start; $num<=$end; $num++) {
       if($num==$album_page) {
         $ret.=($num+1)." ";
       }
       else {
-        $ret.="<a href='".url_page(array("page"=>$this, "album_page"=>$num))."'>".($num+1)."</a> ";
+        $ret.="<a href='".url_page(array("page"=>$this, "img"=>$album_pages[$num][0]->get_index()))."'>".($num+1)."</a> ";
       }
     }
+
+    if($end<$anz-1)
+      $ret.="...";
+
     $ret.="</td><td class='nav_right'>\n";
     if($album_page==$anz-1)
       $ret.="<img src='".url_img("arrow_right_dark.png")."' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'> ";
     else
-      $ret.="<a href='".url_page(array("page"=>$this, "album_page"=>$album_page+1))."' accesskey='n'>".
+      $ret.="<a href='".url_page(array("page"=>$this, "img"=>$album_pages[$album_page+1][0]->get_index()))."' accesskey='n'>".
             "<img src='".url_img("arrow_right.png")."' class='nav_right' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'></a> ";
 
     $ret.="</td></tr>\n";
@@ -2481,11 +2523,11 @@ class Page {
     return $ret;
   }
 
-  function show_album() {
+  function show_album($img=0) {
     global $cols;
-    global $album_page;
 
     $album_pages=$this->split_album_pages();
+    $album_page=$this->find_album_page($img);
     $list=$this->get_viewlist();
     $td_size=100.0/$cols;
     unset($cur_index);

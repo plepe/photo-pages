@@ -22,6 +22,10 @@
  *
  */
 
+function done_change_rows(xmldata) {
+  location.reload();
+}
+
 function change_rows(c) {
   if(ob=document.getElementById("rows_"+rows))
     ob.className='toolbox_input';
@@ -30,9 +34,7 @@ function change_rows(c) {
   ob=document.getElementById("rows_"+rows);
   ob.className='toolbox_input_active';
 
-  start_xmlreq("toolbox.php?todo=set_rows&rows="+rows, "Zeilenzahl wird gespeichert");
-
-  location.reload();
+  start_xmlreq("toolbox.php?todo=set_rows&rows="+rows, "Zeilenzahl wird gespeichert", done_change_rows);
 }
 
 function change_cols(c) {
