@@ -2638,8 +2638,8 @@ class Page {
       $ret.="<a href='".url_page(array("page"=>$this, "img"=>$album_pages[$album_page-1][0]->get_index()))."' accesskey='p'>".
             "<img src='".url_img("arrow_left.png")."' class='nav_left' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'></a> ";
     $ret.="</td><td class='nav_text'>\n";
-    $start=$album_page-3;
-    $end=$album_page+3;
+    $start=$album_page-5;
+    $end=$album_page+5;
     if($start<0) {
       $end-=$start;
       $start=0;
@@ -2651,8 +2651,15 @@ class Page {
     if($start<0)
       $start=0;
 
-    if($start>0)
+    if($start>0) {
+      $start+=2;
+      $ret.="<a href='".url_page(array("page"=>$this, "img"=>0))."'>1</a> ";
       $ret.="... ";
+    }
+
+    if($end<$anz-1) {
+      $end-=2;
+    }
 
     for($num=$start; $num<=$end; $num++) {
       if($num==$album_page) {
@@ -2663,8 +2670,10 @@ class Page {
       }
     }
 
-    if($end<$anz-1)
-      $ret.="...";
+    if($end<$anz-1) {
+      $ret.="... ";
+      $ret.="<a href='".url_page(array("page"=>$this, "img"=>$album_pages[$anz-1][0]->get_index()))."'>$anz</a>";
+    }
 
     $ret.="</td><td class='nav_right'>\n";
     if($album_page==$anz-1)
