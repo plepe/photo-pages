@@ -245,7 +245,7 @@ function page_edit_mouse_up(event) {
     else {
       page_edit_return_moving();
     }
-    page_edit_clear_marked();
+    //page_edit_clear_marked();
     page_edit_moving=0;
 
     if(page_edit_enlarged) {
