@@ -1,5 +1,11 @@
 This CHANGELOG includes only important updates.
 
+- svn r45 (2007-02-13)
+  - album page is seperated to save bandwith
+
+- svn r41 (2007-02-09)
+  - change format of urls
+
 - svn r36 (2007-02-07)
   - spaces are converted to _ for uploaded files and new directories
 

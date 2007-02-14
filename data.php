@@ -187,14 +187,14 @@ class SubdirChunk extends Chunk {
     $this->get_subpage();
     $subdata=$this->subpage->cfg;
 
-    $ret.="<a href='".url_page($this->subpage->path, "", "index.php")."'>";
+    $ret.="<a href='".url_page(array("page"=>$this->subpage))."'>";
     if($subdata[MAIN_PICTURE])
       $ret.="<img class='album_series' src='".url_photo($this->subpage->path, "", "index.php", "main", "main.jpg", 200, $_SESSION[img_version][$this->img])."' align='left'>";
     else
       $ret.="<img class='album_series' src='".url_img($no_main_picture)."' align='left'>";
     $ret.="</a>\n";
 
-    $ret.="<a href='".url_page($this->subpage->path, "", "index.php")."'>";
+    $ret.="<a href='".url_page(array("page"=>$this->subpage))."'>";
     $ret.="$subdata[TITLE]</a><br>";
     $ret.="$subdata[DATE]<br>";
 /*
@@ -1686,7 +1686,7 @@ class Page {
 
     $ret ="<div class='header'>\n";
     if($this->get_parent()) {
-      $ret.=$this->parent->get_path();
+      $ret.=$this->parent->get_path($this);
       if($this->series)
         $ret.=" - <br>";
       else
@@ -1756,12 +1756,12 @@ class Page {
     return $i;
   }
 
-  function get_path() {
+  function get_path($child=0) {
     global $page;
     $ret="";
 
     if($this->get_parent()) {
-      $ret=$this->parent->get_path();
+      $ret=$this->parent->get_path($this);
       if($this->series)
         $ret.=" - ";
       else
@@ -1777,6 +1777,11 @@ class Page {
         $param["img"]=$img;
         $addparam="#img_$img";
       }
+    }
+    elseif($child) {
+      $i=substr($child->path, strrpos($child->path, "/")+1);
+      $param["img"]="img_$i";
+      $addparam="#img_$i";
     }
     $ret.="<a href='".url_page($param)."$addparam'>"."{$this->cfg[TITLE]}</a>";
 
@@ -2558,6 +2563,8 @@ class Page {
       if($el->get_index()!=$cur_index) {
         $cur_index=$el->get_index();
         print "    <a name='img_$cur_index'></a>\n";
+        if($file_name=$el->file_name())
+          print "    <a name='img_$file_name'></a>\n";
       }
 
       print "    ".$el->album_show();

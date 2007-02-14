@@ -47,6 +47,13 @@ $img=0;
 if($_REQUEST["img"])
   $img=$_REQUEST["img"];
 
+if(eregi("img_(.*)$", $img, $m)) {
+  $list=$page->get_viewlist();
+  foreach($list as $el)
+    if($el->file_name()==$m[1])
+      $img=$el->get_index();
+}
+
 if(!($cols=$_SESSION[album_cols])) # absichtliche Zuweisung
   $cols=4;
 if(!($rows=$_SESSION[album_rows])) # absichtliche Zuweisung
