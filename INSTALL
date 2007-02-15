@@ -38,6 +38,11 @@ Upgrading
   the new installation. Check this section of this file for changes to the
   conf.php.
 
+  Version >= r54
+  --------------
+  - Extension-system. Add a variable $extensions to conf.php to include
+    extensions (see conf.php-dist resp. README)
+
   Version >= r41
   -------------
   - URLs have a new syntax. Please look at the lines in the
