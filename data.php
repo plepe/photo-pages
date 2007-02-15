@@ -708,11 +708,10 @@ class ImgChunk extends Chunk {
     $ret.="<br>\n";
     //$ret.="<a accesskey='m' class='toolbox_input' id='toolbox_input_mag' href='javascript:start_mag()'>$lang_str[tool_magnify_name]</a><br>\n";
     $ret.="<input accesskey='m' type='submit' class='toolbox_input' id='toolbox_input_mag' onClick='start_mag()' value='$lang_str[tool_magnify_name]' title=\"$lang_str[tooltip_mag]\"><br>\n";
-    $ret.="<input accesskey='f' class='".
-      ($_SESSION[fullscreen_mode]?"toolbox_input_active":"toolbox_input").
-      "' type='submit' id='toolbox_input_fullscreen' value='$lang_str[tool_fullscreen_name]' onClick='set_fullscreen()' title=\"$lang_str[tooltip_fullscreen]\"><br>\n";
     $ret.="</div>\n";
     
+    $ret.=show_toolbox("toolbox");
+
     $ret1="";
     if($this->page->get_right($_SESSION[current_user], "edit")) {
       $ret1.="<input class='toolbox_input' type='submit' name='rot_left' value='$lang_str[tool_rotate_left]' onClick='start_rotate(\"".url_script($this->page->path, $this->page->series, "toolbox.php", $this->id)."&todo=rot_left\", this)' title=\"$lang_str[tooltip_rotate]\"><br>\n";
@@ -730,10 +729,9 @@ class ImgChunk extends Chunk {
       $ret.="</div>\n";
     }
 
-    $ret.=show_toolbox("toolbox");
-
     return $ret;
   }
+
 
   function imageview_show($res=0) {
     global $series;
@@ -764,48 +762,22 @@ class ImgChunk extends Chunk {
           "var index_id=\"{$this->index_id}\";\n".
           "var imgchunk=\"$this->index\";\n";
 
-    if($_SESSION[window_width])
-      $ret.="var window_width={$_SESSION[window_width]};\n".
-            "window_height={$_SESSION[window_height]};\n";
-    else
-      $ret.="var window_width=0;\n".
-            "var window_width=0;\n";
-
     $ret.="img_width={$imgres[0]};\n".
           "img_height={$imgres[1]};\n";
 
-    if($_SESSION[fullscreen_mode])
-      $ret.="var fullscreen={$_SESSION[fullscreen_mode]};\n";
-    else
-      $ret.="var fullscreen=0;\n";
-
     $ret.="//-->\n</script>\n";
 
-    if($_SESSION[window_width]&&$_SESSION[fullscreen_mode]) {
-      $w=$_SESSION[window_width];
-      $h=$_SESSION[window_height];
-      $ratio=$imgres[0]/$imgres[1];
+    $img_params[width]=$imgres[0];
+    $img_params[height]=$imgres[1];
 
-      if($w/$ratio>$h) {
-        $ih=$h;
-        $iw=$ih*$ratio;
-      }
-      else {
-        $iw=$w;
-        $ih=$iw/$ratio;
-      }
-    }
-    else {
-      $iw=$imgres[0];
-      $ih=$imgres[1];
-    }
+    modify_params("imageview", &$img_params);
 
     $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."' target='_top'>";
 
 //    $ret.="<a href='$orig_path/$this->img?{$_SESSION[img_version][$this->img]}' target='_top'>".
     //$ret.="<img src='$normal_res/$this->img?{$_SESSION[img_version][$this->img]}' ";
     $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $normal_res, $_SESSION[img_version][$this->img])."' target='_top' ";
-    $ret.="id='img' class='imageview_image' width='$iw' height='$ih' onLoad='notify_img_load()'></a>\n";
+    $ret.="id='img' class='imageview_image' ".implode_vars($img_params)." onLoad='notify_img_load()'></a>\n";
 // 
 
     $ret.="<div class='toolbox'>\n";
@@ -1146,13 +1118,6 @@ class MovieChunk extends ImgChunk {
           "var index_id=\"{$this->index_id}\";\n".
           "var imgchunk=\"$this->index\";\n";
 
-    if($_SESSION[window_width])
-      $ret.="var window_width={$_SESSION[window_width]};\n".
-            "window_height={$_SESSION[window_height]};\n";
-    else
-      $ret.="var window_width=0;\n".
-            "var window_width=0;\n";
-
     $ret.="img_width={$imgres[0]};\n".
           "img_height={$imgres[1]};\n";
 
@@ -1162,25 +1127,6 @@ class MovieChunk extends ImgChunk {
       $ret.="var fullscreen=0;\n";
 
     $ret.="//-->\n</script>\n";
-
-    if($_SESSION[window_width]&&$_SESSION[fullscreen_mode]) {
-      $w=$_SESSION[window_width];
-      $h=$_SESSION[window_height];
-      $ratio=$imgres[0]/$imgres[1];
-
-      if($w/$ratio>$h) {
-        $ih=$h;
-        $iw=$ih*$ratio;
-      }
-      else {
-        $iw=$w;
-        $ih=$iw/$ratio;
-      }
-    }
-    else {
-      $iw=$imgres[0];
-      $ih=$imgres[1];
-    }
 
     //$ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."' target='_top'>";
 
@@ -3164,4 +3110,30 @@ function replace_invalid_chars($name) {
   }
 
   return $res;
+}
+
+function implode_vars($vars) {
+  $ret=array();
+
+  foreach($vars as $k=>$v) {
+    $ret[]="$k=\"$v\"";
+  }
+
+  return implode(" ", $ret);
+}
+
+$hooks=array();
+
+function modify_params($why, $vars) {
+  global $hooks;
+
+  foreach($hooks[$why] as $h) {
+    $h(&$vars);
+  }
+}
+
+function add_hook($why, $fun) {
+  global $hooks;
+
+  $hooks[$why][]=$fun;
 }

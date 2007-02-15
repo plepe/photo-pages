@@ -22,77 +22,6 @@
  *
  */
 var rot_ob;
-var window_width=0;
-var window_height=0;
-
-function set_fullscreen() {
-  var ob=document.getElementById("toolbox_input_fullscreen");
-  if(fullscreen) {
-    fullscreen=0;
-    ob.className="toolbox_input";
-  }
-  else {
-    fullscreen=1;
-    ob.className="toolbox_input_active";
-  }
-  set_auto_img_size();
-
-  start_xmlreq("toolbox.php?todo=set_fullscreen_mode&fullscreen="+fullscreen);
-}
-
-function set_auto_img_size() {
-  img=document.getElementById("img");
-  ratio=img.width/img.height;
-
-  p=get_abs_pos(img);
-//  h=document.body.clientHeight-p[1]-40;
-//  w=document.body.clientWidth-p[0]*2;
-  h=window.innerHeight-p[1]-40;
-  w=window.innerWidth-p[0]*2;
-
-  if(!fullscreen) {
-    if(cur_res>0) {
-      if(ratio<1) {
-        img.height=cur_res;
-        img.width=cur_res*ratio;
-      }
-      else {
-        img.width=cur_res;
-        img.height=cur_res/ratio;
-      }
-    }
-    else {
-      img.width=img_width;
-      img.height=img_height;
-    }
-  }
-  else {
-    if(w/ratio>h) {
-      img.height=h;
-      img.width=img.height*ratio;
-    }
-    else {
-      img.width=w;
-      img.height=img.width/ratio;
-      img.style.marginRight="0px";
-
-      // Do it twice on case of suddently appearing scrollbar
-      w=document.body.clientWidth-p[0]*2;
-      img.width=w;
-      img.height=img.width/ratio;
-    }
-  }
-
-  if((h!=window_height)||
-     (w!=window_width)) {
-    window_width=w;
-    window_height=h;
-
-    start_xmlreq("toolbox.php?todo=set_window_size&window_width="+window_width+"&window_height="+window_height);
-  }
-  
-  window.onresize=set_auto_img_size;
-}
 
 function list_update() {
   // Wenn wir in der Diaansicht sind
@@ -115,7 +44,7 @@ function notify_img_load() {
   if(rot_ob)
     rot_ob.className='toolbox_input';
 
-  set_auto_img_size();
+  //set_auto_img_size();
 }
 
 function set_normal_res(res) {

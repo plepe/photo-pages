@@ -35,6 +35,12 @@ Extensions
   This are the available extensions (add them to the extensions-directive in
   your conf.php):
 
+- window
+  needed by fullscreen
+
+- fullscreen
+  scales images according to size of browser
+
 - slideshow
   Automatic browsing through the pictures of a photo page
 

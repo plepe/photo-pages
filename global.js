@@ -215,6 +215,7 @@ function ajax_read_value(xmldata, key) {
 }
 
 var initfuns=new Array();
+var hookfuns=new Array();
 function register_initfun(fun) {
   initfuns.push(fun);
 }
@@ -232,5 +233,32 @@ function set_session_vars(vars) {
   }
 
   params=params.join("&");
-  start_xmlreq(url_script({script: "toolbox.php", todo: "set_session_vars", page: page, series: series })+"&"+params);
+  start_xmlreq(url_script({script: "toolbox.php", todo: "set_session_vars" })+"&"+params);
+}
+
+function call_hooks(event) {
+  for(var i=0; i<hookfuns[this]["on"+event.type].length; i++)
+    hookfuns[this]["on"+event.type][i]();
+}
+
+function register_hook(ob, event, fun) {
+  if(typeof ob=="string")
+    ob=document.getElementById(ob);
+
+  if(!hookfuns[ob])
+    hookfuns[ob]=new Array();
+  if(!hookfuns[ob][event])
+    hookfuns[ob][event]=new Array();
+
+  hookfuns[ob][event].push(fun);
+
+  switch(event) {
+    case "onload":
+      ob.onload=call_hooks;
+      break;
+    case "onresize":
+      ob.onresize=call_hooks;
+      break;
+    default:
+  }
 }
