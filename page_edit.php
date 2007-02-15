@@ -28,11 +28,12 @@ if($_REQUEST[submit][ok]) {
 }
 start_html_header($page->cfg[TITLE]);
 use_javascript("page_edit");
-use_javascript("magnify");
+include_extensions("page_edit");
+urls_write();
 end_html_header();
 
 ?>
-<BODY onLoad='init_page_edit()'  onMousemove='mag_move(event)'>
+<BODY onLoad='init_page_edit()'>
 <?
 print $page->header();
 print "<div class='wait_screen' id='wait_screen'><table width='100%' height='100%'><tr><td align='center' valign='middle'>Please wait</td></tr></table></div>\n";

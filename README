@@ -44,6 +44,12 @@ Extensions
 - slideshow
   Automatic browsing through the pictures of a photo page
 
+- magnify
+  Produces a magnifying glass you can move over an image
+
+- resolution
+  Let's the user choose the resolution of the imageview
+
 Included Software
 -----------------
 - FlowPlayer

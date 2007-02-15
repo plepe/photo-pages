@@ -158,12 +158,6 @@ switch($todo) {
     $_SESSION[album_rows]=$_REQUEST[rows];
     session_register("album_rows");
     break;
-  case "set_normal_res":
-    print "<status>success</status>\n";
-
-    $_SESSION[normal_res]=$_REQUEST[res];
-    session_register("normal_res");
-    break;
   case "login":
     if($_REQUEST[username]) {
       $test=new User($_REQUEST[username]);
@@ -178,20 +172,6 @@ switch($todo) {
     break;
   case "logout":
     $_SESSION[current_user]=get_user("anonymous");
-    print "<status>success</status>\n";
-    break;
-  case "set_window_size":
-    session_register("window_width");
-    $_SESSION[window_width]=$_REQUEST[window_width];
-    session_register("window_height");
-    $_SESSION[window_height]=$_REQUEST[window_height];
-
-    print "<status>success</status>\n";
-    break;
-  case "set_fullscreen_mode":
-    session_register("fullscreen_mode");
-    $_SESSION[fullscreen_mode]=$_REQUEST[fullscreen];
-
     print "<status>success</status>\n";
     break;
   case "read_upload_dir":

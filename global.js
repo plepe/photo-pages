@@ -238,7 +238,7 @@ function set_session_vars(vars) {
 
 function call_hooks(event) {
   for(var i=0; i<hookfuns[this]["on"+event.type].length; i++)
-    hookfuns[this]["on"+event.type][i]();
+    hookfuns[this]["on"+event.type][i](event, this);
 }
 
 function register_hook(ob, event, fun) {
@@ -258,6 +258,9 @@ function register_hook(ob, event, fun) {
       break;
     case "onresize":
       ob.onresize=call_hooks;
+      break;
+    case "onmousemove":
+      ob.onmousemove=call_hooks;
       break;
     default:
   }

@@ -36,7 +36,7 @@ end_html_header();
 
 
 ?>
-<BODY onLoad='global_initfun()' onMousemove='mag_move(event)'>
+<BODY onLoad='global_initfun()'>
 <?
 $width=$_REQUEST[width];
 

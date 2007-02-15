@@ -690,9 +690,9 @@ class ImgChunk extends Chunk {
     global $lang_str;
 
     //return "";
+    /*
     $ret ="<div class='toolbox' id='toolbox'>\n";
 
-    $ret.="$lang_str[info_resolution]: ";
     foreach($resolutions as $res) {
       $ret.="<input type='submit' class='";
       $ret.=($normal_res==$res?"toolbox_input_active":"toolbox_input");
@@ -707,9 +707,8 @@ class ImgChunk extends Chunk {
     //$ret.="<input type='submit' class='toolbox_input' value='orig'/>\n";
     $ret.="<br>\n";
     //$ret.="<a accesskey='m' class='toolbox_input' id='toolbox_input_mag' href='javascript:start_mag()'>$lang_str[tool_magnify_name]</a><br>\n";
-    $ret.="<input accesskey='m' type='submit' class='toolbox_input' id='toolbox_input_mag' onClick='start_mag()' value='$lang_str[tool_magnify_name]' title=\"$lang_str[tooltip_mag]\"><br>\n";
     $ret.="</div>\n";
-    
+    */
     $ret.=show_toolbox("toolbox");
 
     $ret1="";
@@ -756,7 +755,6 @@ class ImgChunk extends Chunk {
           "var img_orig=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."\";\n".
           "var img_size_url=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, "%SIZE%", $_SESSION[img_version][$this->img])."\";\n".
           "var img_url=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, $normal_res, $_SESSION[img_version][$this->img])."\";\n".
-          "var cur_res=\"$normal_res\";\n".
           "var series=\"$series\";\n".
           "var page=\"{$this->page->path}\";\n".
           "var index_id=\"{$this->index_id}\";\n".
@@ -2916,10 +2914,6 @@ if(!$series) {
 #    else {
 #      $this->cfg[$c]=$v;
 #    }
-
-# normal_res ueberschreiben
-if($_SESSION[normal_res])
-  $normal_res=$_SESSION[normal_res];
 
 # Damit beim Rotieren und so immer die richtigen Bilder kommen
 if(!is_array($_SESSION[img_version])) {

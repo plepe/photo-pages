@@ -47,22 +47,6 @@ function notify_img_load() {
   //set_auto_img_size();
 }
 
-function set_normal_res(res) {
-  var img=document.getElementById('img');
-  img.src=img_size_url.replace(/%SIZE%/, res);
-  //res +"/" + imgurl + "?" + img_version;
-
-  var el=document.getElementById("res_" + cur_res);
-  el.className="toolbox_input";
-
-  var el=document.getElementById("res_" + res);
-  el.className="toolbox_input_active";
-
-  cur_res=res;
-
-  start_xmlreq("toolbox.php?todo=set_normal_res&res="+res, "Bevorzugte Aufloesung wird gespeichert");
-}
-
 function start_rotate(url, _rot_ob) {
   rot_ob=_rot_ob;
   rot_ob.className="toolbox_input_active";
