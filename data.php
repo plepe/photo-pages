@@ -45,6 +45,8 @@ $export_page=array();
 $exported_pages=array();
 
 require "conf.php";
+require "inc/extensions.php";
+include "inc/toolbox.php";
 
 if(!defined("DATA_PHP")) {
   define("DATA_PHP", TRUE);
@@ -728,6 +730,8 @@ class ImgChunk extends Chunk {
       $ret.="</div>\n";
     }
 
+    $ret.=show_toolbox("toolbox");
+
     return $ret;
   }
 
@@ -801,7 +805,7 @@ class ImgChunk extends Chunk {
 //    $ret.="<a href='$orig_path/$this->img?{$_SESSION[img_version][$this->img]}' target='_top'>".
     //$ret.="<img src='$normal_res/$this->img?{$_SESSION[img_version][$this->img]}' ";
     $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $normal_res, $_SESSION[img_version][$this->img])."' target='_top' ";
-    $ret.="id='img' class='imageview_image' width='$iw' height='$ih' onLoad='notify_img_load()'></a>";
+    $ret.="id='img' class='imageview_image' width='$iw' height='$ih' onLoad='notify_img_load()'></a>\n";
 // 
 
     $ret.="<div class='toolbox'>\n";
@@ -1914,9 +1918,9 @@ class Page {
     if($this->get_parent()) {
       $ret=$this->parent->get_path($this);
       if($this->series)
-        $ret.=" - ";
+        $ret.="- ";
       else
-        $ret.=" / ";
+        $ret.="/ ";
     }
 
     $param["page"]=$this;
@@ -1934,7 +1938,7 @@ class Page {
       $param["img"]="img_$i";
       $addparam="#img_$i";
     }
-    $ret.="<a href='".url_page($param)."$addparam'>"."{$this->cfg[TITLE]}</a>";
+    $ret.="<a href='".url_page($param)."$addparam'>"."{$this->cfg[TITLE]}</a>\n";
 
     return $ret;
   }
@@ -3131,23 +3135,23 @@ function html_add_formated_text($key, $text) {
   print "<$key>".substr($text, $i)."</$key>\n";
 }
 
-
+$request_type="html";
 function html_export_var($vars) {
   global $request_type;
 
-//  if($request_type=="html") {
-//    print "<script type='text/javascript'>\n<!--\n";
-//    foreach($vars as $k=>$v) {
-//      print "var $k=".html_var_to_js($v).";\n";
-//    }
-//    print "//-->\n</script>\n";
-//  }
-//  else {
+  if($request_type=="html") {
+    print "<script type='text/javascript'>\n<!--\n";
+    foreach($vars as $k=>$v) {
+      print "var $k=".html_var_to_js($v).";\n";
+    }
+    print "//-->\n</script>\n";
+  }
+  else {
     foreach($vars as $key=>$value) {
       //print "<$key>".html_var_to_js($value)."</$key>\n";
       html_add_formated_text($key, html_var_to_js($value));
     }
-  //}
+  }
 }
 
 function replace_invalid_chars($name) {

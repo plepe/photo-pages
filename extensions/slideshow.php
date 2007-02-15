@@ -1,0 +1,16 @@
+<?
+$str="";
+$str.="<input type='submit' value='Slideshow' class='".($_SESSION[slideshow_active]?"toolbox_input_active":"toolbox_input")."' onClick='toggle_slideshow()' id='slideshow_button'>\n";
+$str.="<select id='slideshow_time' class='toolbox_input' onChange='set_slideshow_time()'>\n";
+foreach(array(5, 10, 15) as $t) {
+  $str.="  <option value='$t'";
+  if($_SESSION[slideshow_time]==$t)
+    $str.=" selected";
+  $str.=">$t sec</option>\n";
+}
+$str.="</select><br>\n";
+
+add_toolbox_item("toolbox", $str);
+html_export_var(array("slideshow_active"=>$_SESSION[slideshow_active], "slideshow_time"=>$_SESSION[slideshow_time]));
+session_register("slideshow_active");
+session_register("slideshow_time");

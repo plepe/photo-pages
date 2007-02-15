@@ -30,11 +30,13 @@ if(!$img)
 start_html_header("{$page->cfg[TITLE]} :: Bild ".($img+1));
 use_javascript("image");
 use_javascript("magnify");
+include_extensions("imageview");
 urls_write();
 end_html_header();
 
+
 ?>
-<BODY onLoad='list_update()' onMousemove='mag_move(event)'>
+<BODY onLoad='global_initfun()' onMousemove='mag_move(event)'>
 <?
 $width=$_REQUEST[width];
 
@@ -45,7 +47,7 @@ if(!ereg("^[0-9]*$", $width)) {
 
 $nav=$page->get_chunk_nav($img);
 print $nav;
-print $page->get_path();
+print "<div>".$page->get_path()."</div>\n";
 
 //print $page->short_header();
 

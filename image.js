@@ -240,3 +240,5 @@ function notify_list() {
     parent.list.jump=1;
   }
 }
+
+register_initfun(list_update);

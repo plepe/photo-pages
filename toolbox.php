@@ -24,6 +24,7 @@
  */
 
 Header("content-type: text/xml");
+$request_type="xml";
 
 require "data.php";
 
@@ -196,6 +197,15 @@ switch($todo) {
   case "read_upload_dir":
     $x=list_dir($_REQUEST["dir"]);
     html_export_var(array("dir"=>$x));
+    break;
+  case "set_session_vars":
+    foreach($_REQUEST["var"] as $varname=>$value) {
+      if($value=="null")
+        $value=null;
+      $_SESSION[$varname]=$value;
+      print "<debug>set $varname to '$value'</debug>\n";
+    }
+    break;
   default:
 }
 

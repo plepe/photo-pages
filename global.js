@@ -213,3 +213,24 @@ function ajax_read_value(xmldata, key) {
   //ob[0].firstChild.nodeValue+";");
   return x();
 }
+
+var initfuns=new Array();
+function register_initfun(fun) {
+  initfuns.push(fun);
+}
+
+function global_initfun() {
+  for(var i=0; i<initfuns.length; i++)
+    initfuns[i]();
+}
+
+function set_session_vars(vars) {
+  var params=new Array();
+
+  for(var i in vars) {
+    params.push("var["+i+"]="+vars[i]);
+  }
+
+  params=params.join("&");
+  start_xmlreq(url_script({script: "toolbox.php", todo: "set_session_vars", page: page, series: series })+"&"+params);
+}
