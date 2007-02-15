@@ -76,6 +76,9 @@ umask(0000);
 // Which is the default language
 $language="en";
 
+// Contains a list of extensions - check the README file for available extensions
+$extensions=array("slideshow");
+
 // URLs
 // es wird auf jeden fall $web_path davor gesetzt.
 // in der url werden folgende elemente ersetzt:
