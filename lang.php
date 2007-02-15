@@ -37,3 +37,18 @@ function lang_list() {
   return array("de"=>"Deutsch", "en"=>"English");
 }
 
+$lang_ids=array();
+
+function set_lang($lang, $lang_id, $str) {
+  global $language;
+  global $lang_str;
+  global $lang_ids;
+
+  if(($lang==$language)||(substr($lang, 0, strpos($language, "_")-1)==$lang)) {
+    $lang_str=array_merge($lang_str, $str);
+  }
+  elseif(!in_array($lang_id, $lang_ids)) {
+    $lang_str=array_merge($str, $lang_str);
+    array_push($lang_ids, $lang_id);
+  }
+}

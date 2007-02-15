@@ -14,6 +14,7 @@ function include_extensions($view) {
   foreach($extensions as $ext) {
     include "extensions/{$ext}_data.php";
     if(in_array($view, $extensions_data[$ext]["views"])) {
+      include "extensions/{$ext}_lang.php";
       include "extensions/{$ext}.php";
       use_javascript("extensions/{$ext}");
     }

@@ -1,12 +1,14 @@
 <?
+global $lang_str;
+
 $str="";
-$str.="<input type='submit' value='Slideshow' class='".($_SESSION[slideshow_active]?"toolbox_input_active":"toolbox_input")."' onClick='toggle_slideshow()' id='slideshow_button'>\n";
+$str.="<input type='submit' value='$lang_str[slideshow_name]' class='".($_SESSION[slideshow_active]?"toolbox_input_active":"toolbox_input")."' onClick='toggle_slideshow()' id='slideshow_button'>\n";
 $str.="<select id='slideshow_time' class='toolbox_input' onChange='set_slideshow_time()'>\n";
 foreach(array(5, 10, 15) as $t) {
   $str.="  <option value='$t'";
   if($_SESSION[slideshow_time]==$t)
     $str.=" selected";
-  $str.=">$t sec</option>\n";
+  $str.=">$t $lang_str[slideshow_sec]</option>\n";
 }
 $str.="</select><br>\n";
 

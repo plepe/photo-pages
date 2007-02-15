@@ -3135,11 +3135,10 @@ function html_add_formated_text($key, $text) {
   print "<$key>".substr($text, $i)."</$key>\n";
 }
 
-$request_type="html";
 function html_export_var($vars) {
   global $request_type;
 
-  if($request_type=="html") {
+  if($request_type!="xml") {
     print "<script type='text/javascript'>\n<!--\n";
     foreach($vars as $k=>$v) {
       print "var $k=".html_var_to_js($v).";\n";
