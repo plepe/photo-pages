@@ -6,6 +6,9 @@ function window_resize() {
   var h=window.innerHeight-p[1]-40;
 
   if((w!=window_width)||(h!=window_height)) {
+    window_width=w;
+    window_height=h;
+
     set_session_vars({ window_width: window_width, window_height: window_height });
   }
 }

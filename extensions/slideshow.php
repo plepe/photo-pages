@@ -18,5 +18,5 @@ foreach(array(5, 10, 15) as $t) {
 }
 $str.="</select><br>\n";
 
-add_toolbox_item("toolbox", $str);
+add_toolbox_item("imageview_toolbox", $str);
 html_export_var(array("slideshow_active"=>$_SESSION[slideshow_active], "slideshow_time"=>$_SESSION[slideshow_time]));

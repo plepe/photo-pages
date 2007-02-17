@@ -50,6 +50,15 @@ Extensions
 - resolution
   Let's the user choose the resolution of the imageview
 
+- columns
+  Let's the user change the amount of columns in album-view
+
+- rowcount
+  Splits the album-view in several pages for large pages
+
+- langchoose
+  Let's the user change the language of the interface
+
 Included Software
 -----------------
 - FlowPlayer

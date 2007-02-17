@@ -20,7 +20,7 @@ function fullscreen_calculate($vars) {
   return $vars;
 }
 
-add_toolbox_item("toolbox", "<input accesskey='f' class='".
+add_toolbox_item("imageview_toolbox", "<input accesskey='f' class='".
       ($_SESSION[fullscreen_mode]?"toolbox_input_active":"toolbox_input").
       "' type='submit' id='toolbox_input_fullscreen' value='$lang_str[tool_fullscreen_name]' onClick='set_fullscreen()' title=\"$lang_str[tooltip_fullscreen]\"><br>\n");
 

@@ -22,16 +22,30 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-function use_javascript($file) {
+$finished_http_header=null;
+$saved_js="";
+
+function use_javascript($file=0) {
   global $url_javascript;
   global $page;
+  global $finished_http_header;
+  global $saved_js;
 
-  print "<script src='".url_javascript(array("script"=>"$file.js"))."' type='text/javascript'></script>\n";
+  if($file)
+    $saved_js.="<script src='".url_javascript(array("script"=>"$file.js"))."' type='text/javascript'></script>\n";
+
+  if($finished_http_header) {
+    print $saved_js;
+    $saved_js="";
+  }
 }
 
 function start_html_header($title) {
+  global $finished_http_header;
+
   Header("content-type: text/html; charset=iso-8859-15");
   setlocale(LC_ALL, "de_AT");
+  $finished_http_header=1;
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
@@ -40,7 +54,8 @@ function start_html_header($title) {
 <title>Photopage :: <?=$title?></title>
 <link rel=stylesheet type="text/css" href="<?=url_img("style.css");?>">
 <?
-use_javascript("global");
+use_javascript();
+html_export_var(array());
 }
 
 function end_html_header() {

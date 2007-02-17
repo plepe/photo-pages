@@ -1,0 +1,85 @@
+Extensions define a method for improving the photo pages. Several of the options of the original code are extensions now, that can easily be activated or not.
+
+Every extension consists of 4 files.
+- extension.php
+  necessary code
+
+- extension.js
+  javascript-code
+
+- extension_data.php
+  defines, in which views the extension is used - see set_extension_views
+
+- extension_lang.php
+  adds language strings for this extension
+
+Album-View
+----------
++------------------------------+---------+
+| Title                        |         |
+| A                            |         |
++------------------------------+    B    |
+|         |                    |         |
+|         |         C          |         |
++------------------------------+---------+
+                    D
++-------+ +--------+ +--------+ +--------+
+|       | |        | |        | |        |
++-------+ +--------+ +--------+ +--------+
+...
+                    E
++----------------------------------------+
+|                   F                    |
++----------------------------------------+
+
+A ... text 'album_heading'
+B ... toolboxes: 'login', 'album_toolbox', 'album_admintools'
+C ... text 'album_subheading'
+D ... text 'album_start'
+E ... text 'album_end'
+F ... text 'footer'
+
+Image-View
+----------
+< 1/10 > A | Title
+B
++-------------------------+ +-------+
+|                         | |   D   |
+|          C              | +-------+
+|                         |
++-------------------------+
+E
+F
+
+A ... table 'imageview_nav'
+B ... text 'imageview_beforeimage'
+C ... image ... id='img'
+D ... toolboxes: 'imageview_details', 'imageview_toolbox', 'imageview_admintools'
+E ... text 'imageview_afterimage'
+F ... text 'imageview_description'
+
+(PHP) Functions useful for extensions
+-------------------------------------
+- add_toolbox_item($toolbox, $text)
+  Adds the $text to $toolbox. It should end with '<br>'
+
+- add_text_item($place, $text)
+  Adds the $text to $place. It should end with '<br>'
+
+- html_export_var($vars)
+  Gets an asssoziative Array with $varname=>$value
+  In javascript this Vars will be available
+
+(JS) Functions useful for extensions
+------------------------------------
+- register_initfun(fun)
+  Adds fun to the onLoad-Handler of the Body
+
+- register_hook(ob, hook, fun)
+  Adds fun to the hook of the DOM-Object ob
+  hook can be 'onload', 'onresize' or 'onmousemove' (currently)
+
+- set_session_vars(vars, callback)
+  Gets an assoziative Array with { varname: value, ... }
+  Transfered via a XMLHttpRequest to the server, sessionvars get changed
+  callback will be called after setting

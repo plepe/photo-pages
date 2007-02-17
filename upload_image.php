@@ -23,20 +23,13 @@
  *
  */
 require "data.php";
-setlocale(LC_ALL, "de_AT");
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<link rel=stylesheet type="text/css" href="<?=url_img("style.css");?>">
-<?
+start_html_header($page->cfg[TITLE]);
+
 use_javascript("global");
 use_javascript("upload_image");
 urls_write();
+end_html_header();
 ?>
-<title><?=$cfg[TITLE]?></title>
-</head>
 <BODY>
 <?
 print $page->header();

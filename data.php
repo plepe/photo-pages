@@ -45,8 +45,6 @@ $export_page=array();
 $exported_pages=array();
 
 require "conf.php";
-require "inc/extensions.php";
-include "inc/toolbox.php";
 
 if(!defined("DATA_PHP")) {
   define("DATA_PHP", TRUE);
@@ -709,7 +707,7 @@ class ImgChunk extends Chunk {
     //$ret.="<a accesskey='m' class='toolbox_input' id='toolbox_input_mag' href='javascript:start_mag()'>$lang_str[tool_magnify_name]</a><br>\n";
     $ret.="</div>\n";
     */
-    $ret.=show_toolbox("toolbox");
+    $ret.=show_toolbox("imageview_toolbox");
 
     $ret1="";
     if($this->page->get_right($_SESSION[current_user], "edit")) {
@@ -768,7 +766,7 @@ class ImgChunk extends Chunk {
     $img_params[width]=$imgres[0];
     $img_params[height]=$imgres[1];
 
-    modify_params("imageview", &$img_params);
+    modify_var("imageview", &$img_params);
 
     $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."' target='_top'>";
 
@@ -1361,6 +1359,7 @@ class Page {
   var $rights;
   var $rights_checked;
   var $hidden_files;
+  var $show_list;
 
   function last_modified() {
     global $file_path;
@@ -1474,6 +1473,9 @@ class Page {
     }
 
     $this->get_sublist();
+
+    $this->show_list=$this->cfg["LIST"];
+    modify_var("album_modify_list", &$this->show_list);
 
     return $this->cfg["LIST"];
   }
@@ -1722,62 +1724,30 @@ class Page {
     global $lang_str;
     global $language;
 
-    $ret.="<div class='toolbox_main'>\n";
-    $ret.="$lang_str[nav_columns]:\n";
-    for($i=3;$i<7;$i++) {
-      $ret.="<input type='submit' onClick='change_cols($i)' class='";
-      $ret.=($cols==$i?"toolbox_input_active":"toolbox_input");
-      $ret.="' id='cols_$i' title=\"$lang_str[tooltip_change_cols]\" value=\"$i\">\n";
-    }
-    $ret.="<br>\n";
-    $ret.="$lang_str[nav_rows]:\n";
-    for($i=4;$i<7;$i++) {
-      $ret.="<input type='submit' onClick='change_rows($i)' class='";
-      $ret.=($rows==$i?"toolbox_input_active":"toolbox_input");
-      $ret.="' id='rows_$i' title=\"$lang_str[tooltip_change_rows]\" value=\"$i\">\n";
-    }
-    $ret.="<input type='submit' onClick='change_rows(-1)' class='";
-    $ret.=($rows==-1?"toolbox_input_active":"toolbox_input");
-    $ret.="' id='rows_-1' title=\"$lang_str[tooltip_change_rows]\" value=\"&infin;\">\n";
-    $ret.="<br>\n";
-    $ret.="<form name='choose_language' method='post'>\n";
-    $ret.="$lang_str[nav_language]:\n";
-    $ret.="<select name='language' class='toolbox_input' onChange='document.choose_language.submit()'>\n";
-    foreach(lang_list() as $l=>$lname) {
-      $ret.="<option value='$l'";
-      if($l==$language)
-        $ret.=" selected";
-      $ret.=">$lname</option>\n";
-    }
-    $ret.="</select>\n";
-    $ret.="<input type='hidden' name='page' value='$this->path'>\n";
-    $ret.="<input type='hidden' name='series' value='$this->series'>\n";
-    $ret.="<input type='submit' value='$lang_str[nav_ok]' class='toolbox_input'>\n";
-    $ret.="</form>\n";
-    $ret.="</div>\n";
-
     if($this->get_right($_SESSION[current_user], "edit")) {
-      $ret.="<div class='toolbox_main'>\n";
-
-      $ret.="<form action='".url_script($this->path, $this->series, "page_edit.php", "")."' method='get'>\n";
+      $ret ="<form action='".url_script($this->path, $this->series, "page_edit.php", "")."' method='get'>\n";
       $ret.="<input type='hidden' name='page' value=\"$this->path\">\n";
       $ret.="<input type='hidden' name='series' value=\"$this->series\">\n";
       $ret.="<input type='submit' value='$lang_str[tool_edit_page]' class='toolbox_input'><br>\n";
       $ret.="</form>\n";
-      $ret.="<form action='".url_script($this->path, $this->series, "new_page.php", "")."' method='get'>\n";
+      add_toolbox_item("album_admin", $ret);
+      
+      $ret ="<form action='".url_script($this->path, $this->series, "new_page.php", "")."' method='get'>\n";
       $ret.="<input type='hidden' name='page' value=\"$this->path\">\n";
       $ret.="<input type='hidden' name='series' value=\"$this->series\">\n";
       $ret.="<input type='submit' value='$lang_str[tool_new_page]' class='toolbox_input'>\n";
       $ret.="</form>\n";
-      $ret.="<form action='".url_script($this->path, $this->series, "upload_image.php", "")."' method='get'>\n";
+      add_toolbox_item("album_admin", $ret);
+
+      $ret ="<form action='".url_script($this->path, $this->series, "upload_image.php", "")."' method='get'>\n";
       $ret.="<input type='hidden' name='page' value=\"$this->path\">\n";
       $ret.="<input type='hidden' name='series' value=\"$this->series\">\n";
       $ret.="<input type='submit' value='$lang_str[tool_upload_pict]' class='toolbox_input'>\n";
       $ret.="</form>\n";
-      $ret.="</div>\n";
+      add_toolbox_item("album_admin", $ret);
     }
 
-    return $ret;
+    return "";
   }
 
   function header() {
@@ -2509,146 +2479,21 @@ class Page {
     print "</div>\n";
   }
 
-  function split_album_pages() {
-    global $cols;
-    global $rows;
-
-    $album_pages=array();
-    $cur_page=0;
-    $count_rows=0;
-    $count_this_row=0;
-    $list=$this->get_viewlist();
-
-    if($rows==-1)
-      return array($list);
-
-    $pos=$cols;
-    foreach($list as $el) {
-//print "$count_rows $cur_page $pos $cols<br>";
-      $colspan=$el->colspan();
-      if($colspan>$cols)
-        $colspan=$cols;
-
-      if($pos<$colspan) {
-        if($count_rows>=$rows-1) {
-          $cur_page++;
-          $count_rows=0;
-        }
-        else {
-          if($colspan!=$cols)
-            $count_rows++;
-        }
-
-        $pos=$cols;
-      }
-
-      if($pos==$cols) {
-      }
-
-      $album_pages[$cur_page][]=$el;
-      $pos-=$colspan;
-    }
-
-//    foreach($album_pages as $cur_page=>$els) {
-//      print "<h4>$cur_page</h4>\n";
-//      foreach($els as $e) {
-//        print $e->type." ".$e->file_name()."<br>\n";
-//      }
-//    }
-
-    return $album_pages;
-  }
-
-  function find_album_page($img) {
-    $album_pages=$this->split_album_pages();
-
-    for($i=1; $i<sizeof($album_pages); $i++) {
-      if($img<$album_pages[$i][0]->get_index())
-        return $i-1;
-    }
-
-    return sizeof($album_pages)-1;
-  }
-
-  function album_nav($img) {
-    $album_pages=$this->split_album_pages();
-    $album_page=$this->find_album_page($img);
-    $anz=sizeof($album_pages);
-
-    if($anz<=1)
-      return "";
-
-    $ret.="<table class='album_nav' align='center'>\n";
-    $ret.="<tr><td class='nav_left'>\n";
-    if($album_page==0)
-      $ret.="<img src='".url_img("arrow_left_dark.png")."' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'> ";
-    else
-      $ret.="<a href='".url_page(array("page"=>$this, "img"=>$album_pages[$album_page-1][0]->get_index()))."' accesskey='p'>".
-            "<img src='".url_img("arrow_left.png")."' class='nav_left' class='nav_left' alt='&lt;' title='$lang_str[nav_prev]'></a> ";
-    $ret.="</td><td class='nav_text'>\n";
-    $start=$album_page-5;
-    $end=$album_page+5;
-    if($start<0) {
-      $end-=$start;
-      $start=0;
-    }
-    if($end>=$anz) {
-      $start+=($anz-$end);
-      $end=$anz-1;
-    }
-    if($start<0)
-      $start=0;
-
-    if($start>0) {
-      $start+=2;
-      $ret.="<a href='".url_page(array("page"=>$this, "img"=>0))."'>1</a> ";
-      $ret.="... ";
-    }
-
-    if($end<$anz-1) {
-      $end-=2;
-    }
-
-    for($num=$start; $num<=$end; $num++) {
-      if($num==$album_page) {
-        $ret.=($num+1)." ";
-      }
-      else {
-        $ret.="<a href='".url_page(array("page"=>$this, "img"=>$album_pages[$num][0]->get_index()))."'>".($num+1)."</a> ";
-      }
-    }
-
-    if($end<$anz-1) {
-      $ret.="... ";
-      $ret.="<a href='".url_page(array("page"=>$this, "img"=>$album_pages[$anz-1][0]->get_index()))."'>$anz</a>";
-    }
-
-    $ret.="</td><td class='nav_right'>\n";
-    if($album_page==$anz-1)
-      $ret.="<img src='".url_img("arrow_right_dark.png")."' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'> ";
-    else
-      $ret.="<a href='".url_page(array("page"=>$this, "img"=>$album_pages[$album_page+1][0]->get_index()))."' accesskey='n'>".
-            "<img src='".url_img("arrow_right.png")."' class='nav_right' class='nav_right' alt='&gt;' title='$lang_str[nav_next]'></a> ";
-
-    $ret.="</td></tr>\n";
-    $ret.="</table>\n";
-
-    return $ret;
-  }
-
   function show_album($img=0) {
     global $cols;
 
-    $album_pages=$this->split_album_pages();
-    $album_page=$this->find_album_page($img);
-    $list=$this->get_viewlist();
+//    $album_pages=$this->split_album_pages();
+//    $album_page=$this->find_album_page($img);
+    //$list=$this->get_viewlist();
+    $list=$this->show_list;
+    
     $td_size=100.0/$cols;
     unset($cur_index);
 
     print "<table class='album_table' width='100%' id='table_album'>\n";
     $pos=$cols;
     $i=0;
-    foreach($album_pages[$album_page] as $el) {
+    foreach($list as $el) {
       $colspan=$el->colspan();
       if($colspan>$cols)
         $colspan=$cols;
@@ -2848,10 +2693,17 @@ if(!$_SESSION[current_user])
   $_SESSION[current_user]=get_user("anonymous");
 
 session_start();
+include "inc/url.php";
+include "inc/html_header.php";
+use_javascript("global");
 include "inc/group.php";
 include "lang.php";
-include "inc/html_header.php";
-include "inc/url.php";
+require "inc/extensions.php";
+include "inc/toolbox.php";
+include "inc/text.php";
+include "inc/hooks.php";
+include "inc/vars.php";
+include_extensions($extensions_page);
 
 //chdir("$file_path");
 
@@ -3014,85 +2866,6 @@ function list_dir($dir) {
   return $ret;
 }
 
-function html_var_to_js($v) {
-  if(!isset($v))
-    return "null";
-
-  switch(gettype($v)) {
-    case "integer":
-    case "double":
-      $ret=$v;
-      break;
-    case "boolean":
-      $ret=$v?"true":"false";
-      break;
-    case "string":
-      $ret="\"".implode("\\n", explode("\n", addslashes($v)))."\"";
-      break;
-    case "array":
-      $ar_keys=array_keys($v);
-      if(($ar_keys[0]=="0")&&($ar_keys[sizeof($ar_keys)-1]==(string)(sizeof($ar_keys)-1))) {
-        $ret1=array();
-        foreach($v as $k1=>$v1) {
-          $ret1[]=html_var_to_js($v1);
-        }
-        $ret="new Array(".implode(", ", $ret1).")";
-      }
-      else {
-        $ret1=array();
-        foreach($v as $k1=>$v1) {
-          $ret1[]="$k1:".html_var_to_js($v1);
-        }
-        $ret="{ ".implode(", ", $ret1)." }";
-      }
-      break;
-    default:
-      $ret="";
-  }
-
-  return $ret;
-}
-
-function html_add_formated_text($key, $text) {
-  $text=strtr(utf8_encode($text), array(">"=>"&gt;", "<"=>"&lt;", "&"=>"&amp;"));
-
-  $i=0;
-  while($i+1024<strlen($text)) {
-    $anz=1024;
-    
-    if(($a=strrpos(substr($text, $i, $anz), "\n"))!==false) {
-      $anz=$a;
-    }
-
-    while(eregi("&[a-zA-Z0-9]*$", substr($text, $i, $anz))) {
-      $anz--;
-    }
-
-    print "<$key>".substr($text, $i, $anz)."</$key>\n";
-    $i+=$anz;
-  }
-
-  print "<$key>".substr($text, $i)."</$key>\n";
-}
-
-function html_export_var($vars) {
-  global $request_type;
-
-  if($request_type!="xml") {
-    print "<script type='text/javascript'>\n<!--\n";
-    foreach($vars as $k=>$v) {
-      print "var $k=".html_var_to_js($v).";\n";
-    }
-    print "//-->\n</script>\n";
-  }
-  else {
-    foreach($vars as $key=>$value) {
-      //print "<$key>".html_var_to_js($value)."</$key>\n";
-      html_add_formated_text($key, html_var_to_js($value));
-    }
-  }
-}
-
 function replace_invalid_chars($name) {
   $res="";
 
@@ -3116,18 +2889,3 @@ function implode_vars($vars) {
   return implode(" ", $ret);
 }
 
-$hooks=array();
-
-function modify_params($why, $vars) {
-  global $hooks;
-
-  foreach($hooks[$why] as $h) {
-    $h(&$vars);
-  }
-}
-
-function add_hook($why, $fun) {
-  global $hooks;
-
-  $hooks[$why][]=$fun;
-}

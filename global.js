@@ -225,7 +225,7 @@ function global_initfun() {
     initfuns[i]();
 }
 
-function set_session_vars(vars) {
+function set_session_vars(vars, callback) {
   var params=new Array();
 
   for(var i in vars) {
@@ -233,7 +233,7 @@ function set_session_vars(vars) {
   }
 
   params=params.join("&");
-  start_xmlreq(url_script({script: "toolbox.php", todo: "set_session_vars" })+"&"+params);
+  start_xmlreq(url_script({script: "toolbox.php", todo: "set_session_vars" })+"&"+params, 0, callback);
 }
 
 function call_hooks(event) {

@@ -22,6 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+$extensions_page="imageview";
 include "data.php";
 $img=$_REQUEST[img];
 if(!$img)
@@ -30,7 +31,6 @@ if(!$img)
 start_html_header("{$page->cfg[TITLE]} :: Bild ".($img+1));
 use_javascript("image");
 use_javascript("magnify");
-include_extensions("imageview");
 urls_write();
 end_html_header();
 

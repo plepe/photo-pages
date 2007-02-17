@@ -319,7 +319,17 @@ table.album_table {
   margin-top: 0px;
   width: 240px;
 }
-.toolbox_main {
+.toolbox_imageview {
+  border: 1px solid #666666;
+  float: left;
+  padding: 5px;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  margin-left: 0px;
+  margin-top: 0px;
+  width: 240px;
+}
+.toolbox_main, .toolbox_album {
   border: 1px solid #666666;
   float: right;
   padding: 5px;
@@ -353,7 +363,9 @@ table.album_table {
   padding-top: 0px;
   padding-bottom: 0px;
 }
-
+select.toolbox_input {
+  padding-right: 0px;
+}
 .toolbox_input_active {
   font-family: sans;
   font-size: 10pt;
@@ -621,4 +633,7 @@ input.upload_file {
   border: 1px solid #666666;
   background: #333333;
   text-align: center;
+}
+form {
+  margin: 0px;
 }

@@ -146,18 +146,6 @@ switch($todo) {
       print "<newcomm>".html_entity_decode($text)."</newcomm>\n";
     }
     break;
-  case "set_cols":
-    print "<status>success</status>\n";
-
-    $_SESSION[album_cols]=$_REQUEST[cols];
-    session_register("album_cols");
-    break;
-  case "set_rows":
-    print "<status>success</status>\n";
-
-    $_SESSION[album_rows]=$_REQUEST[rows];
-    session_register("album_rows");
-    break;
   case "login":
     if($_REQUEST[username]) {
       $test=new User($_REQUEST[username]);

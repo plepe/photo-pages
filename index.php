@@ -22,6 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+$extensions_page="album";
 require "data.php";
 
 start_html_header($page->cfg[TITLE]);
@@ -54,10 +55,8 @@ if(eregi("img_(.*)$", $img, $m)) {
       $img=$el->get_index();
 }
 
-if(!($cols=$_SESSION[album_cols])) # absichtliche Zuweisung
+if(!($cols=$_SESSION[cols])) # absichtliche Zuweisung
   $cols=4;
-if(!($rows=$_SESSION[album_rows])) # absichtliche Zuweisung
-  $rows=6;
 
 print "<script type='text/javascript'>\n<!--\ncols=$cols;\nrows=$rows;\n//-->\n</script>\n";
 
@@ -74,11 +73,14 @@ print "</td>\n";
 print "<td class='heading_tools' rowspan='2'>\n";
 print $_SESSION[current_user]->toolbox();
 print $page->toolbox();
+print show_toolbox("album_toolbox");
+print show_toolbox("album_admin");
 
   print "</td></tr>\n";
 
 print "<tr><td class='heading_spacer'></td><td class='heading_nav'>\n";
-print $page->album_nav($img);
+//print $page->album_nav($img);
+print show_text("album_subheading");
 print "</td>\n";
 
   print "</tr></table>\n";
@@ -91,9 +93,11 @@ print "</td>\n";
 if($page->get_right($_SESSION[current_user], "view")) {
   $page->read_list();
 
+  print show_text("album_start");
+
   $page->show_album($img);
 
-  print $page->album_nav($img);
+  print show_text("album_end");
 
   small_login_form();
 }

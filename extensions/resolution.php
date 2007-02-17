@@ -16,5 +16,5 @@ foreach($resolutions as $res) {
 }
 $str.="</select><br>\n";
 
-add_toolbox_item("toolbox", $str);
+add_toolbox_item("imageview_toolbox", $str);
 session_register("normal_res");
