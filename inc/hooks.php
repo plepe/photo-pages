@@ -4,9 +4,10 @@ $hooks=array();
 function modify_var($why, $vars) {
   global $hooks;
 
-  foreach($hooks[$why] as $h) {
-    $h(&$vars);
-  }
+  if($hooks[$why])
+    foreach($hooks[$why] as $h) {
+      $h(&$vars);
+    }
 }
 
 function add_hook($why, $fun) {

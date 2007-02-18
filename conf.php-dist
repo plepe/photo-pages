@@ -77,7 +77,7 @@ umask(0000);
 $language="en";
 
 // Contains a list of extensions - check the README file for available extensions
-$extensions=array("window", "fullscreen", "slideshow");
+$extensions=array("window", "resolution", "fullscreen", "slideshow", "magnify", "columns", "rowcount", "langchoose");
 
 // URLs
 // es wird auf jeden fall $web_path davor gesetzt.

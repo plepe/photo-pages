@@ -46,6 +46,9 @@ $exported_pages=array();
 
 require "conf.php";
 
+if(!$extensions)
+  $extensions=array();
+
 if(!defined("DATA_PHP")) {
   define("DATA_PHP", TRUE);
 
