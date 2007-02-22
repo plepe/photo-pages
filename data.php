@@ -1008,8 +1008,9 @@ class MovieChunk extends ImgChunk {
   function album_show() {
     global $series;
     global $index_res;
+    global $file_path;
 
-    $r=getimagesize("{$this->path}/$index_res/$this->img");
+    $r=getimagesize("$file_path/{$this->path}/$index_res/$this->img");
 
     $ret ="<a href='".url_script($this->page->path, $this->page->series, "image.php", $this->index)."'>";
     $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $index_res, $_SESSION[img_version][$this->img])."'";
@@ -1035,6 +1036,7 @@ class MovieChunk extends ImgChunk {
 
   function get_image_details() {
     global $orig_path;
+    global $file_path;
 
 //    $r=getimagesize("{$this->page->path}/$orig_path/$this->img");
 //    $e=exif_read_data("{$this->page->path}/$orig_path/$this->img");
@@ -1042,7 +1044,7 @@ class MovieChunk extends ImgChunk {
     $ret["filename"]="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->mov, "movie", $_SESSION[img_version][$this->img])."'>$this->mov</a>";
 
     //$ret["filename"]="<a href='orig/$this->img'>$this->img</a>";
-    $ret["filesize"]=sprintf("%.1f kB", filesize("{$this->page->path}/$orig_path/$this->mov")/1024.0);
+    $ret["filesize"]=sprintf("%.1f kB", filesize("$file_path/{$this->path}/$orig_path/$this->mov")/1024.0);
 //    if($e[DateTime])
 //      $ret["taketime"]=$e[DateTime];
 //
@@ -2016,9 +2018,9 @@ class Page {
           if(preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*$/", $v[dir])) {
             $save.="$v[dir]/\n";
 
-            if(!file_exists("$this->path/$v[dir]/")) {
-              mkdir("$this->path/$v[dir]");
-              $newseries=fopen("$this->path/$v[dir]/fotocfg.txt", "w");
+            if(!file_exists("$file_path/$this->path/$v[dir]/")) {
+              mkdir("$file_path/$this->path/$v[dir]");
+              $newseries=fopen("$file_path/$this->path/$v[dir]/fotocfg.txt", "w");
               fputs($newseries, "TITLE $v[TITLE]\n");
               fputs($newseries, "\n");
               fclose($newseries);
@@ -2032,8 +2034,8 @@ class Page {
           if(eregi("^[a-z0-9_\\-]+$", $v[dir])) {
             $save.="$v[dir]@\n";
 
-            if(!file_exists("$v[dir].lst")) {
-              $newseries=fopen("$v[dir].lst", "w");
+            if(!file_exists("$file_path/$this->path/$v[dir].lst")) {
+              $newseries=fopen("$file_path/$this->path/$v[dir].lst", "w");
               fputs($newseries, "TITLE $v[TITLE]\n");
               fclose($newseries);
             }
@@ -2140,11 +2142,9 @@ class Page {
 	    break;
           case "SubdirChunk":
             if(preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*$/", $v[dir])) {
-              fputs($f, "$v[dir]/\n");
-
-              if(!file_exists("$this->path/$v[dir]/")) {
-                mkdir("$this->path/$v[dir]");
-                $newseries=fopen("$this->path/$v[dir]/fotocfg.txt", "w");
+              if(!file_exists("$file_path/$this->path/$v[dir]/")) {
+                mkdir("$file_path/$this->path/$v[dir]");
+                $newseries=fopen("$file_path/$this->path/$v[dir]/fotocfg.txt", "w");
                 fputs($newseries, "TITLE $v[TITLE]\n");
                 fputs($newseries, "\n");
                 fclose($newseries);
@@ -2158,8 +2158,8 @@ class Page {
             if(eregi("^[a-z0-9_\\-]+$", $v[dir])) {
               fputs($f, "$v[dir]@\n");
 
-              if(!file_exists("$v[dir].lst")) {
-                $newseries=fopen("$v[dir].lst", "w");
+              if(!file_exists("$file_path/$this->path/$v[dir].lst")) {
+                $newseries=fopen("$file_path/$this->path/$v[dir].lst", "w");
                 fputs($newseries, "TITLE $v[TITLE]\n");
                 fclose($newseries);
               }

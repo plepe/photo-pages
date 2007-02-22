@@ -140,7 +140,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
 #      $orig=strtr($orig_tmp, "%REPLACE%", $i);
 #    }
 
-    if($keep)
+    //if($keep)
       copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
 
     // In FLV konvertieren

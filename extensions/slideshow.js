@@ -6,7 +6,7 @@ function slideshow_next() {
 
 function slideshow_init() {
   if(slideshow_active)
-    slideshow_timeout=window.setTimeout("slideshow_next()", slideshow_time*5000);
+    slideshow_timeout=window.setTimeout("slideshow_next()", slideshow_time*1000);
 }
 
 function set_slideshow_time() {
@@ -15,6 +15,10 @@ function set_slideshow_time() {
   slideshow_time=parseInt(ob1.value);
 
   set_session_vars({ slideshow_active: slideshow_active, slideshow_time: slideshow_time });
+  if(slideshow_active) {
+    clearTimeout(slideshow_timeout);
+    slideshow_timeout=window.setTimeout("slideshow_next()", slideshow_time*1000);
+  }
 }
 
 function toggle_slideshow() {
