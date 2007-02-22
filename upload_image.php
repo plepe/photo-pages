@@ -153,7 +153,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
     system("cd /tmp ; ffmpeg -y -i \"$orig_file\" -vframes 1 -f image2 /tmp/tmp.jpg");
     system("nice convert -resize 410x450 /tmp/tmp.jpg /tmp/tmp.jpg");
     system("nice composite -compose atop -gravity center /tmp/tmp.jpg images/filmstrip.png $orig");
-    system("rm /tmp/tmp.jpg");
+    //system("rm /tmp/tmp.jpg");
 
     $file="$m[1].jpg";
     $name="$m[1].flv";

@@ -13,8 +13,8 @@ foreach(lang_list() as $l=>$lname) {
   $ret.=">$lname</option>\n";
 }
 $ret.="</select>\n";
-$ret.="<input type='hidden' name='page' value='$this->path'>\n";
-$ret.="<input type='hidden' name='series' value='$this->series'>\n";
+$ret.="<input type='hidden' name='page' value='$page->path'>\n";
+$ret.="<input type='hidden' name='series' value='$page->series'>\n";
 $ret.="<input type='submit' value='$lang_str[nav_ok]' class='toolbox_input'>\n";
 $ret.="</form>\n";
 

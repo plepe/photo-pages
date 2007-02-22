@@ -16,7 +16,7 @@ function rowcount_split_album_pages($list) {
     return array($list);
 
   $pos=$cols;
-  foreach($list as $el) {
+  if($list) foreach($list as $el) {
 //print "$count_rows $cur_page $pos $cols<br>";
     $colspan=$el->colspan();
     if($colspan>$cols)

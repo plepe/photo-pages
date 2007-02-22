@@ -2496,7 +2496,7 @@ class Page {
     print "<table class='album_table' width='100%' id='table_album'>\n";
     $pos=$cols;
     $i=0;
-    foreach($list as $el) {
+    if($list) foreach($list as $el) {
       $colspan=$el->colspan();
       if($colspan>$cols)
         $colspan=$cols;

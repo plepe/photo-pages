@@ -24,20 +24,32 @@ Album-View
 +------------------------------+---------+
                     D
 +-------+ +--------+ +--------+ +--------+
-|       | |        | |        | |        |
+|  E1   | |   E1   | |   E1   | |   E1   |
+| [E2]  | |  [E2]  | |  [E2]  | |  [E2]  |
+|  E3   | |   E3   | |   E3   | |   E3   |
 +-------+ +--------+ +--------+ +--------+
-...
-                    E
+                   ...
+                    F
 +----------------------------------------+
-|                   F                    |
+|                   G                    |
 +----------------------------------------+
 
-A ... text 'album_heading'
-B ... toolboxes: 'login', 'album_toolbox', 'album_admintools'
-C ... text 'album_subheading'
-D ... text 'album_start'
-E ... text 'album_end'
-F ... text 'footer'
+A  ... hook 'album_heading'
+       params: text, page
+B  ... toolboxes: 'login', 'album_toolbox', 'album_admintools'
+C  ... hook 'album_subheading'
+       params: text, page
+D  ... hook 'album_start'
+       params: text, page
+E1 ... hook 'img_start'
+       params: text, page, img
+E2 ... id: 'img_#id'
+E3 ... hook 'img_end'
+       params: text, page, img
+F  ... hook 'album_end'
+       params: text, page
+G  ... hook 'footer'
+       params: text, page
 
 Image-View
 ----------
@@ -63,8 +75,10 @@ F ... text 'imageview_description'
 - add_toolbox_item($toolbox, $text)
   Adds the $text to $toolbox. It should end with '<br>'
 
-- add_text_item($place, $text)
-  Adds the $text to $place. It should end with '<br>'
+- register_hook($hook, fun)
+  registers the function fun to the hook $hook
+  all parameters are reference vars
+  text is the result
 
 - html_export_var($vars)
   Gets an asssoziative Array with $varname=>$value
@@ -75,9 +89,9 @@ F ... text 'imageview_description'
 - register_initfun(fun)
   Adds fun to the onLoad-Handler of the Body
 
-- register_hook(ob, hook, fun)
-  Adds fun to the hook of the DOM-Object ob
-  hook can be 'onload', 'onresize' or 'onmousemove' (currently)
+- register_event(ob, event, fun)
+  Adds fun to the event of the DOM-Object ob
+  hook can be 'load', 'resize' or 'mousemove' (currently)
 
 - set_session_vars(vars, callback)
   Gets an assoziative Array with { varname: value, ... }
