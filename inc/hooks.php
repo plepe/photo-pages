@@ -1,7 +1,7 @@
 <?
 $hooks=array();
 
-function modify_var($why, $vars) {
+function call_hooks($why, $vars) {
   global $hooks;
 
   if($hooks[$why])
@@ -10,9 +10,8 @@ function modify_var($why, $vars) {
     }
 }
 
-function add_hook($why, $fun) {
+function register_hook($why, $fun) {
   global $hooks;
 
   $hooks[$why][]=$fun;
 }
-

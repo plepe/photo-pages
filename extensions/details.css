@@ -1,0 +1,19 @@
+.details_desc {
+  background: #333333;
+  border: 1px solid #666666;
+  color: white;
+  padding: 2px;
+}
+.details_marker {
+  border: 0px solid white;
+}
+.details_choose {
+  cursor: crosshair;
+  border: 0px solid white;
+}
+.details_new_form {
+  position: absolute;
+  padding: 2px;
+  background: #333333;
+  border: 1px solid #666666;
+}

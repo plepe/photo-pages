@@ -16,7 +16,10 @@ function include_extensions($view) {
     if(in_array($view, $extensions_data[$ext]["views"])) {
       include "extensions/{$ext}_lang.php";
       include "extensions/{$ext}.php";
-      use_javascript("extensions/{$ext}");
+      if(file_exists("extensions/{$ext}.js"))
+        use_javascript("extensions/{$ext}");
+      if(file_exists("extensions/{$ext}.css"))
+        use_css("extensions/{$ext}");
     }
   }
 }

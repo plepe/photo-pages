@@ -180,4 +180,4 @@ $ret.="' id='rows_-1' title=\"$lang_str[tooltip_change_rows]\" value=\"&infin;\"
 $ret.="<br>\n";
 
 add_toolbox_item("album_toolbox", $ret);
-add_hook("album_modify_list", rowcount_modify_list);
+register_hook("album_modify_list", rowcount_modify_list);

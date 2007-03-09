@@ -1,6 +1,6 @@
-<? 
-/* page_edit.php
- * - This page lets you edit a particular photopage
+<?
+/* ajax.php
+ * - This script is called via XMLHttpRequest and calls extensions
  *
  * Copyright (c) 1998-2006 Stephan Plepelits <skunk@xover.mud.at>
  *
@@ -22,33 +22,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
+Header("content-type: text/xml");
+$request_type="xml";
+
 require "data.php";
-if($_REQUEST[submit][ok]) {
-  $result=$page->set_page_edit_data($_REQUEST[data]);
-}
-start_html_header($page->cfg[TITLE]);
-use_javascript("page_edit");
-include_extensions("page_edit");
-urls_write();
-end_html_header();
 
-?>
-<BODY onLoad='init_page_edit()'>
-<?
-print "<div>".$page->get_path()."</div>\n";
-print "<div class='wait_screen' id='wait_screen'><table width='100%' height='100%'><tr><td align='center' valign='middle'>Please wait</td></tr></table></div>\n";
-print "<p>\n";
+print "<xml version=\"1.0\" encoding=\"ISO-8859-15\">\n";
 
-if($_REQUEST[submit][ok]) {
-  if($result)
-    print $lang_str[page_edit_saved];
-}
+include "extensions/$_REQUEST[extension]_ajax.php";
 
-if($_REQUEST[submit][ok]) {
-  print "<br><br><a href='".url_page($page->path, $page->series, "index.php")."'>Zur&uuml;ck</a>.";
-}
-else {
-  $page->show_page_edit_form();
-}
+print "</xml>\n";
 
-html_footer();

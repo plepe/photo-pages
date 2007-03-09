@@ -24,7 +24,7 @@
  */
 
 $lang_str=array(
-  "footer"=>"Diese Seite verwendet <a href='http://xover.mud.at/~skunk/photo_pages/'>Photo Pages</a>.",
+  "footer"=>"Diese Seite verwendet <a href='http://xover.mud.at/~skunk/photo_pages/'>Photo Pages</a> (Version %version%).",
   "nav_back"=>"Zur&uuml;ck",
   "nav_columns"=>"Spalten",
   "nav_rows"=>"Zeilen",

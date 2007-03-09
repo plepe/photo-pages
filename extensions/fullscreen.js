@@ -44,8 +44,8 @@ function fullscreen_imgload() {
 }
 
 function fullscreen_init() {
-  register_hook("img", "onload", fullscreen_imgload);
-  register_hook(window, "onresize", fullscreen_imgload);
+  register_event("img", "load", fullscreen_imgload);
+  register_event(window, "resize", fullscreen_imgload);
 }
 
 register_initfun(fullscreen_init);

@@ -25,4 +25,4 @@ add_toolbox_item("imageview_toolbox", "<input accesskey='f' class='".
       "' type='submit' id='toolbox_input_fullscreen' value='$lang_str[tool_fullscreen_name]' onClick='set_fullscreen()' title=\"$lang_str[tooltip_fullscreen]\"><br>\n");
 
 html_export_var(array("fullscreen_mode"=>$_SESSION[fullscreen_mode]));
-add_hook("imageview", fullscreen_calculate);
+register_hook("imageview", fullscreen_calculate);

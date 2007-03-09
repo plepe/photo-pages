@@ -215,7 +215,7 @@ function ajax_read_value(xmldata, key) {
 }
 
 var initfuns=new Array();
-var hookfuns=new Array();
+var eventfuns=new Array();
 function register_initfun(fun) {
   initfuns.push(fun);
 }
@@ -236,32 +236,66 @@ function set_session_vars(vars, callback) {
   start_xmlreq(url_script({script: "toolbox.php", todo: "set_session_vars" })+"&"+params, 0, callback);
 }
 
-function call_hooks(event) {
-  for(var i=0; i<hookfuns[this]["on"+event.type].length; i++)
-    hookfuns[this]["on"+event.type][i](event, this);
+function call_events(event) {
+  var ret;
+
+  if(!event)
+    event=window.event;
+
+  ret=true;
+  for(var i=0; i<eventfuns[this][event.type].length; i++)
+    if(!eventfuns[this][event.type][i](event, this))
+      ret=false;
+
+  return ret;
 }
 
-function register_hook(ob, event, fun) {
+function register_event(ob, event, fun) {
   if(typeof ob=="string")
     ob=document.getElementById(ob);
 
-  if(!hookfuns[ob])
-    hookfuns[ob]=new Array();
-  if(!hookfuns[ob][event])
-    hookfuns[ob][event]=new Array();
+  if(!eventfuns[ob])
+    eventfuns[ob]=new Array();
+  if(!eventfuns[ob][event])
+    eventfuns[ob][event]=new Array();
 
-  hookfuns[ob][event].push(fun);
+  eventfuns[ob][event].push(fun);
 
   switch(event) {
-    case "onload":
-      ob.onload=call_hooks;
+    case "load":
+      ob.onload=call_events;
       break;
-    case "onresize":
-      ob.onresize=call_hooks;
+    case "resize":
+      ob.onresize=call_events;
       break;
-    case "onmousemove":
-      ob.onmousemove=call_hooks;
+    case "mousemove":
+      ob.onmousemove=call_events;
+      break;
+    case "mouseover":
+      ob.onmouseover=call_events;
+      break;
+    case "mouseout":
+      ob.onmouseout=call_events;
+      break;
+    case "mousedown":
+      ob.onmousedown=call_events;
+      break;
+    case "click":
+      ob.onclick=call_events;
       break;
     default:
   }
+}
+
+function unregister_event(ob, event, fun) {
+  if(typeof ob=="string")
+    ob=document.getElementById(ob);
+
+  var newar=new Array();
+  for(var f in eventfuns[ob][event]) {
+    if(eventfuns[ob][event][f]!=fun) {
+      newar.push(eventfuns[ob][event][f]);
+    }
+  }
+  eventfuns[ob][event]=newar;
 }

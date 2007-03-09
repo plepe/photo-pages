@@ -17,4 +17,5 @@ foreach($resolutions as $res) {
 $str.="</select><br>\n";
 
 add_toolbox_item("imageview_toolbox", $str);
+$_SESSION[normal_res]=$normal_res;
 session_register("normal_res");

@@ -66,6 +66,8 @@ F
 A ... table 'imageview_nav'
 B ... text 'imageview_beforeimage'
 C ... image ... id='img'
+      hook 'imageview'
+      params: params fuer <img>, page, img
 D ... toolboxes: 'imageview_details', 'imageview_toolbox', 'imageview_admintools'
 E ... text 'imageview_afterimage'
 F ... text 'imageview_description'

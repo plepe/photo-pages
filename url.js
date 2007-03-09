@@ -63,4 +63,16 @@ function url_javascript(path, series, skript, imgnum) {
 }
 
 function url_img(imgfile) {
+  ret=v_url_img;
+
+  if(typeof path=="object")
+    ret=build_url(ret, imgfile);
+  else
+    ret=build_url(ret, { "imgname": imgfile });
+//  ret=ret.replace("%1$s", path);
+//  ret=ret.replace("%2$s", series);
+//  ret=ret.replace("%3$s", skript);
+//  ret=ret.replace("%4$s", imgnum);
+
+  return ret;
 }

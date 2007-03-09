@@ -116,4 +116,4 @@ function start_mag() {
   }
 }
 
-register_hook(window, "onmousemove", mag_move);
+register_event(window, "mousemove", mag_move);

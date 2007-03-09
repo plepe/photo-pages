@@ -24,6 +24,7 @@
  */
 $finished_http_header=null;
 $saved_js="";
+$saved_css="";
 
 function use_javascript($file=0) {
   global $url_javascript;
@@ -37,6 +38,21 @@ function use_javascript($file=0) {
   if($finished_http_header) {
     print $saved_js;
     $saved_js="";
+  }
+}
+
+function use_css($file=0) {
+  global $url_javascript;
+  global $page;
+  global $finished_http_header;
+  global $saved_css;
+
+  if($file)
+    $saved_css.="<link rel=stylesheet type='text/css' href=\"".url_javascript(array("script"=>"$file.css"))."\">\n";
+
+  if($finished_http_header) {
+    print $saved_css;
+    $saved_css="";
   }
 }
 
@@ -55,6 +71,7 @@ function start_html_header($title) {
 <link rel=stylesheet type="text/css" href="<?=url_img("style.css");?>">
 <?
 use_javascript();
+use_css();
 html_export_var(array());
 }
 
@@ -66,6 +83,32 @@ function end_html_header() {
 
 function html_footer() {
   global $lang_str;
-  print "<div class='footer'>$lang_str[footer]</div>\n";
+
+  if(file_exists("VERSION")) {
+    $f=fopen("VERSION", "r");
+    $version=fgets($f);
+    $version=chop($version);
+    fclose($f);
+  }
+  else {
+    $f=popen("svn info", "r");
+    $x=array();
+    while($r=fgets($f)) {
+      if(ereg("^([^:]*): (.*)$", $r, $m)) {
+        $x[$m[1]]=$m[2];
+      }
+    }
+    if(!$x[Revision]) {
+      $version="unknown";
+    }
+    else {
+      $date=explode(" ", $x["Last Changed Date"]);
+      $version="svn-r$x[Revision] ($date[0])";
+    }
+    pclose($f);
+  }
+
+  $footer=strtr($lang_str[footer], array("%version%"=>$version));
+  print "<div class='footer'>$footer</div>\n";
   print "</body></html>\n";
 }

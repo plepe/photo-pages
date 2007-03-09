@@ -14,7 +14,7 @@ function window_resize() {
 }
 
 function window_init() {
-  register_hook(window, "onresize", window_resize);
+  register_event(window, "resize", window_resize);
   window_resize();
 }
 

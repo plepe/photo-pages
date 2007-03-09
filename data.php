@@ -769,7 +769,7 @@ class ImgChunk extends Chunk {
     $img_params[width]=$imgres[0];
     $img_params[height]=$imgres[1];
 
-    modify_var("imageview", &$img_params);
+    call_hooks("imageview", &$img_params);
 
     $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."' target='_top'>";
 
@@ -1480,7 +1480,7 @@ class Page {
     $this->get_sublist();
 
     $this->show_list=$this->cfg["LIST"];
-    modify_var("album_modify_list", &$this->show_list);
+    call_hooks("album_modify_list", &$this->show_list);
 
     return $this->cfg["LIST"];
   }
@@ -2718,8 +2718,8 @@ if($_REQUEST[username]) {
 }
 
 if(!$_SESSION[current_user]) {
-  session_register("current_user");
   $_SESSION[current_user]=get_user("anonymous");
+  session_register("current_user");
 }
 
 $series=$_REQUEST[series];
