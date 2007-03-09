@@ -3,7 +3,7 @@ var details_choose;
 var details_new_pos;
 var details_new_enter;
 var details_timeout;
-var details=new Array();
+var details_desc;
 var details_size;
 
 function details_hide() {
@@ -23,21 +23,21 @@ function details_show() {
   details_text=ob;
   ob.style.position="absolute";
   p=get_abs_pos(img);
-  ob.style.left=(p[0]+(img.offsetWidth*details[d].x/1000)+details_size/2)+"px";
-  ob.style.top=(p[1]+(img.offsetHeight*details[d].y/1000)+details_size/2)+"px";
+  ob.style.left=(p[0]+(img.offsetWidth*details_desc[d].x/1000)+details_size/2)+"px";
+  ob.style.top=(p[1]+(img.offsetHeight*details_desc[d].y/1000)+details_size/2)+"px";
   ob.className="details_desc";
   img.parentNode.appendChild(ob);
-  ob.innerHTML=details[d].desc;
+  ob.innerHTML=details_desc[d].desc;
 }
 
 function details_show_markers() {
   var img=document.getElementById("img");
 
-  if(details.length>0)
-    if(details[0].ob)
+  if(details_desc.length>0)
+    if(details_desc[0].ob)
       return;
 
-  for(var d in details) {
+  for(var d in details_desc) {
     var ob=document.createElement("img");
     if(img.height>img.width)
       details_size=img.height;
@@ -48,15 +48,15 @@ function details_show_markers() {
     ob.src=url_script({ script: "extensions/details_kasterl.php", page: page, series: series, img: imgchunk, size: details_size});
     ob.style.position="absolute";
     p=get_abs_pos(img);
-    ob.style.left=(p[0]+(img.offsetWidth*details[d].x/1000)-details_size/2)+"px";
-    ob.style.top=(p[1]+(img.offsetHeight*details[d].y/1000)-details_size/2)+"px";
+    ob.style.left=(p[0]+(img.offsetWidth*details_desc[d].x/1000)-details_size/2)+"px";
+    ob.style.top=(p[1]+(img.offsetHeight*details_desc[d].y/1000)-details_size/2)+"px";
     ob.className="details_marker";
     ob.style.background="none";
-    details[d].ob=ob;
-    details[d].ob.setAttribute("details_id", d);
+    details_desc[d].ob=ob;
+    details_desc[d].ob.setAttribute("details_id", d);
     img.parentNode.appendChild(ob);
-    details[d].ob.onmouseover=details_show;
-    details[d].ob.onmouseout =details_hide;
+    details_desc[d].ob.onmouseover=details_show;
+    details_desc[d].ob.onmouseout =details_hide;
   }
 }
 
@@ -69,10 +69,10 @@ function details_hide_markers(force) {
   if(details_text)
     return;
 
-  for(var d in details) {
-    if(details[d].ob) {
-      details[d].ob.parentNode.removeChild(details[d].ob);
-      details[d].ob=null;
+  for(var d in details_desc) {
+    if(details_desc[d].ob) {
+      details_desc[d].ob.parentNode.removeChild(details_desc[d].ob);
+      details_desc[d].ob=null;
     }
   }
 }
@@ -112,7 +112,12 @@ function details_choose_enter() {
 
   start_xmlreq(url_script({script: "ajax.php", extension: "details", page: page, img: imgchunk, x: details_new_pos.x.toFixed(0), y: details_new_pos.y.toFixed(0), desc: details_new_pos.desc}), 0, details_choose_saved);
 
-  details.push(details_new_pos);
+  if(!details_desc.length) {
+    details_desc=new Array(details_new_pos);
+  }
+  else {
+    details_desc.push(details_new_pos);
+  }
   details_new_enter.parentNode.removeChild(details_new_enter);
   details_choose.parentNode.removeChild(details_choose);
 }
@@ -172,6 +177,3 @@ function details_choosepos(event) {
 }
 
 register_initfun(details_init);
-details=new Array(2);
-//details[0]= { x: 500, y: 500, desc: "Test" };
-//details[1]= { x: 200, y: 500, desc: "Test 1" };

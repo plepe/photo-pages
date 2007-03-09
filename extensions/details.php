@@ -11,10 +11,10 @@ function details_load() {
       $details[]=array("x"=>$m[1], "y"=>$m[2], "desc"=>$m[3]);
     }
 
-    html_export_var(array("details"=>$details));
+    html_export_var(array("details_desc"=>$details));
   }
   else {
-    html_export_var(array("details"=>array()));
+    html_export_var(array("details_desc"=>array()));
   }
 }
 

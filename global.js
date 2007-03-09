@@ -83,7 +83,6 @@ function processReqChange() {
       img_height=w;
     }
 
-    todo=xmldata.getElementsByTagName('todo')[0].firstChild.nodeValue;
     if(xmlhttp_callback)
       xmlhttp_callback(xmldata);
 
