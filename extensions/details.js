@@ -85,6 +85,7 @@ function details_show_single_marker(d) {
 }
 
 function details_show_single(d) {
+  details_hide_markers();
   details_show_single_marker(d);
 }
 
@@ -133,7 +134,7 @@ function details_show_markers() {
       return;
 
   for(var d in details_desc) {
-    details_show_single(d);
+    details_show_single_marker(d);
   }
 }
 
@@ -146,6 +147,7 @@ function details_hide_markers(force) {
   if(details_text&&(!force))
     return;
 
+  clearTimeout(details_timeout);
   for(var d in details_desc) {
     details_hide_single(d);
   }
@@ -269,30 +271,42 @@ function details_choosepos_click(event) {
 
 function details_choosepos(event) {
   var img=document.getElementById("img");
-  var el;
+  var el=document.getElementById("details_button");
 
-  var ob=document.createElement("img");
-  if(img.height>img.width)
-    details_size=img.height;
-  else
-    details_size=img.width;
-  details_size=details_size/20;
+  if(el&&(el.className=="toolbox_input_active")) {
+    el.className='toolbox_input';
+    unregister_event(img.parentNode, "mousemove", details_choosepos_move);
+    unregister_event(img.parentNode, "click", details_choosepos_click);
 
-  ob.src=url_script({ script: "extensions/details_kasterl.php", page: page, series: series, img: imgchunk, size: details_size});
+    if(details_choose) {
+      details_choose.parentNode.removeChild(details_choose);
+      details_choose=null;
+    }
+  }
+  else {
+    var ob=document.createElement("img");
+    if(img.height>img.width)
+      details_size=img.height;
+    else
+      details_size=img.width;
+    details_size=details_size/20;
 
-  ob.style.position="absolute";
-  p=get_abs_pos(img);
-  ob.style.left="0px";
-  ob.style.top="0px";
-  ob.className="details_choose";
-  img.parentNode.appendChild(ob);
-  details_choose=ob;
-  //details_choosepos_move(event);
-  register_event(img.parentNode, "mousemove", details_choosepos_move);
-  register_event(img.parentNode, "click", details_choosepos_click);
+    ob.src=url_script({ script: "extensions/details_kasterl.php", page: page, series: series, img: imgchunk, size: details_size});
 
-  if(el=document.getElementById("details_button"))
-    el.className='toolbox_input_active';
+    ob.style.position="absolute";
+    p=get_abs_pos(img);
+    ob.style.left="0px";
+    ob.style.top="0px";
+    ob.className="details_choose";
+    img.parentNode.appendChild(ob);
+    details_choose=ob;
+    //details_choosepos_move(event);
+    register_event(img.parentNode, "mousemove", details_choosepos_move);
+    register_event(img.parentNode, "click", details_choosepos_click);
+
+    if(el)
+      el.className='toolbox_input_active';
+  }
 }
 
 register_initfun(details_init);
