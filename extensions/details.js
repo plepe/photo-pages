@@ -15,6 +15,9 @@ function details_move_start(event) {
 }
 
 function details_move_end(event) {
+  if(details_choose.getAttribute("moved")!=1)
+    return true;
+
   var img=document.getElementById("img");
   var d=parseInt(details_text.getAttribute("detail"));
 
@@ -24,7 +27,8 @@ function details_move_end(event) {
     { x: ((event.clientX-p[0])/img.offsetWidth*1000).toFixed(0),
       y: ((event.clientY-p[1])/img.offsetHeight*1000).toFixed(0),
       detail_nr: d,
-      desc: details_desc[d].desc };
+      desc: details_desc[d].desc,
+      ob: details_desc[d].ob };
 
   if((details_new_pos.x>1000)||(details_new_pos.y>1000)) {
     details_remove(d);
@@ -34,6 +38,7 @@ function details_move_end(event) {
   }
 
   details_hide();
+
   return false;
 }
 
@@ -219,6 +224,8 @@ function details_save(details_new_pos) {
   start_xmlreq(url_script({script: "ajax.php", extension: "details", todo: "update", page: page, img: imgchunk, x: details_new_pos.x, y: details_new_pos.y, desc: details_new_pos.desc, detail_nr: details_new_pos.detail_nr }), 0, details_choose_saved);
 
   if(details_new_pos.detail_nr!="new") {
+    details_desc[details_new_pos.detail_nr]=details_new_pos;
+
     var t=document.getElementById("detail_"+details_new_pos.detail_nr);
     t.innerHTML=details_new_pos.desc;
   }
