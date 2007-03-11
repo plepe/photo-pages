@@ -6,6 +6,95 @@ var details_timeout;
 var details_desc;
 var details_size;
 
+function details_move_start(event) {
+  var img=document.getElementById("img");
+
+  register_event(img.parentNode, "mousemove", details_choosepos_move);
+  details_choose=this;
+  return false;
+}
+
+function details_move_end(event) {
+  var img=document.getElementById("img");
+  var d=parseInt(details_text.getAttribute("detail"));
+
+  unregister_event(img.parentNode, "mousemove", details_choosepos_move);
+
+  details_new_pos=
+    { x: ((event.clientX-p[0])/img.offsetWidth*1000).toFixed(0),
+      y: ((event.clientY-p[1])/img.offsetHeight*1000).toFixed(0),
+      detail_nr: d,
+      desc: details_desc[d].desc };
+
+  if((details_new_pos.x>1000)||(details_new_pos.y>1000)) {
+    details_remove(d);
+  }
+  else {
+    details_save(details_new_pos);
+  }
+
+  details_hide();
+  return false;
+}
+
+function details_click() {
+  if(!details_text)
+    return false;
+
+  var d=parseInt(details_text.getAttribute("detail"));
+  details_new_enter=details_text;
+  details_text.innerHTML="<form action='javascript:details_choose_enter()'><input name='details_desc' value='"+details_desc[d].desc+"'></form>\n";
+  details_new_pos=details_desc[d];
+  details_new_pos.detail_nr=d;
+
+  var ob=document.getElementsByName("details_desc");
+  ob[0].focus();
+
+  details_desc[d].ob.onmouseout =null;
+  return false;
+}
+
+function details_show_single_marker(d) {
+  if(details_desc[d].ob)
+    return;
+
+  var img=document.getElementById("img");
+
+  var ob=document.createElement("img");
+  if(img.height>img.width)
+    details_size=img.height;
+  else
+    details_size=img.width;
+  details_size=details_size/20;
+
+  ob.src=url_script({ script: "extensions/details_kasterl.php", page: page, series: series, img: imgchunk, size: details_size});
+  ob.style.position="absolute";
+  p=get_abs_pos(img);
+  ob.style.left=(p[0]+(img.offsetWidth*details_desc[d].x/1000)-details_size/2)+"px";
+  ob.style.top=(p[1]+(img.offsetHeight*details_desc[d].y/1000)-details_size/2)+"px";
+  ob.className="details_marker";
+  ob.style.background="none";
+  details_desc[d].ob=ob;
+  details_desc[d].ob.setAttribute("details_id", d);
+  img.parentNode.appendChild(ob);
+  details_desc[d].ob.onmouseover=details_show;
+  details_desc[d].ob.onmouseout =details_hide;
+  details_desc[d].ob.onmousedown=details_move_start;
+  details_desc[d].ob.onmouseup  =details_move_end;
+  details_desc[d].ob.onclick    =details_click;
+}
+
+function details_show_single(d) {
+  details_show_single_marker(d);
+}
+
+function details_hide_single(d) {
+  if(details_desc[d].ob) {
+    details_desc[d].ob.parentNode.removeChild(details_desc[d].ob);
+    details_desc[d].ob=null;
+  }
+}
+
 function details_hide() {
   if(details_text) {
     details_text.parentNode.removeChild(details_text);
@@ -13,12 +102,9 @@ function details_hide() {
   }
 }
 
-function details_show() {
+function details_show_desc(d) {
   var img=document.getElementById("img");
-  if(details_text)
-    details_hide();
 
-  d=this.getAttribute("details_id");
   var ob=document.createElement("div");
   details_text=ob;
   ob.style.position="absolute";
@@ -26,8 +112,17 @@ function details_show() {
   ob.style.left=(p[0]+(img.offsetWidth*details_desc[d].x/1000)+details_size/2)+"px";
   ob.style.top=(p[1]+(img.offsetHeight*details_desc[d].y/1000)+details_size/2)+"px";
   ob.className="details_desc";
-  img.parentNode.appendChild(ob);
+  img.parentNode.parentNode.appendChild(ob);
   ob.innerHTML=details_desc[d].desc;
+  details_text.setAttribute("detail", d);
+}
+
+function details_show() {
+  if(details_text)
+    details_hide();
+
+  d=this.getAttribute("details_id");
+  details_show_desc(d);
 }
 
 function details_show_markers() {
@@ -38,25 +133,7 @@ function details_show_markers() {
       return;
 
   for(var d in details_desc) {
-    var ob=document.createElement("img");
-    if(img.height>img.width)
-      details_size=img.height;
-    else
-      details_size=img.width;
-    details_size=details_size/20;
-
-    ob.src=url_script({ script: "extensions/details_kasterl.php", page: page, series: series, img: imgchunk, size: details_size});
-    ob.style.position="absolute";
-    p=get_abs_pos(img);
-    ob.style.left=(p[0]+(img.offsetWidth*details_desc[d].x/1000)-details_size/2)+"px";
-    ob.style.top=(p[1]+(img.offsetHeight*details_desc[d].y/1000)-details_size/2)+"px";
-    ob.className="details_marker";
-    ob.style.background="none";
-    details_desc[d].ob=ob;
-    details_desc[d].ob.setAttribute("details_id", d);
-    img.parentNode.appendChild(ob);
-    details_desc[d].ob.onmouseover=details_show;
-    details_desc[d].ob.onmouseout =details_hide;
+    details_show_single(d);
   }
 }
 
@@ -66,14 +143,11 @@ function details_hide_markers_call() {
 }
 
 function details_hide_markers(force) {
-  if(details_text)
+  if(details_text&&(!force))
     return;
 
   for(var d in details_desc) {
-    if(details_desc[d].ob) {
-      details_desc[d].ob.parentNode.removeChild(details_desc[d].ob);
-      details_desc[d].ob=null;
-    }
+    details_hide_single(d);
   }
 }
 
@@ -93,6 +167,7 @@ function details_init() {
 }
 
 function details_choosepos_move(event) {
+  details_choose.setAttribute("moved", 1);
   details_choose.style.left=(event.clientX-details_size/2)+"px";
   details_choose.style.top=(event.clientY-details_size/2)+"px";
 }
@@ -110,16 +185,59 @@ function details_choose_enter() {
   var ob=document.getElementsByName("details_desc");
   details_new_pos["desc"]=ob[0].value;
 
-  start_xmlreq(url_script({script: "ajax.php", extension: "details", page: page, img: imgchunk, x: details_new_pos.x.toFixed(0), y: details_new_pos.y.toFixed(0), desc: details_new_pos.desc}), 0, details_choose_saved);
+  details_save(details_new_pos);
 
-  if(!details_desc.length) {
-    details_desc=new Array(details_new_pos);
+  details_new_enter.parentNode.removeChild(details_new_enter);
+  if(details_choose) {
+    details_choose.parentNode.removeChild(details_choose);
+    details_choose=null;
+  }
+  if(details_text) {
+    details_text=null;
+  }
+}
+
+function details_remove(d) {
+  details_hide_markers(1);
+  start_xmlreq(url_script({script: "ajax.php", extension: "details", todo: "remove", page: page, img: imgchunk, detail_nr: details_new_pos.detail_nr }), 0, details_choose_saved);
+  details_desc=details_desc.slice(0, d).concat(details_desc.slice(d+1));
+
+  var t=document.getElementById("detail_list");
+  t.innerHTML="Details: "; // TODO: lang_str
+
+  for(var detail_nr in details_desc) {
+    if(detail_nr!=0)
+      t.innerHTML=t.innerHTML+", ";
+
+    t.innerHTML=t.innerHTML+"<span onMouseOver='details_show_single("+detail_nr+")' onMouseOut='details_hide_single("+detail_nr+")' id='detail_"+detail_nr+"'>"+details_desc[detail_nr].desc+"</span>";
+  }
+}
+
+function details_save(details_new_pos) {
+  start_xmlreq(url_script({script: "ajax.php", extension: "details", todo: "update", page: page, img: imgchunk, x: details_new_pos.x, y: details_new_pos.y, desc: details_new_pos.desc, detail_nr: details_new_pos.detail_nr }), 0, details_choose_saved);
+
+  if(details_new_pos.detail_nr!="new") {
+    var t=document.getElementById("detail_"+details_new_pos.detail_nr);
+    t.innerHTML=details_new_pos.desc;
   }
   else {
-    details_desc.push(details_new_pos);
+    var detail_nr;
+    var t=document.getElementById("detail_list");
+
+    if(!details_desc.length) {
+      details_desc=new Array(details_new_pos);
+      detail_nr=0;
+      t.innerHTML=t.innerHTML+"Details: "; // TODO: lang_str
+    }
+    else {
+      detail_nr=details_desc.length;
+      details_desc.push(details_new_pos);
+      t.innerHTML=t.innerHTML+", ";
+    }
+
+    t.innerHTML=t.innerHTML+"<span onMouseOver='details_show_single("+detail_nr+")' onMouseOut='details_hide_single("+detail_nr+")' id='detail_"+detail_nr+"'>"+details_new_pos.desc+"</span>";
+
   }
-  details_new_enter.parentNode.removeChild(details_new_enter);
-  details_choose.parentNode.removeChild(details_choose);
 }
 
 function details_choosepos_click(event) {
@@ -131,8 +249,9 @@ function details_choosepos_click(event) {
   p=get_abs_pos(img);
 
   details_new_pos=
-    { x: (event.clientX-p[0])/img.offsetWidth*1000,
-      y: (event.clientY-p[1])/img.offsetHeight*1000 };
+    { x: ((event.clientX-p[0])/img.offsetWidth*1000).toFixed(0),
+      y: ((event.clientY-p[1])/img.offsetHeight*1000).toFixed(0),
+      detail_nr: "new" };
 
   details_new_enter=document.createElement("div");
   details_new_enter.className="details_new_form";

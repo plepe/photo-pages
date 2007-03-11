@@ -825,6 +825,10 @@ class ImgChunk extends Chunk {
     $ret.="<input type='submit' value='$lang_str[nav_save]'>\n";
     $ret.="</form></div>";
 
+    $text="";
+    call_hooks("image_description", &$text);
+    $ret.=$text;
+
 //    if(file_exists("comment.php")) {
 //      $ret.="<a href='comment.php?img=$this->img'>Kommentar hinzuf&uuml;gen</a>";
 //    }
