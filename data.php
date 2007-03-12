@@ -2146,6 +2146,8 @@ class Page {
 	    break;
           case "SubdirChunk":
             if(preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*$/", $v[dir])) {
+              $save.="$v[dir]/\n";
+
               if(!file_exists("$file_path/$this->path/$v[dir]/")) {
                 mkdir("$file_path/$this->path/$v[dir]");
                 $newseries=fopen("$file_path/$this->path/$v[dir]/fotocfg.txt", "w");
