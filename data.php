@@ -1722,8 +1722,10 @@ class Page {
       } 
     }
 
-    if($this->cfg[MAIN_PICTURE])
-      $this->cfg[MAIN_PICTURE]="$this->path/{$this->cfg[MAIN_PICTURE]}";
+    if(eregi("^(.*/)?200/([^/]*)$", $this->cfg[MAIN_PICTURE], $m))
+      $this->cfg[MAIN_PICTURE]="$m[1]$m[2]";
+//    if($this->cfg[MAIN_PICTURE])
+//      $this->cfg[MAIN_PICTURE]="$this->path/{$this->cfg[MAIN_PICTURE]}";
 
     return $this->cfg;
   }
@@ -2272,12 +2274,6 @@ class Page {
       switch($f) {
         case "WELCOME_TEXT":
           print "<textarea class='page_edit_input' name='data[$f]'>{$data[$f]}</textarea>\n";
-          break;
-        case "MAIN_PICTURE":
-          $m=$data[$f];
-          if(strpos($m, "$this->path/")===0)
-            $m=substr($m, strlen("$this->path/"));
-          print "<input class='page_edit_input' name='data[$f]' value=\"$m\">\n";
           break;
         default:
           print "<input class='page_edit_input' name='data[$f]' value=\"{$data[$f]}\">\n";

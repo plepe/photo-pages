@@ -35,7 +35,8 @@ if($_REQUEST[tmp_id]) {
 }
 
 if($_REQUEST[img]==="main") {
-  $filename="$file_path/{$page->cfg[MAIN_PICTURE]}";
+  eregi("^(.*/)?([^/]*)$", $page->cfg[MAIN_PICTURE], $m);
+  $filename="$file_path/{$page->path}/$m[1]/$_REQUEST[size]/$m[2]";
 }
 else {
   if($_REQUEST["img"]>=sizeof($page->cfg["LIST"])) {
