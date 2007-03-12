@@ -23,7 +23,7 @@
  *
  */
 
-Header("content-type: text/xml");
+Header("content-type: text/xml; charset: utf-8");
 $request_type="xml";
 
 require "data.php";
@@ -40,7 +40,7 @@ function scale() {
   }
 }
 
-print "<xml version=\"1.0\" encoding=\"ISO-8859-15\">\n";
+print "<xml version=\"1.0\" encoding=\"UTF-8\">\n";
 
 $img=$_REQUEST[img];
 $todo=$_REQUEST[todo];

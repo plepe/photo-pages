@@ -23,12 +23,12 @@
  *
  */
 
-Header("content-type: text/xml");
+Header("content-type: text/xml; charset: utf-8");
 $request_type="xml";
 
 require "data.php";
 
-print "<xml version=\"1.0\" encoding=\"ISO-8859-15\">\n";
+print "<xml version=\"1.0\" encoding=\"UTF-8\">\n";
 
 include "extensions/$_REQUEST[extension]_ajax.php";
 

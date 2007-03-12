@@ -59,7 +59,12 @@ Upgrading
     extensions (see conf.php-dist resp. README)
 
   Version >= r41
-  -------------
+  --------------
   - URLs have a new syntax. Please look at the lines in the
     conf.php-dist and update your conf.php accordingly
 
+  Version >= r73
+  --------------
+  - Changed encoding from ISO-8859-15 to UTF-8. So please recode all your
+    fotocfg.txt and *.lst to UTF-8 (you can use recode: 'recode
+    iso8859-15..utf-8 fotocfg.txt')

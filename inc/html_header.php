@@ -59,7 +59,7 @@ function use_css($file=0) {
 function start_html_header($title) {
   global $finished_http_header;
 
-  Header("content-type: text/html; charset=iso-8859-15");
+  Header("content-type: text/html; charset=utf-8");
   setlocale(LC_ALL, "de_AT");
   $finished_http_header=1;
 ?>
