@@ -70,7 +70,8 @@ C ... image ... id='img'
       params: params fuer <img>, page, img
 D ... toolboxes: 'imageview_details', 'imageview_toolbox', 'imageview_admintools'
 E ... text 'imageview_afterimage'
-F ... text 'imageview_description'
+F  ... hook 'image_description'
+       params: text, page, img
 
 (PHP) Functions useful for extensions
 -------------------------------------

@@ -759,6 +759,7 @@ class ImgChunk extends Chunk {
           "var series=\"$series\";\n".
           "var page=\"{$this->page->path}\";\n".
           "var index_id=\"{$this->index_id}\";\n".
+          "var imgnum=\"$this->id\";\n";
           "var imgchunk=\"$this->index\";\n";
 
     $ret.="img_width={$imgres[0]};\n".
@@ -826,7 +827,7 @@ class ImgChunk extends Chunk {
     $ret.="</form></div>";
 
     $text="";
-    call_hooks("image_description", &$text);
+    call_hooks("image_description", &$text, $page, $this);
     $ret.=$text;
 
 //    if(file_exists("comment.php")) {

@@ -1,12 +1,12 @@
 <?
-function details_load() {
+function details_load($page, $img) {
   global $page;
   global $file_path;
   global $details_desc;
 
-  if(file_exists("$file_path/$page->path/details/{$page->cfg["LIST"][$_REQUEST[img]]->img}")) {
+  if(file_exists("$file_path/$img->path/details/{$img->img}")) {
     $details_desc=array();
-    $f=fopen("$file_path/$page->path/details/{$page->cfg["LIST"][$_REQUEST[img]]->img}", "r");
+    $f=fopen("$file_path/$img->path/details/{$img->img}", "r");
     while($r=fgets($f)) {
       $r=chop($r);
       eregi("^([0-9]+):([0-9]+):(.*)", $r, $m);
@@ -20,9 +20,11 @@ function details_load() {
   }
 }
 
-function details_list_details($text) { 
+function details_list_details($text, $page, $img) { 
   global $details_desc;
   global $lang_str;
+
+  details_load($page, $img);
 
   if(sizeof($details_desc)) {
     $text.="<span id='detail_list'>$lang_str[details_desc]: ";
@@ -40,7 +42,6 @@ function details_list_details($text) {
 } 
 
 
-register_hook("album_modify_list", details_load);
 register_hook("image_description", details_list_details);
 
 $str="";

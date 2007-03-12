@@ -73,7 +73,7 @@ function details_show_single_marker(d) {
     details_size=img.width;
   details_size=details_size/20;
 
-  ob.src=url_script({ script: "extensions/details_kasterl.php", page: page, series: series, img: imgchunk, size: details_size});
+  ob.src=url_script({ script: "extensions/details_kasterl.php", page: page, series: series, size: details_size});
   ob.style.position="absolute";
   p=get_abs_pos(img);
   ob.style.left=(p[0]+(img.offsetWidth*details_desc[d].x/1000)-details_size/2)+"px";
@@ -174,7 +174,7 @@ function details_leave_page() {
         ret+=details_desc[d].x+":"+details_desc[d].y+":"+details_desc[d].desc+"\n";
       }
 
-      start_xmlreq(url_script({script: "ajax.php", extension: "details", page: page, img: imgchunk, data: ret }), 0, 0, true);
+      start_xmlreq(url_script({script: "ajax.php", extension: "details", page: page, img: imgnum, data: ret }), 0, 0, true);
       details_changed=0;
       return false;
     }
@@ -321,7 +321,7 @@ function details_choosepos(event) {
       details_size=img.width;
     details_size=details_size/20;
 
-    ob.src=url_script({ script: "extensions/details_kasterl.php", page: page, series: series, img: imgchunk, size: details_size});
+    ob.src=url_script({ script: "extensions/details_kasterl.php", page: page, series: series, size: details_size});
 
     ob.style.position="absolute";
     p=get_abs_pos(img);
