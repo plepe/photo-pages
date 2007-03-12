@@ -1,0 +1,8 @@
+.magnify {
+  border: 1px solid white;
+  background: #333333;
+  width: 200px;
+  height: 200px;
+  cursor: crosshair;
+}
+

@@ -405,12 +405,6 @@ a.toolbox_input:visited {
   display: none;
   padding: 2px;
 }
-.magnify {
-  border: 1px solid white;
-  background: #333333;
-  width: 200px;
-  height: 200px;
-}
 .page_edit_input {
   width: 300px;
 }
