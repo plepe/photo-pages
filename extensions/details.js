@@ -5,6 +5,7 @@ var details_new_enter;
 var details_timeout;
 var details_desc;
 var details_size;
+var details_changed=0;
 
 function details_move_start(event) {
   var img=document.getElementById("img");
@@ -165,12 +166,28 @@ function details_show_markers_call() {
   details_timeout=window.setTimeout("details_hide_markers()", 1000);
 }
 
+function details_leave_page() {
+  if(details_changed) {
+    if(confirm("Details wurden veraendert. Speichern?")) {
+      var ret="";
+      for(var d in details_desc) {
+        ret+=details_desc[d].x+":"+details_desc[d].y+":"+details_desc[d].desc+"\n";
+      }
+
+      start_xmlreq(url_script({script: "ajax.php", extension: "details", page: page, img: imgchunk, data: ret }), 0, 0, true);
+      details_changed=0;
+      return false;
+    }
+  }
+}
+
 function details_init() {
   var img=document.getElementById("img");
 
   register_event(img.parentNode, "mouseover", details_show_markers);
   register_event(img.parentNode, "mouseout", details_hide_markers_call);
   register_event(img.parentNode, "mousemove", details_show_markers_call);
+  register_event(window, "unload", details_leave_page);
 }
 
 function details_choosepos_move(event) {
@@ -206,7 +223,8 @@ function details_choose_enter() {
 
 function details_remove(d) {
   details_hide_markers(1);
-  start_xmlreq(url_script({script: "ajax.php", extension: "details", todo: "remove", page: page, img: imgchunk, detail_nr: details_new_pos.detail_nr }), 0, details_choose_saved);
+  //start_xmlreq(url_script({script: "ajax.php", extension: "details", todo: "remove", page: page, img: imgchunk, detail_nr: details_new_pos.detail_nr }), 0, details_choose_saved);
+  details_changed=1;
   details_desc=details_desc.slice(0, d).concat(details_desc.slice(d+1));
 
   var t=document.getElementById("detail_list");
@@ -218,10 +236,13 @@ function details_remove(d) {
 
     t.innerHTML=t.innerHTML+"<span onMouseOver='details_show_single("+detail_nr+")' onMouseOut='details_hide_single("+detail_nr+")' id='detail_"+detail_nr+"'>"+details_desc[detail_nr].desc+"</span>";
   }
+
+  details_choose_saved();
 }
 
 function details_save(details_new_pos) {
-  start_xmlreq(url_script({script: "ajax.php", extension: "details", todo: "update", page: page, img: imgchunk, x: details_new_pos.x, y: details_new_pos.y, desc: details_new_pos.desc, detail_nr: details_new_pos.detail_nr }), 0, details_choose_saved);
+  //start_xmlreq(url_script({script: "ajax.php", extension: "details", todo: "update", page: page, img: imgchunk, x: details_new_pos.x, y: details_new_pos.y, desc: details_new_pos.desc, detail_nr: details_new_pos.detail_nr }), 0, details_choose_saved);
+  details_changed=1;
 
   if(details_new_pos.detail_nr!="new") {
     details_desc[details_new_pos.detail_nr]=details_new_pos;
@@ -247,6 +268,8 @@ function details_save(details_new_pos) {
     t.innerHTML=t.innerHTML+"<span onMouseOver='details_show_single("+detail_nr+")' onMouseOut='details_hide_single("+detail_nr+")' id='detail_"+detail_nr+"'>"+details_new_pos.desc+"</span>";
 
   }
+
+  details_choose_saved();
 }
 
 function details_choosepos_click(event) {

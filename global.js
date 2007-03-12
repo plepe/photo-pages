@@ -93,7 +93,7 @@ function processReqChange() {
   }
 }
 
-function start_xmlreq(url, msg, ready_callback) {
+function start_xmlreq(url, msg, ready_callback, wait) {
   xmlhttp_req = false;
   //alert(url);
 
@@ -123,7 +123,7 @@ function start_xmlreq(url, msg, ready_callback) {
   if(xmlhttp_req) {
     xmlhttp_callback=ready_callback;
     xmlhttp_req.onreadystatechange = processReqChange;
-    xmlhttp_req.open("GET", url, true);
+    xmlhttp_req.open("GET", url, !wait);
     xmlhttp_req.send("");
 
     var tb=document.getElementById("message");

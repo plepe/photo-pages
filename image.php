@@ -36,7 +36,7 @@ end_html_header();
 
 
 ?>
-<BODY onLoad='global_initfun()'>
+<BODY onLoad='global_initfun()' onUnLoad='call_events(event)'>
 <?
 $width=$_REQUEST[width];
 
