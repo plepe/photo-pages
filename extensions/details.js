@@ -12,12 +12,15 @@ function details_move_start(event) {
 
   register_event(img.parentNode, "mousemove", details_choosepos_move);
   details_choose=this;
+
   return false;
 }
 
 function details_move_end(event) {
   if(details_choose.getAttribute("moved")!=1)
     return true;
+
+  details_choose.setAttribute("moved", 0);
 
   var img=document.getElementById("img");
   var d=parseInt(details_text.getAttribute("detail"));
@@ -49,7 +52,7 @@ function details_click() {
 
   var d=parseInt(details_text.getAttribute("detail"));
   details_new_enter=details_text;
-  details_text.innerHTML="<form action='javascript:details_choose_enter()'><input name='details_desc' value='"+details_desc[d].desc+"'></form>\n";
+  details_text.innerHTML="<form action='javascript:details_change_enter()'><input name='details_desc' value='"+details_desc[d].desc+"'></form>\n";
   details_new_pos=details_desc[d];
   details_new_pos.detail_nr=d;
 
@@ -191,6 +194,8 @@ function details_init() {
 }
 
 function details_choosepos_move(event) {
+  if(!details_choose)
+    return;
   details_choose.setAttribute("moved", 1);
   details_choose.style.left=(event.clientX-details_size/2)+"px";
   details_choose.style.top=(event.clientY-details_size/2)+"px";
@@ -205,6 +210,20 @@ function details_choose_saved() {
     el.className='toolbox_input';
 }
 
+function details_change_enter() {
+  var ob=document.getElementsByName("details_desc");
+  details_new_pos["desc"]=ob[0].value;
+
+  details_save(details_new_pos);
+
+  details_new_enter.parentNode.removeChild(details_new_enter);
+
+  details_choose=null;
+  if(details_text) {
+    details_text=null;
+  }
+}
+
 function details_choose_enter() {
   var ob=document.getElementsByName("details_desc");
   details_new_pos["desc"]=ob[0].value;
@@ -212,6 +231,7 @@ function details_choose_enter() {
   details_save(details_new_pos);
 
   details_new_enter.parentNode.removeChild(details_new_enter);
+
   if(details_choose) {
     details_choose.parentNode.removeChild(details_choose);
     details_choose=null;
