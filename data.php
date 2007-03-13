@@ -723,12 +723,10 @@ class ImgChunk extends Chunk {
     if($this->page->get_right($_SESSION[current_user], "addcomment")) {
       $ret1.="<form accesskey='c' action='comment.php?id=$this->id' method='post'><input class='toolbox_input' type='submit' id='toolbox_input_comment' value='$lang_str[tool_comments_name]' onClick='start_add_comment()' title=\"$lang_str[tooltip_addcomment]\"></form>\n";
     }
-    if(strlen($ret1)>0) {
-      $ret.="<div class='toolbox' id='toolbox'>\n";
-      $ret.=$ret1;
-      $ret.="</div>\n";
-    }
 
+    add_toolbox_item("imageview_admintools", $ret1);
+
+    $ret.=show_toolbox("imageview_admintools");
     return $ret;
   }
 
