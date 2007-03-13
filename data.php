@@ -770,7 +770,7 @@ class ImgChunk extends Chunk {
     $img_params[width]=$imgres[0];
     $img_params[height]=$imgres[1];
 
-    call_hooks("imageview", &$img_params);
+    call_hooks("imageview", &$img_params, $page, $this);
 
     $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."' target='_top'>";
 
