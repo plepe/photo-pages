@@ -636,7 +636,7 @@ class ImgChunk extends Chunk {
 
     $r=getimagesize("$file_path/{$this->path}/$index_res/$this->img");
 
-    $ret ="<a href='".url_script($this->page->path, $this->page->series, "image.php", $this->index)."'>";
+    $ret ="<a href='".url_script(array("page"=>$this->page, "img"=>$this->index, "script"=>"image.php", "imgname"=>$this->img))."'>";
     $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $index_res, $_SESSION[img_version][$this->img])."'";
     
     #$index_res/$this->img?{$_SESSION[img_version][$this->img]}' ".
@@ -1483,7 +1483,7 @@ class Page {
     $this->get_sublist();
 
     $this->show_list=$this->cfg["LIST"];
-    call_hooks("album_modify_list", &$this->show_list);
+    call_hooks("album_modify_list", &$this->show_list, $this);
 
     return $this->cfg["LIST"];
   }

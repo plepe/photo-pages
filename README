@@ -53,6 +53,9 @@ Extensions
 - columns
   Let's the user change the amount of columns in album-view
 
+- search
+  Searches in descriptions for a string
+
 - rowcount
   Splits the album-view in several pages for large pages
 
@@ -60,7 +63,7 @@ Extensions
   Let's the user change the language of the interface
 
 - details
-  Describe details in image
+  Describe details in image (also searching in details is possible)
 
 Included Software
 -----------------

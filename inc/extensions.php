@@ -13,9 +13,12 @@ function include_extensions($view) {
 
   foreach($extensions as $ext) {
     include "extensions/{$ext}_data.php";
+  }
+
+  foreach($extensions as $ext) {
     if(in_array($view, $extensions_data[$ext]["views"])) {
-      include "extensions/{$ext}_lang.php";
-      include "extensions/{$ext}.php";
+      @include "extensions/{$ext}_lang.php";
+      @include "extensions/{$ext}.php";
       if(file_exists("extensions/{$ext}.js"))
         use_javascript("extensions/{$ext}");
       if(file_exists("extensions/{$ext}.css"))
@@ -24,3 +27,9 @@ function include_extensions($view) {
   }
 }
 
+function include_extension($ext, $before=0) {
+  global $extensions;
+
+  if(!in_array($ext, $extensions))
+    $extensions[]=$ext;
+}

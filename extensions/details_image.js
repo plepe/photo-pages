@@ -177,7 +177,7 @@ function details_leave_page() {
         ret+=details_desc[d].x+":"+details_desc[d].y+":"+details_desc[d].desc+"\n";
       }
 
-      start_xmlreq(url_script({script: "ajax.php", extension: "details", page: page, img: imgnum, data: ret }), 0, 0, true);
+      start_xmlreq(url_script({script: "ajax.php", extension: "details_image", page: page, img: imgnum, data: ret }), 0, 0, true);
       details_changed=0;
       return false;
     }

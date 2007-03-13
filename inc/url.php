@@ -25,6 +25,7 @@
 
 $export_img=array();
 $url_save_export=0;
+$urls_add=array();
 
 function build_url($template, $params) {
   global $url_relative;
@@ -80,6 +81,7 @@ function urls_write() {
   global $url_script;
   global $url_javascript;
   global $url_img;
+  global $urls_add;
   global $page;
 
   use_javascript("url");
@@ -94,15 +96,19 @@ function urls_write() {
   print "var v_url_img=\"$url_img\";\n";
   print "//-->\n</script>\n";
   print "</script>\n";
+
+  html_export_var(array("urls_add"=>$urls_add));
 }
 
 function url_page($path, $series=0, $script=0) {
   global $url_page;
+  global $urls_add;
 
   if(is_array($path)) {
     if($path["page"]->series)
       $path["series"]=$path["page"]->series;
     $path["page"]=$path["page"]->path;
+    $path=array_merge($urls_add, $path);
 
     return build_url($url_page, $path);
   }
@@ -114,11 +120,13 @@ function url_photo($path, $series=0, $skript=0, $imgnum=0, $imgname=0, $size=0, 
   global $url_photo;
   global $url_save_export;
   global $export_img;
+  global $urls_add;
 
   if(is_array($path)) {
     if($path["page"]->series)
       $path["series"]=$path["page"]->series;
     $path["page"]=$path["page"]->path;
+    $path=array_merge($urls_add, $path);
 
     if($url_save_export)
       $export_img[$path[size]][]=$path[imgname];
@@ -132,11 +140,13 @@ function url_photo($path, $series=0, $skript=0, $imgnum=0, $imgname=0, $size=0, 
 
 function url_script($path, $series=0, $script=0, $imgnum=0) {
   global $url_script;
+  global $urls_add;
 
   if(is_array($path)) {
     if($path["page"]->series)
       $path["series"]=$path["page"]->series;
     $path["page"]=$path["page"]->path;
+    $path=array_merge($urls_add, $path);
 
     return build_url($url_script, $path);
   }
@@ -171,3 +181,8 @@ function url_img($imgfile) {
   return build_url($url_img, array("imgname"=>$imgfile));
 }
 
+function add_all_urls($key, $value) {
+  global $urls_add;
+
+  $urls_add[$key]=$value;
+}
