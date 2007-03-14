@@ -2752,9 +2752,7 @@ while(substr($_REQUEST[page], strlen($_REQUEST[page])-1, 1)=="/") {
 }
 
 $page=get_page($_REQUEST[page], $series);
-//print "bla2\n";
 $page->get_viewlist();
-// print "bla3\n";
 if(!$series) {
   $page->get_sublist();
 }

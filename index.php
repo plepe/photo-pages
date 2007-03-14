@@ -49,7 +49,6 @@ if($_REQUEST["img"])
   $img=$_REQUEST["img"];
 
 if(eregi("img_(.*)$", $img, $m)) {
-  $list=$page->get_viewlist();
   foreach($list as $el)
     if($el->file_name()==$m[1])
       $img=$el->get_index();
