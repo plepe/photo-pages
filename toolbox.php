@@ -35,8 +35,11 @@ function scale() {
   global $page;
   global $file_path;
 
+  $lastr=$orig_path;
+  rsort($resolutions);
   foreach($resolutions as $res) {
-    system("convert -resize {$res}x{$res} -filter Hamming -quality 85 -interlace PLANE $file_path/$page->path/$orig_path/$img->img $file_path/$page->path/$res/$img->img");
+    system("convert -resize {$res}x{$res} -filter Hamming -quality 85 -interlace PLANE $file_path/$page->path/$lastr/$img->img $file_path/$page->path/$res/$img->img");
+    $lastr=$res;
   }
 }
 

@@ -1146,7 +1146,7 @@ class MovieChunk extends ImgChunk {
     $_SESSION["tmp_$tmp_id"]["size"]="movie";
     session_register("tmp_$tmp_id");
 
-    $url="$web_path/get_image.php?tmp_id=$tmp_id";
+    $url=url_script(array("script"=>"get_image.php", "tmp_id"=>$tmp_id)); //"$web_path/get_image.php?tmp_id=$tmp_id";
     //$url=htmlentities($url);
 
 ?>
