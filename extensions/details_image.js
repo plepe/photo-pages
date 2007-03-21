@@ -214,7 +214,12 @@ function details_change_enter() {
   var ob=document.getElementsByName("details_desc");
   details_new_pos["desc"]=ob[0].value;
 
-  details_save(details_new_pos);
+  if(ob[0].value=="") {
+    details_remove(details_new_pos.detail_nr);
+  }
+  else {
+    details_save(details_new_pos);
+  }
 
   details_new_enter.parentNode.removeChild(details_new_enter);
 

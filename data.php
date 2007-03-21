@@ -646,7 +646,9 @@ class ImgChunk extends Chunk {
     #     "class='album_image'></a><br>";
 
     if($this->text)
-      $ret.=strtr($this->text, array("\n"=>"<br>\n"))."<br>\n";
+      $desc=strtr($this->text, array("\n"=>"<br>\n"))."<br>\n";
+    call_hooks("album_desc", &$desc, $page, $this);
+    $ret.=$desc;
 
     $this->read_comments();
     if($this->comments) foreach($this->comments as $c) {
@@ -2122,9 +2124,9 @@ class Page {
         $v=$data["LIST"][$k];
         //print "<br>$k:\n";
         //print_r($v);
+        $v[text]=stripslashes($v[text]);
 	switch($v[type]) {
 	  case "ImgChunk":
-            $v[text]=stripslashes($v[text]);
 	    if($v[text]) {
               if(strpos($v[text], "\n")===false)
                 fputs($f, "$v[img] $v[text]\n");
@@ -2135,7 +2137,6 @@ class Page {
 	      fputs($f, "$v[img]\n");
 	    break;
 	  case "MovieChunk":
-            $v[text]=stripslashes($v[text]);
 	    if($v[text]) {
               if(strpos($v[text], "\n")===false)
                 fputs($f, "$v[mov] $v[text]\n");
