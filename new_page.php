@@ -57,19 +57,24 @@ if($_REQUEST[submit_ok]) {
   else {
     switch($data[subpage]) {
       case "main":
-        $v="$file_path/$data[page_name]";
+        $v="$data[page_name]";
         break;
       case "sub":
-        $v="$file_path/$page->path/$data[page_name]";
+        $v="$page->path/$data[page_name]";
         break;
     }
 
-    mkdir($v);
-    $f=fopen("$v/fotocfg.txt", "w");
+    $f=fopen("$file_path/$page->path/fotocfg.txt", "a");
+    fwrite($f, "$v/\n");
+    fclose($f);
+
+    mkdir("$file_path/$v");
+    $f=fopen("$file_path/$v/fotocfg.txt", "w");
     fwrite($f, "TITLE $data[title]\n\n");
+    fclose($f);
 
     print "$lang_str[new_page_done].<br>\n";
-    print "<a href='".url_page("$page->path/$data[page_name]", "", "index.php")."'>$lang_str[new_page_go_there]</a>\n";
+    print "<a href='".url_page("$v", "", "index.php")."'>$lang_str[new_page_go_there]</a>\n";
   }
 }
 else {
