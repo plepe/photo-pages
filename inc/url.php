@@ -29,6 +29,7 @@ $urls_add=array();
 
 function build_url($template, $params) {
   global $url_relative;
+  global $web_path;
 
   if($url_relative) {
     global $url_root;
@@ -61,6 +62,7 @@ function build_url($template, $params) {
 
   $p=array();
   $erg=$template;
+  $params["web_path"]=$web_path;
 
   foreach($params as $key=>$v) {
     if(strpos($erg, "%$key%")!==false)
@@ -83,6 +85,7 @@ function urls_write() {
   global $url_img;
   global $urls_add;
   global $page;
+  global $web_path;
 
   use_javascript("url");
   print "<script type='text/javascript'>\n";
@@ -94,6 +97,7 @@ function urls_write() {
   print "var v_url_script=\"$url_script\";\n";
   print "var v_url_javascript=\"$url_javascript\";\n";
   print "var v_url_img=\"$url_img\";\n";
+  print "var web_path=\"$web_path\";\n";
   print "//-->\n</script>\n";
   print "</script>\n";
 
@@ -105,9 +109,11 @@ function url_page($path, $series=0, $script=0) {
   global $urls_add;
 
   if(is_array($path)) {
-    if($path["page"]->series)
-      $path["series"]=$path["page"]->series;
-    $path["page"]=$path["page"]->path;
+    if(!is_string($path["page"])) {
+      if($path["page"]->series)
+	$path["series"]=$path["page"]->series;
+      $path["page"]=$path["page"]->path;
+    }
     $path=array_merge($urls_add, $path);
 
     return build_url($url_page, $path);

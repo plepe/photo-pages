@@ -25,6 +25,9 @@
  */
  // http://xover.mud.at/~florian/testbed/p1/svg-map.js
 
+// In which directory are the original files
+$orig_path="orig";
+
 // Default picture, if no main_picture is set
 $no_main_picture="black.png";
 
@@ -37,14 +40,45 @@ $fields=array("TITLE"=>"Titel", "PHOTOS_BY"=>"Photographiert von",
 $rights=array("announce", "view", "addcomment", "editdesc", "new", "edit", "rights");
 $global_rights=array("newusers", "useradmin");
 
+// URLs
+// es wird auf jeden fall $web_path davor gesetzt.
+// in der url werden folgende elemente ersetzt:
+//   %web_path% web-path
+//   %page%     page-path
+//   %series%   series
+//   %script%   skript
+//   %img%      imgnumber (nur bei images + skript)
+//   %imgname%  imgname (nur bei images)
+//   %size%     size (nur bei images)
+//   %version%  imgversion (nur bei images)
+
+// Original
+$url_page="%web_path%";
+$url_photo="%web_path%/get_image.php/%imgname%";
+$url_script="%web_path%/%script%";
+$url_javascript="%web_path%/%script%";
+$url_img="%web_path%/images/%imgname%";
+
+// Which umask is used when creating/changing files
+umask(0000);
+
 // Accepted Filename-Extensions
 $extensions_images=array("jpg", "jpeg", "gif", "png");
 $extensions_movies=array("avi", "mov", "flv", "mpeg", "mpg");
 
+// Available Namespaces
+$namespaces=array("category");
+
 $export_page=array();
 $exported_pages=array();
 
-require "conf.php";
+if(file_exists("conf.php")) {
+  require "conf.php";
+}
+else {
+  Header("Location: configure.php");
+}
+
 
 if(!$extensions)
   $extensions=array();
@@ -189,7 +223,10 @@ class SubdirChunk extends Chunk {
     if($this->subpage)
       return $this->subpage;
 
-    return $this->subpage=get_page("{$this->path}/$this->dir");
+    if($this->path)
+      return $this->subpage=get_page("{$this->path}/$this->dir");
+    else
+      return $this->subpage=get_page("$this->dir");
   }
 
   function album_show() {
@@ -274,7 +311,10 @@ class SubdirChunk extends Chunk {
     $subdata=$this->subpage->cfg;
 
     $ret.="<div class='edit_img'><img width='64' height='64' src='$subdata[MAIN_PICTURE]'></div>\n";
-    $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->dir'>\n";
+    if($this->path!=$this->page->path)
+      $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->path/$this->dir'>\n";
+    else
+      $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->dir'>\n";
     $ret.="$lang_str[nav_subdir]: $subdata[TITLE]";
     $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='SubdirChunk'>\n";
     $ret.="<br style='clear: left;'>\n";
@@ -470,7 +510,10 @@ class SeriesChunk extends Chunk {
     $subdata=$this->subpage->cfg;
 
     $ret.="<div class='edit_img'><img width='64' height='64' src='$subdata[MAIN_PICTURE]'></div>\n";
-    $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->dir'>\n";
+    if($this->path!=$this->page->path)
+      $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->path/$this->dir'>\n";
+    else
+      $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->dir'>\n";
     $ret.="$lang_str[nav_view]: $subdata[TITLE]<br />{$this->subpage->filename}";
     $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='SeriesChunk'>\n";
     $ret.="<br style='clear: left;'>\n";
@@ -1485,6 +1528,7 @@ class Page {
     $this->get_sublist();
 
     $this->show_list=$this->cfg["LIST"];
+    call_hooks("load", &$this->cfg, $this);
     call_hooks("album_modify_list", &$this->show_list, $this);
 
     return $this->cfg["LIST"];
@@ -1643,8 +1687,8 @@ class Page {
     $this->rights=array();
 
     $this->series=$series;
-    if($path=="")
-      $path=".";
+//    if($path=="")
+//      $path=".";
     $this->path=$path;
     $this->parent=null;
     $this->parent_path=null;
@@ -1657,7 +1701,7 @@ class Page {
         $this->parent_path=$m[1];
       }
       elseif(eregi("^[^/\.]+$", $path)) {
-        $this->parent_path=".";
+        $this->parent_path="";
       }
     }
     else {
@@ -1860,7 +1904,7 @@ class Page {
       }
     }
     elseif($child) {
-      $i=substr($child->path, strrpos($child->path, "/")+1);
+      $i=substr($child->path, strrpos($child->path, "/"));
       $param["img"]="img_$i";
       $addparam="#img_$i";
     }
@@ -2022,7 +2066,7 @@ class Page {
             $save.="$v[mov]\n";
           break;
         case "SubdirChunk":
-          if(preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*$/", $v[dir])) {
+          if(preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.:]*$/", $v[dir])) {
             $save.="$v[dir]/\n";
 
             if(!file_exists("$file_path/$this->path/$v[dir]/")) {
@@ -2081,6 +2125,8 @@ class Page {
       return 0;
     }
 
+    call_hooks("save_page_start", $data, $this);
+
     //print "<pre>\n";
     //print_r($data);
     //print "</pre>\n";
@@ -2124,6 +2170,8 @@ class Page {
         $v=$data["LIST"][$k];
         //print "<br>$k:\n";
         //print_r($v);
+	call_hooks("save_page_chunk", $data, $this, $v);
+
         $v[text]=stripslashes($v[text]);
 	switch($v[type]) {
 	  case "ImgChunk":
@@ -2147,12 +2195,16 @@ class Page {
 	      fputs($f, "$v[mov]\n");
 	    break;
           case "SubdirChunk":
-            if(preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*$/", $v[dir])) {
+            if(preg_match("/^[a-zA-Z0-9_\/][a-zA-Z0-9_\-\.:\/]*$/", $v[dir])) {
               fputs($f, "$v[dir]/\n");
+              if(substr($v[dir], 0, 1)=="/")
+		$dir_path="$file_path/$v[dir]/";
+	      else
+		$dir_path="$file_path/$this->path/$v[dir]/";
 
-              if(!file_exists("$file_path/$this->path/$v[dir]/")) {
-                mkdir("$file_path/$this->path/$v[dir]");
-                $newseries=fopen("$file_path/$this->path/$v[dir]/fotocfg.txt", "w");
+              if(!file_exists("$dir_path")) {
+                mkdir("$dir_path");
+                $newseries=fopen("$dir_path/fotocfg.txt", "w");
                 fputs($newseries, "TITLE $v[TITLE]\n");
                 fputs($newseries, "\n");
                 fclose($newseries);
@@ -2197,6 +2249,8 @@ class Page {
 //      else
 //        $str.=$r;
     //}
+    call_hooks("save_page_end", $data, $this);
+
     fclose($f);
     return 1;
   }
@@ -2265,24 +2319,26 @@ class Page {
     print "<input type='hidden' name='series' value=\"$this->series\">\n";
 
     print "<div class='page_edit_page' id='page1'>\n";
-    print "<table>\n";
+    $text ="<table>\n";
 
     foreach($fields as $f=>$txt) {
-      print "<tr><td>$txt:</td>\n";
-      print "<td>\n";
+      $text.="<tr><td>$txt:</td>\n";
+      $text.="<td>\n";
       switch($f) {
         case "WELCOME_TEXT":
-          print "<textarea class='page_edit_input' name='data[$f]'>{$data[$f]}</textarea>\n";
+          $text.="<textarea class='page_edit_input' name='data[$f]'>{$data[$f]}</textarea>\n";
           break;
         default:
-          print "<input class='page_edit_input' name='data[$f]' value=\"{$data[$f]}\">\n";
+          $text.="<input class='page_edit_input' name='data[$f]' value=\"{$data[$f]}\">\n";
       }
-      print "</td></tr>\n";
+      $text.="</td></tr>\n";
     }
 
     //print "<td><textarea class='page_edit_input' name='data[WELCOME_TEXT]'>{$data[WELCOME_TEXT]}</textarea></td></tr>\n";
+    call_hooks("page_edit_main_form", &$text, $this, $data);
 
-    print "</table>\n";
+    $text.="</table>\n";
+    print $text;
     print "</div>\n"; // page1
 
     print "<div class='page_edit_page' id='page2' style='display: none'>\n";
@@ -2740,8 +2796,10 @@ unset($page);
 //print "bla1\n";
 if(!$_REQUEST[page])
   $_REQUEST[page]="";
-if(!file_exists("$file_path/$_REQUEST[page]"))
-  $_REQUEST[page]="";
+if(!file_exists("$file_path/$_REQUEST[page]")) {
+  print "Page does not exist";
+  //$_REQUEST[page]="";
+}
 
 // Doppelte / und / am Schluss entfernen
 do {
@@ -2873,7 +2931,7 @@ function replace_invalid_chars($name) {
   $res="";
 
   for($i=0; $i<strlen($name); $i++) {
-    if(eregi("^[a-zA-Z0-9_\-\.]*$", substr($name, $i, 1)))
+    if(eregi("^[a-zA-Z0-9_\-\.:]*$", substr($name, $i, 1)))
       $res.=substr($name, $i, 1);
     else
       $res.="_";

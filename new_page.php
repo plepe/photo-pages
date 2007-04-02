@@ -46,7 +46,7 @@ if($_REQUEST[submit_ok]) {
     $error[]=$lang_str[new_page_no_page_name];
   if(substr($data[page_name], 0, 1)==".")
     $error[]=$lang_str[new_page_no_dot];
-  if(!preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*$/", $data[page_name]))
+  if(!preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_\-\.:]*$/", $data[page_name]))
     $error[]="\"$data[page_name]\" $lang_str[error_invalid_chars]";
 
   if(sizeof($error)) {

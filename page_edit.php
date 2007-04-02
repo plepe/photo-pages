@@ -22,13 +22,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+$extensions_page="page_edit";
 require "data.php";
 if($_REQUEST[submit][ok]) {
   $result=$page->set_page_edit_data($_REQUEST[data]);
 }
 start_html_header($page->cfg[TITLE]);
 use_javascript("page_edit");
-include_extensions("page_edit");
 urls_write();
 end_html_header();
 

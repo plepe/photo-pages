@@ -49,9 +49,9 @@ if($_REQUEST["img"])
   $img=$_REQUEST["img"];
 
 if(eregi("img_(.*)$", $img, $m)) {
-  foreach($list as $el)
-    if($el->file_name()==$m[1])
-      $img=$el->get_index();
+//  foreach($list as $el)
+//    if($el->file_name()==$m[1])
+//      $img=$el->get_index();
 }
 
 if(!($cols=$_SESSION[cols])) # absichtliche Zuweisung
@@ -66,6 +66,9 @@ print $page->header();
 if($page->get_right($_SESSION[current_user], "view")) {
   print $page->welcome();
 }
+$text="";
+call_hooks("album_heading", &$text, $page);
+print $text;
 
 
 print "</td>\n";

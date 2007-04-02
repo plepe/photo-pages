@@ -25,6 +25,8 @@ function build_url(template, params) {
   var p=new Array();
   var erg=template;
 
+  params["web_path"]=web_path;
+
   for(var key in params) {
     if(erg.search("%"+key+"%")!=-1)
       erg=erg.replace("%"+key+"%", params[key]);

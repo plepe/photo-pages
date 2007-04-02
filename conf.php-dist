@@ -26,7 +26,7 @@
 // *** Set Paths ***
 
 // This is the path, were your photos reside. This directory should not be
-// reachable for the webserver for security reasons.
+// reachable by the webserver for security reasons.
 $file_path="/home/user/photos";
 
 // This is the WWW-path of your scripts
@@ -78,25 +78,6 @@ $language="en";
 
 // Contains a list of extensions - check the README file for available extensions
 $extensions=array("window", "resolution", "fullscreen", "slideshow", "magnify", "columns", "search", "rowcount", "langchoose", "details");
-
-// URLs
-// es wird auf jeden fall $web_path davor gesetzt.
-// in der url werden folgende elemente ersetzt:
-//   %page%    page-path
-//   %series%  series
-//   %script%  skript
-//   %img%     imgnumber (nur bei images + skript)
-//   %imgname% imgname (nur bei images)
-//   %size%    size (nur bei images)
-//   %version% imgversion (nur bei images)
-
-// Original
-//$url_page=$web_path.'/?page=%1$s&series=%2$s';
-$url_page=$web_path;
-$url_photo=$web_path.'get_image.php/%imgname%';
-$url_script=$web_path.'%script%';
-$url_javascript=$web_path.'%script%';
-$url_img=$web_path.'images/%imgname%';
 
 // Nice (needs URL rewriting)
 //$url_page=$web_path.'%1$s/?series=%2$s';

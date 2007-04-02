@@ -16,7 +16,8 @@ function include_extensions($view) {
   }
 
   foreach($extensions as $ext) {
-    if(in_array($view, $extensions_data[$ext]["views"])) {
+    if(($extensions_data[$ext]["views"]==0)||
+       (in_array($view, $extensions_data[$ext]["views"]))) {
       @include "extensions/{$ext}_lang.php";
       @include "extensions/{$ext}.php";
       if(file_exists("extensions/{$ext}.js"))
@@ -32,4 +33,7 @@ function include_extension($ext, $before=0) {
 
   if(!in_array($ext, $extensions))
     $extensions[]=$ext;
+}
+
+function set_extension_description($ext, $name, $text) {
 }
