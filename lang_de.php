@@ -122,6 +122,8 @@ $lang_str=array(
   "new_page_go_there"=>"&Ouml;ffne Seite",
   "new_page_ok"=>"Ok",
   "new_page_dir_exists"=>"Verzeichnis existiert bereits",
+  "new_page_main"=>"als eigene Seite",
+  "new_page_sub"=>"als Unterseite der aktuellen Seite",
 
   "tooltip_change_cols"=>"&Auml;ndert die Anzahl der Spalten auf der Seite",
   "tooltip_change_rows"=>"&Auml;ndert die Anzahl der Zeilen auf der Seite",

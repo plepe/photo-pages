@@ -116,6 +116,8 @@ $lang_str=array(
   "new_page_go_there"=>"Open page",
   "new_page_ok"=>"Ok",
   "new_page_dir_exists"=>"Directory already exists",
+  "new_page_main"=>"as page in the root-directory",
+  "new_page_sub"=>"as subpage of the current page",
 
   "tooltip_change_cols"=>"Changes count of columns on the page",
   "tooltip_change_rows"=>"Changes count of rows on the page",

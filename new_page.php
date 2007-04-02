@@ -55,7 +55,15 @@ if($_REQUEST[submit_ok]) {
     unset($_REQUEST[submit_ok]);
   }
   else {
-    $v="$file_path/$page->path/$data[page_name]";
+    switch($data[subpage]) {
+      case "main":
+        $v="$file_path/$data[page_name]";
+        break;
+      case "sub":
+        $v="$file_path/$page->path/$data[page_name]";
+        break;
+    }
+
     mkdir($v);
     $f=fopen("$v/fotocfg.txt", "w");
     fwrite($f, "TITLE $data[title]\n\n");
@@ -65,7 +73,7 @@ if($_REQUEST[submit_ok]) {
   }
 }
 else {
-  $data=array();
+  $data=array("subpage"=>"main");
 }
 
 if(!$_REQUEST[submit_ok]) {
@@ -78,6 +86,14 @@ if(!$_REQUEST[submit_ok]) {
   print "<table>\n";
   print "<tr><td>$lang_str[new_page_dir]:</td><td><input name='data[page_name]' value=\"$data[page_name]\"></td></tr>";
   print "<tr><td>$lang_str[new_page_title]:</td><td><input name='data[title]' value=\"$data[title]\"></td></tr>";
+  print "<tr><td>";
+  foreach(array("main", "sub") as $a) {
+    print "<input type='radio' name='data[subpage]' value='$a'";
+    if($a==$data[subpage])
+      print " checked";
+    print "> {$lang_str["new_page_$a"]}<br>\n";
+  }
+
   print "<tr><td colspan='2'><input type='submit' name='submit_ok' value='$lang_str[new_page_ok]'></td></tr>\n";
   print "</table>\n";
   print "</form>\n";
