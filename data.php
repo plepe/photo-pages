@@ -2795,7 +2795,7 @@ unset($page);
 #  $_SERVER[PATH_INFO]=substr($_SERVER[PATH_INFO], 1);
 //print "bla1\n";
 if(!$_REQUEST[page])
-  $_REQUEST[page]="";
+  $_REQUEST[page]=$main_page;
 if(!file_exists("$file_path/$_REQUEST[page]")) {
   print "Page does not exist";
   //$_REQUEST[page]="";

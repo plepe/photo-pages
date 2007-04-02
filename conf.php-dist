@@ -36,6 +36,9 @@ $web_path="/~usr/photos/";
 // imported with Upload Pictures. (comment, if you don't like this feature)
 $upload_path="/home/user/upload_photos";
 
+// Name of the Main-Page
+$main_page="";
+
 // This are the paths of your passwd and group files
 $passwd_file="$file_path/passwd";
 $group_file ="$file_path/group";

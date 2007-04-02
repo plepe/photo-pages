@@ -68,6 +68,7 @@ function check_resolutions($c) {
 $params=array(
   "file_path"=>array("type"=>"string", "desc"=>"This is the path, were your photos reside. This directory should not be reachable by the webserver for security reasons.", "check"=>archive_writeable),
   "web_path"=>array("type"=>"string", "desc"=>"This is the WWW-path of your scripts"),
+  "main_page"=>array("type"=>"string", "desc"=>"Name of the Main-Page"),
   "upload_path"=>array("type"=>"string", "desc"=>"This is the file system path, were you can upload pictures. They can be imported with Upload Pictures. Leave it blank, if you don't like this feature."),
   "passwd_file"=>array("type"=>"string", "desc"=>"This is the path of your password-file"),
   "group_file"=>array("type"=>"string", "desc"=>"This is the path of your group-file"),
