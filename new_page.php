@@ -58,14 +58,16 @@ if($_REQUEST[submit_ok]) {
     switch($data[subpage]) {
       case "main":
         $v="$data[page_name]";
+        $w="/$data[page_name]";
         break;
       case "sub":
         $v="$page->path/$data[page_name]";
+        $w="$data[page_name]";
         break;
     }
 
     $f=fopen("$file_path/$page->path/fotocfg.txt", "a");
-    fwrite($f, "$v/\n");
+    fwrite($f, "$w/\n");
     fclose($f);
 
     mkdir("$file_path/$v");
