@@ -26,10 +26,12 @@
 $export_img=array();
 $url_save_export=0;
 $urls_add=array();
+$exclude_url_part=array("web_path");
 
 function build_url($template, $params) {
   global $url_relative;
   global $web_path;
+  global $exclude_url_part;
 
   if($url_relative) {
     global $url_root;
@@ -67,7 +69,7 @@ function build_url($template, $params) {
   foreach($params as $key=>$v) {
     if(strpos($erg, "%$key%")!==false)
       $erg=str_replace("%$key%", $v, $erg);
-    elseif(isset($v))
+    elseif(isset($v)&&(!in_array($key, $exclude_url_part)))
       array_push($p, "$key=$v");
   }
 

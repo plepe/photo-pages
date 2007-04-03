@@ -310,13 +310,17 @@ class SubdirChunk extends Chunk {
     $this->get_subpage();
     $subdata=$this->subpage->cfg;
 
-    $ret.="<div class='edit_img'><img width='64' height='64' src='$subdata[MAIN_PICTURE]'></div>\n";
+    $ret.="<div class='edit_img'><img src='".url_photo($this->subpage->path, "", "index.php", "main", "main.jpg", 64, $_SESSION[img_version][$this->img])."'></div>\n";
     if($this->path!=$this->page->path)
       $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->path/$this->dir'>\n";
     else
       $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->dir'>\n";
     $ret.="$lang_str[nav_subdir]: $subdata[TITLE]";
     $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='SubdirChunk'>\n";
+    if($this->path!=$this->page->path)
+      $ret.="<div class='edit_img_details'>$this->path/$this->dir/</div>";
+    else
+      $ret.="<div class='edit_img_details'>$this->dir/</div>";
     $ret.="<br style='clear: left;'>\n";
 
     return $ret;
@@ -509,13 +513,17 @@ class SeriesChunk extends Chunk {
     $this->get_subpage();
     $subdata=$this->subpage->cfg;
 
-    $ret.="<div class='edit_img'><img width='64' height='64' src='$subdata[MAIN_PICTURE]'></div>\n";
+    $ret.="<div class='edit_img'><img src='".url_photo($this->subpage->path, "", "index.php", "main", "main.jpg", 64, $_SESSION[img_version][$this->img])."'></div>\n";
     if($this->path!=$this->page->path)
       $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->path/$this->dir'>\n";
     else
       $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->dir'>\n";
-    $ret.="$lang_str[nav_view]: $subdata[TITLE]<br />{$this->subpage->filename}";
+    $ret.="$lang_str[nav_view]: $subdata[TITLE]<br />";
     $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='SeriesChunk'>\n";
+    if($this->path!=$this->page->path)
+      $ret.="<div class='edit_img_details'>$this->path/$this->dir@</div>";
+    else
+      $ret.="<div class='edit_img_details'>$this->dir@</div>";
     $ret.="<br style='clear: left;'>\n";
 
     return $ret;
