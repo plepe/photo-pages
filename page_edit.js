@@ -310,7 +310,7 @@ function page_edit_show_page(page) {
       obs[i].style.display="none";
   }
 
-  for(i=1;i<=3;i++) {
+  for(i=1;i<=tab_count;i++) {
     var ob=document.getElementById("tab_page"+i);
     ob.className='page_edit_choose_page';
   }
@@ -333,6 +333,10 @@ function page_edit_modify_rights(user, right) {
       td.className='page_edit_rights_notgrant';
       break;
     case "-1":
+      input.value="-2";
+      td.className='page_edit_rights_grant_children';
+      break;
+    case "-2":
       input.value="0";
       if(document.getElementById("rights_inherited_"+user+"_"+right).value=="-1")
         td.className='page_edit_rights_inh_notgrant';

@@ -46,14 +46,16 @@ class User {
     $f=fopen($passwd_file, "r");
     while($r=fgets($f)) {
       $r=chop($r);
-      $r=explode(":", $r);
-      if($username==$r[0]) {
-        $this->pass=$r[1];
-        $this->username=$r[0];
-//        if(sizeof($r)>2)
-//          $this->default_rights=explode(",", $r[2]);
-//        else
-//          $this->default_rights=array();
+      if(($r!="")&&(substr($r, 0, 1)!="#")) {
+        $r=explode(":", $r);
+        if($username==$r[0]) {
+          $this->pass=$r[1];
+          $this->username=$r[0];
+//          if(sizeof($r)>2)
+//            $this->default_rights=explode(",", $r[2]);
+//          else
+//            $this->default_rights=array();
+        }
       }
     }
   }
@@ -99,9 +101,11 @@ function user_list() {
   $f=fopen($passwd_file, "r");
   while($r=fgets($f)) {
     $r=chop($r);
-    $r=explode(":", $r);
+    if(($r!="")&&(substr($r, 0, 1)!="#")) {
+      $r=explode(":", $r);
 
-    $user_list[$r[0]]=0;
+      $user_list[$r[0]]=0;
+    }
   }
 
   return $user_list;

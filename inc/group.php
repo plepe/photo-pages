@@ -35,10 +35,12 @@ class Group {
     while($r=fgets($f)) {
       $r=chop($r);
 
-      $r=explode(":", $r);
-      if($r[0]==$groupname) {
-        $this->groupname=$groupname;
-        $this->members=explode(" ", $r[1]);
+      if(($r!="")&&(substr($r, 0, 1)!="#")) {
+        $r=explode(":", $r);
+        if($r[0]==$groupname) {
+          $this->groupname=$groupname;
+          $this->members=explode(" ", $r[1]);
+        }
       }
     }
   }
@@ -73,9 +75,11 @@ function group_list() {
   $f=fopen($group_file, "r");
   while($r=fgets($f)) {
     $r=chop($r);
-    $r=explode(":", $r);
+    if(($r!="")&&(substr($r, 0, 1)!="#")) {
+      $r=explode(":", $r);
 
-    $group_list[$r[0]]=0;
+      $group_list[$r[0]]=0;
+    }
   }
 
   return $group_list;

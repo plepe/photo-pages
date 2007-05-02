@@ -1418,6 +1418,7 @@ class Page {
   var $parent;
   var $inh_rights;
   var $rights;
+  var $bequeath_rights;
   var $rights_checked;
   var $hidden_files;
   var $show_list;
@@ -1440,8 +1441,10 @@ class Page {
     $this->inh_rights[$username]=array();
 
     if($this->get_parent()) {
-      //print "bla $username";
-      $this->inh_rights[$username]=$this->parent->get_rights($username);
+      $this->inh_rights[$username]=$this->parent->get_bequeath_rights($username);
+    }
+    else {
+      $this->inh_rights[$username]=array();
     }
 
     if($this->cfg["GROUP_LIST"]) foreach($this->cfg["GROUP_LIST"] as $g=>$group) {
@@ -1450,7 +1453,6 @@ class Page {
                                               $this->cfg["GROUP_RIGHTS"][$g]);
     }
 
-//print_r($this->inh_rights[$username]);
     return $this->inh_rights[$username];
   }
 
@@ -1464,12 +1466,23 @@ class Page {
       return $this->rights[$username];
 
     $this->rights[$username]=$this->get_inherited_rights($username);
+    $this->bequeath_rights[$username]=$this->rights[$username];
 
     if($x=$this->cfg["RIGHTS"][$username]) {
       $this->rights[$username]=rights_merge($this->rights[$username], $x);
+      $this->bequeath_rights[$username]=rights_merge($this->bequeath_rights[$username], $x, 1);
     }
 
     return $this->rights[$username];
+  }
+
+  function get_bequeath_rights($user) {
+    if(!is_string($user))
+      $user=$user->username;
+
+    $this->get_rights($user);
+
+    return $this->bequeath_rights[$user];
   }
 
   function get_right($user, $right) {
@@ -2039,6 +2052,12 @@ class Page {
       }
     }
 
+    // Wenn BenutzerIn nicht zum Rechteverwalten berechtigt ist, die Rechte der
+    // aktuellen Seite kopieren.
+    if(!$this->get_right($_SESSION[current_user], "rights")) {
+      $data["RIGHTS"]=$this->cfg["RIGHTS"];
+    }
+
     $save.="[rights]\n";
     foreach($data["RIGHTS"] as $k=>$v) {
       $save.="$k ".implode(",", $v)."\n";
@@ -2124,6 +2143,46 @@ class Page {
   }
 
   function set_page_edit_data($data) {
+
+    // RIGHTS aufarbeiten
+    $rights_new=array();
+    foreach($data["RIGHTS"] as $u=>$d) {
+      $r=array();
+
+      foreach($d as $rk=>$rg) {
+        if($rg==1)
+          $r[]=$rk;
+        elseif($rg==-1)
+          $r[]="-$rk";
+        elseif($rg==-2)
+          $r[]="#$rk";
+      }
+
+      $rights_new[$u]=$r;
+    }
+    $data["RIGHTS"]=$rights_new;
+
+    // LIST aufarbeiten
+    $new_list=array();
+    foreach($data[chunk_order] as $k) {
+      if($k=="start_unused")
+        break;
+
+      if($_REQUEST["delete"][$k]) {
+      }
+      else {
+        $new_list[]=$data["LIST"][$k];
+      }
+    }
+    $data["LIST"]=$new_list;
+
+    // ueber save_data speichern
+    if($error=$this->save_data($data)) {
+      print "<status>$error</status>\n";
+    }
+  }
+
+  function old_set_page_edit_data($data) {
     global $lang_str;
     global $file_path;
 
@@ -2158,6 +2217,8 @@ class Page {
           $r[]=$rk;
         elseif($rg==-1)
           $r[]="-$rk";
+        elseif($rg==-2)
+          $r[]="#$rk";
       }
 
       if(sizeof($r))
@@ -2321,7 +2382,12 @@ class Page {
     print "<div class='page_edit'>\n";
     print "<span id='tab_page1' class='page_edit_choose_page_chose' onClick='page_edit_show_page(\"page1\")'>$lang_str[page_edit_page_main]</span>\n";
     print "<span id='tab_page2' class='page_edit_choose_page' onClick='page_edit_show_page(\"page2\")'>$lang_str[page_edit_page_pict]</span>\n";
-    print "<span id='tab_page3' class='page_edit_choose_page' onClick='page_edit_show_page(\"page3\")'>$lang_str[page_edit_page_rights]</span>";
+    $tab_count=2;
+    if($this->get_right($_SESSION[current_user], "rights")) {
+      print "<span id='tab_page3' class='page_edit_choose_page' onClick='page_edit_show_page(\"page3\")'>$lang_str[page_edit_page_rights]</span>";
+      $tab_count=3;
+    }
+    html_export_var(array("tab_count"=>$tab_count));
     print "<form action='page_edit.php' method='post' id='page_edit_form'>\n";
     print "<input type='hidden' name='page' value=\"$this->path\">\n";
     print "<input type='hidden' name='series' value=\"$this->series\">\n";
@@ -2456,91 +2522,98 @@ class Page {
     print "<br style='clear: left;'>\n";
     print "</div>\n";
 
-    print "<div class='page_edit_page' id='page3' style='display: none'>\n";
-    ?>
-    Folgende Abstufungen der Rechte gibt es:<table>
-    <tr><th>announce</th><td>Unterverzeichnis wird im darueberliegenden Verzeichnis angezeigt bzw. Ansicht in der Bilderliste</td>
-    <tr><th>view</th><td>Bilderliste wird angezeigt, wenn nicht, kommt ein Login-Fenster</td>
-    <tr><th>addcomment</th><td>BenutzerIn darf neue Kommentare hinzufuegen</td>
-    <tr><th>editdesc</th><td>BenutzerIn darf die Beschreibung des Bildes veraendern</td>
-    <tr><th>new</th><td>BenutzerIn darf neue Unterverzeichnisse und neue Ansichten anlegen (und bekommt dort dann edit-Rechte)</td>
-    <tr><th>edit</th><td>BenutzerIn darf Bilder uploaden, rotieren, Reihenfolge veraendern und Bilder aus der Auswahl entfernen</td>
-    <tr><th>rights</th><td>BenutzerIn darf Zugriffsrechte fuer diese Seite modifizieren</td>
-    </table>
-    Die Farben haben folgende Bedeutung:<table>
-    <tr><td class='page_edit_rights_grant'></td><td>Dieses Recht wird an BenutzerIn/Gruppe explizit vergeben</td>
-    <tr><td class='page_edit_rights_notgrant'></td><td>Dieses Recht wird BenutzerIn/Gruppe explizit entzogen</td>
-    <tr><td class='page_edit_rights_inh_grant'></td><td>Dieses Recht wird von Gruppe oder darueberliegender Seite geerbt</td>
-    <tr><td class='page_edit_rights_inh_notgrant'></td><td>Dieses Recht wird von Gruppe oder darueberliegender Seite nicht geerbt</td>
-    </table>
-    <?
-    //print_r($this->get_inherited_rights("anonymous"));
-    print "<table>\n";
-    print "<tr>\n";
-    print "  <th></th>\n";
-    foreach($rights as $r) {
-      print "  <th>$r</th>\n";
-    }
-    print "</tr>\n";
-
-    function show_rights($u, $t) {
-      global $rights;
-
-      $ir=$t->get_inherited_rights($u);
-      //$r=$this->get_rights($u);
-
+    if($this->get_right($_SESSION[current_user], "rights")) {
+      print "<div class='page_edit_page' id='page3' style='display: none'>\n";
+      ?>
+      Folgende Abstufungen der Rechte gibt es:<table>
+      <tr><th>announce</th><td>Unterverzeichnis wird im darueberliegenden Verzeichnis angezeigt bzw. Ansicht in der Bilderliste</td>
+      <tr><th>view</th><td>Bilderliste wird angezeigt, wenn nicht, kommt ein Login-Fenster</td>
+      <tr><th>addcomment</th><td>BenutzerIn darf neue Kommentare hinzufuegen</td>
+      <tr><th>editdesc</th><td>BenutzerIn darf die Beschreibung des Bildes veraendern</td>
+      <tr><th>new</th><td>BenutzerIn darf neue Unterverzeichnisse und neue Ansichten anlegen (und bekommt dort dann edit-Rechte)</td>
+      <tr><th>edit</th><td>BenutzerIn darf Bilder uploaden, rotieren, Reihenfolge veraendern und Bilder aus der Auswahl entfernen</td>
+      <tr><th>rights</th><td>BenutzerIn darf Zugriffsrechte fuer diese Seite modifizieren</td>
+      </table>
+      Die Farben haben folgende Bedeutung:<table>
+      <tr><td class='page_edit_rights_grant'></td><td>Dieses Recht wird an BenutzerIn/Gruppe explizit vergeben</td>
+      <tr><td class='page_edit_rights_notgrant'></td><td>Dieses Recht wird BenutzerIn/Gruppe explizit entzogen</td>
+      <tr><td class='page_edit_rights_inh_grant'></td><td>Dieses Recht wird von Gruppe oder darueberliegender Seite geerbt</td>
+      <tr><td class='page_edit_rights_inh_notgrant'></td><td>Dieses Recht wird von Gruppe oder darueberliegender Seite nicht geerbt</td>
+      <tr><td class='page_edit_rights_grant_children'></td><td>Unterseiten dieser Seite erhalten dieses Recht, nicht aber die aktuelle Seite</td>
+      </table>
+      <?
+      //print_r($this->get_inherited_rights("anonymous"));
+      print "<table>\n";
       print "<tr>\n";
-      print "  <th>$u</th>\n";
+      print "  <th></th>\n";
       foreach($rights as $r) {
-        if(in_array($r, $ir)) {
-          $c="page_edit_rights_inh_grant";
-          $i=1;
-        }
-        else {
-          $c="page_edit_rights_inh_notgrant";
-          $i=-1;
-        }
-
-        $o=0;
-        if($t->cfg["RIGHTS"]&&sizeof($t->cfg["RIGHTS"][$u])) {
-          if(in_array($r, $t->cfg["RIGHTS"][$u])) {
-            $c="page_edit_rights_grant";
-            $o=1;
-          }
-          elseif(in_array("-$r", $t->cfg["RIGHTS"][$u])) {
-            $c="page_edit_rights_notgrant";
-            $o=-1;
-          }
-        }
-
-        print "  <td id='rights_td_{$u}_{$r}' class='{$c}' onClick='page_edit_modify_rights(\"$u\", \"$r\")'>\n";
-        print "    <input type='hidden' id='rights_input_{$u}_{$r}' name='data[RIGHTS][$u][$r]' value='$o'>\n";
-        print "    <input type='hidden' id='rights_inherited_{$u}_{$r}' value='$i'>\n";
-        print "  </td>\n";
+        print "  <th>$r</th>\n";
       }
       print "</tr>\n";
-    }
 
-    show_rights("anonymous", $this);
+      function show_rights($u, $t) {
+        global $rights;
 
-    $ul=array_keys(user_list());
-    sort($ul);
-    foreach($ul as $u) {
-      if($u!="anonymous")
-        show_rights($u, $this);
-    }
+        $ir=$t->get_inherited_rights($u);
+        //$r=$this->get_rights($u);
 
-    $gl=array_keys(group_list());
-    sort($gl);
-    foreach($gl as $g) {
-      show_rights("@$g", $this);
-    }
-    print "</table>\n";
+        print "<tr>\n";
+        print "  <th>$u</th>\n";
+        foreach($rights as $r) {
+          if(in_array($r, $ir)) {
+            $c="page_edit_rights_inh_grant";
+            $i=1;
+          }
+          else {
+            $c="page_edit_rights_inh_notgrant";
+            $i=-1;
+          }
 
-    print "</div>\n";
+          $o=0;
+          if($t->cfg["RIGHTS"]&&sizeof($t->cfg["RIGHTS"][$u])) {
+            if(in_array($r, $t->cfg["RIGHTS"][$u])) {
+              $c="page_edit_rights_grant";
+              $o=1;
+            }
+            elseif(in_array("-$r", $t->cfg["RIGHTS"][$u])) {
+              $c="page_edit_rights_notgrant";
+              $o=-1;
+            }
+            elseif(in_array("#$r", $t->cfg["RIGHTS"][$u])) {
+              $c="page_edit_rights_grant_children";
+              $o=-2;
+            }
+          }
 
+          print "  <td id='rights_td_{$u}_{$r}' class='{$c}' onClick='page_edit_modify_rights(\"$u\", \"$r\")'>\n";
+          print "    <input type='hidden' id='rights_input_{$u}_{$r}' name='data[RIGHTS][$u][$r]' value='$o'>\n";
+          print "    <input type='hidden' id='rights_inherited_{$u}_{$r}' value='$i'>\n";
+          print "  </td>\n";
+        }
+        print "</tr>\n";
+      }
 
-    print "<br style='clear: left;'>\n";
+      show_rights("anonymous", $this);
+
+      $ul=array_keys(user_list());
+      sort($ul);
+      foreach($ul as $u) {
+        if($u!="anonymous")
+          show_rights($u, $this);
+      }
+
+      $gl=array_keys(group_list());
+      sort($gl);
+      foreach($gl as $g) {
+        show_rights("@$g", $this);
+      }
+      print "</table>\n";
+
+      print "</div>\n";
+
+      print "<br style='clear: left;'>\n";
+    } // ende rights
+
     print "<input type='submit' name='submit[ok]' value='$lang_str[nav_save]'>\n";
     
     print "</form>\n";
@@ -2850,7 +2923,7 @@ function http_date($t=0) {
   //setlocale(LC_TIME, 
 }
 
-function rights_merge($rights, $addrights) {
+function rights_merge($rights, $addrights, $bequeath=0) {
   if(!$rights)
     $rights=array();
 
@@ -2858,6 +2931,10 @@ function rights_merge($rights, $addrights) {
     if(substr($r, 0, 1)=="-") {
       if(($p=array_search(substr($r, 1), $rights))!==false)
 	$rights=array_slice($rights, 0, $p)+array_slice($rights, $p+1);
+    }
+    if(substr($r, 0, 1)=="#") {
+      if($bequeath)
+	$rights=array_merge($rights, array(substr($r, 1)));
     }
     else
       if(!in_array($r, $rights))

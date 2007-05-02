@@ -548,6 +548,11 @@ td.edit_img_connect {
   background: #00FF00;
   border: 1px solid #006600;
 }
+.page_edit_rights_grant_children {
+  width: 6em;
+  background: #FFFF00;
+  border: 1px solid #006600;
+}
 .page_edit_rights_notgrant {
   width: 6em;
   background: #FF0000;
