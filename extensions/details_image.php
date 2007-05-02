@@ -34,6 +34,6 @@ function details_list_details($text, $page, $img) {
 register_hook("image_description", details_list_details);
 
 $str="";
-$str.="<input type='submit' value='$lang_str[details_name]' onClick='details_choosepos()' id='details_button' class='toolbox_input' accesskey='d'>\n";
+$str.="<input type='submit' value='$lang_str[details_name]' onClick='details_choosepos()' id='details_button' class='toolbox_input' accesskey='d'><br>\n";
 
 add_toolbox_item("imageview_admintools", $str);
