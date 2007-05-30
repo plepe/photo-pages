@@ -159,36 +159,42 @@ function process_upload_file($file, $orig_file, $desc=0) {
     $name="$m[1].avi";
   }
 
-  // Add this image to the fotocfg.txt resp. a series
-  $f=fopen("$file_path/$page->filename", "a");
-  if($desc)
-    fputs($f, "$name $desc\n");
-  else
-    fputs($f, "$name\n");
-  fclose($f);
+  if(file_exists("$file_path/$page->path/$orig_path/$file")) {
+    // Add this image to the fotocfg.txt resp. a series
+    $f=fopen("$file_path/$page->filename", "a");
+    if($desc)
+      fputs($f, "$name $desc\n");
+    else
+      fputs($f, "$name\n");
+    fclose($f);
 
-  $maxr=getimagesize($orig);
-  if($maxr[0]>$maxr[1])
-    $maxr=$maxr[0];
-  else
-    $maxr=$maxr[1];
+    $maxr=getimagesize($orig);
+    if($maxr[0]>$maxr[1])
+      $maxr=$maxr[0];
+    else
+      $maxr=$maxr[1];
 
-  $lastr=$orig_path;
+    $lastr=$orig_path;
 
-  // Convert Image to thumbnails
-  rsort($resolutions);
-  foreach($resolutions as $r) {
-    if($r<$maxr) {
-      system("nice convert -resize {$r}x{$r} $convert_options $file_path/$page->path/$lastr/$file $file_path/$page->path/$r/$file");
-      $lastr=$r;
+    // Convert Image to thumbnails
+    rsort($resolutions);
+    foreach($resolutions as $r) {
+      if($r<$maxr) {
+        system("nice convert -resize {$r}x{$r} $convert_options $file_path/$page->path/$lastr/$file $file_path/$page->path/$r/$file");
+        $lastr=$r;
+      }
+      elseif($r==$maxr) {
+        copy("$orig", "$file_path/$page->path/$r/$file");
+        $lastr=$r;
+      }
     }
-    elseif($r==$maxr) {
-      copy("$orig", "$file_path/$page->path/$r/$file");
-      $lastr=$r;
-    }
+
+    print " done<br>\n";
+  }
+  else {
+    print " <b>error</b><br>\n";
   }
 
-  print " done<br>\n";
   flush(); ob_flush();
 }
 
