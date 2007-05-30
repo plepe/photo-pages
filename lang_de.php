@@ -116,7 +116,7 @@ $lang_str=array(
   "upload_image_max_size"=>"Max. Dateigr&ouml;&szlig;e",
 
   "new_page_title"=>"Titel der Unterseite",
-  "new_page_dir"=>"Verzeichnisname",
+  "new_page_dir"=>"Kurzbezeichnung",
   "new_page_view"=>"Kurzbezeichnung",
   "new_page_done"=>"Verzeichnis angelegt",
   "new_page_go_there"=>"&Ouml;ffne Seite",
@@ -132,5 +132,7 @@ $lang_str=array(
   "tooltip_fullscreen"=>"Zoomt das Bild ann&auml;hernd zur Fenstergr&ouml;&szlig;e",
   "tooltip_editdesc"=>"Ver&auml;ndere die Beschreibung des Bildes",
   "tooltip_addcomment"=>"F&uuml;gt dem Bild ein Kommentar hinzu",
-  "tooltip_set_res"=>"Bevorzugte Aufl&ouml;sung festlegen"
+  "tooltip_set_res"=>"Bevorzugte Aufl&ouml;sung festlegen",
+
+  "moviechunk_download"=>"Film runterladen"
 );

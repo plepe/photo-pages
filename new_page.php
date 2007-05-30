@@ -80,7 +80,10 @@ if($_REQUEST[submit_ok]) {
   }
 }
 else {
-  $data=array("subpage"=>"main");
+  if($main_page)
+    $data=array("subpage"=>"main");
+  else
+    $data=array("subpage"=>"sub");
 }
 
 if(!$_REQUEST[submit_ok]) {

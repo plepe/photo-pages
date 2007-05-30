@@ -48,7 +48,12 @@ else {
   else {
     $img=$page->cfg["LIST"][$_REQUEST[img]];
   }
-  if($_REQUEST[size]=="movie")
+  if($_REQUEST[size]=="flv") {
+    eregi("^(.*)\.([^.]+)$", $img->mov, $m);
+    $flv_file="$m[1].flv";
+    $filename="$file_path/$img->path/$orig_path/$flv_file";
+  }
+  elseif($_REQUEST[size]=="movie")
     $filename="$file_path/$img->path/$orig_path/$img->mov";
   else
     $filename="$file_path/$img->path/$_REQUEST[size]/$img->img";

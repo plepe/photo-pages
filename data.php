@@ -490,7 +490,6 @@ class Page {
 
     if($series=="") {
       $this->filename="$path/fotocfg.txt";
-      $main_page=1;
       //print "$path<br>\n";
       if(eregi("^(.*)/[^/]*$", $path, $m)) {
         $this->parent_path=$m[1];
@@ -501,7 +500,6 @@ class Page {
     }
     else {
       $this->filename="$path/$series.lst";
-      $main_page=0;
       $this->parent_path=$path;
     }
     //print "filename: $this->filename\n";

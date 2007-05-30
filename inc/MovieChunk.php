@@ -47,6 +47,7 @@ class MovieChunk extends ImgChunk {
     global $series;
     global $index_res;
     global $file_path;
+    global $lang_str;
 
     $r=getimagesize("$file_path/{$this->path}/$index_res/$this->img");
 
@@ -59,7 +60,7 @@ class MovieChunk extends ImgChunk {
     #     "'><img src='$index_res/$this->img?{$_SESSION[img_version][$this->img]}' ".
     #     "class='album_image'></a><br>";
 
-    $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->mov, $orig_path, $_SESSION[img_version][$this->img])."'>Movie downloaden</a><br>\n";
+    $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->mov, "movie", $_SESSION[img_version][$this->img])."'>$lang_str[moviechunk_download]</a><br>\n";
 
     if($this->text)
       $ret.=strtr($this->text, array("\n"=>"<br>\n"))."<br>\n";
@@ -178,7 +179,7 @@ class MovieChunk extends ImgChunk {
     $_SESSION["tmp_$tmp_id"]["page"]=$this->page->path;
     $_SESSION["tmp_$tmp_id"]["series"]=$this->page->series;
     $_SESSION["tmp_$tmp_id"]["img"]=$this->id;
-    $_SESSION["tmp_$tmp_id"]["size"]="movie";
+    $_SESSION["tmp_$tmp_id"]["size"]="flv";
     session_register("tmp_$tmp_id");
 
     $url=url_script(array("script"=>"get_image.php", "tmp_id"=>$tmp_id)); //"$web_path/get_image.php?tmp_id=$tmp_id";
@@ -212,7 +213,7 @@ class MovieChunk extends ImgChunk {
 
     $ret.="<br style='clear: left;'>\n";
 
-    $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->mov, "movie", $_SESSION[img_version][$this->img])."'>Movie downloaden</a><br>\n";
+    $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->mov, "movie", $_SESSION[img_version][$this->img])."'>$lang_str[moviechunk_download]</a><br>\n";
 
     if($this->text) {
       $ret.="<div class='imageview_image_desc' id='desc'>".

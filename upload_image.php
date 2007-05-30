@@ -156,7 +156,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
     //system("rm /tmp/tmp.jpg");
 
     $file="$m[1].jpg";
-    $name="$m[1].flv";
+    $name="$m[1].avi";
   }
 
   // Add this image to the fotocfg.txt resp. a series

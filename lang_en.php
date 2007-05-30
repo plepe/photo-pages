@@ -111,7 +111,7 @@ $lang_str=array(
   "upload_image_max_size"=>"Max. filesize",
 
   "new_page_title"=>"Title of subpage",
-  "new_page_dir"=>"Directory name",
+  "new_page_dir"=>"Short Name",
   "new_page_done"=>"Directory created",
   "new_page_go_there"=>"Open page",
   "new_page_ok"=>"Ok",
@@ -126,5 +126,7 @@ $lang_str=array(
   "tooltip_fullscreen"=>"Zooms the image to nearly windowsize",
   "tooltip_editdesc"=>"Edit the description of the image",
   "tooltip_addcomment"=>"Add a comment to the image",
-  "tooltip_set_res"=>"Sets your preferred resolution"
+  "tooltip_set_res"=>"Sets your preferred resolution",
+
+  "moviechunk_download"=>"Download movie"
 );
