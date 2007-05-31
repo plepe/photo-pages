@@ -196,6 +196,7 @@ class Page {
   var $rights_checked;
   var $hidden_files;
   var $show_list;
+  var $hidden_unused_files;
 
   function last_modified() {
     global $file_path;
@@ -830,9 +831,11 @@ class Page {
       $data["RIGHTS"]=$this->cfg["RIGHTS"];
     }
 
-    $save.="[rights]\n";
-    foreach($data["RIGHTS"] as $k=>$v) {
-      $save.="$k ".implode(",", $v)."\n";
+    if($data["RIGHTS"]) {
+      $save.="[rights]\n";
+      foreach($data["RIGHTS"] as $k=>$v) {
+        $save.="$k ".implode(",", $v)."\n";
+      }
     }
 
     $save.="[imglist]\n";
@@ -840,6 +843,9 @@ class Page {
 
       if(is_object($v))
         $v=get_object_vars($v);
+
+      if(isset($v[path])&&($this->path!=$v[path]))
+        $save.="$v[path]/";
 
       switch($v[type]) {
         case "ImgChunk":
@@ -918,7 +924,7 @@ class Page {
 
     // RIGHTS aufarbeiten
     $rights_new=array();
-    foreach($data["RIGHTS"] as $u=>$d) {
+    if($data["RIGHTS"]) foreach($data["RIGHTS"] as $u=>$d) {
       $r=array();
 
       foreach($d as $rk=>$rg) {
@@ -1123,6 +1129,15 @@ class Page {
       $max_id=$d->id;
     }
 
+    if($this->hidden_unused_files[$this->path])
+    foreach($this->hidden_unused_files[$this->path] as $d) {
+      if(($i=array_search($d, $full_list))!==false) {
+        $full_list=array_merge(array_slice($full_list, 0, $i), 
+                               array_slice($full_list, $i+1));
+
+      }
+    }
+
     $unused=array();
     foreach($full_list as $f) {
       if(eregi("\.(".implode("|", $extensions_images).")$", $f))
@@ -1137,6 +1152,10 @@ class Page {
       print "<script type='text/javascript'>\n<!--\n max_chunk={$max_id};\n//-->\n</script>\n";
 
     return $unused;
+  }
+
+  function hide_unused_file($path, $file) {
+    $this->hidden_unused_files[$path][]=$file;
   }
 
   function show_page_edit_form($data=0) {

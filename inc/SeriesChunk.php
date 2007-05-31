@@ -2,7 +2,6 @@
 class SeriesChunk extends Chunk {
   var $dir;
   var $subpage;
-  var $path;
 
   function SeriesChunk($page, $text, $i, $j) {
     $this->type="SeriesChunk";
@@ -134,9 +133,8 @@ class SeriesChunk extends Chunk {
 
     $ret.="<div class='edit_img'><img src='".url_photo($this->subpage->path, "", "index.php", "main", "main.jpg", 64, $_SESSION[img_version][$this->img])."'></div>\n";
     if($this->path!=$this->page->path)
-      $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->path/$this->dir'>\n";
-    else
-      $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->dir'>\n";
+      $ret.="<input type='hidden' name='data[LIST][$this->id][path]' value='$this->path'>\n";
+    $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->dir'>\n";
     $ret.="$lang_str[nav_view]: $subdata[TITLE]<br />";
     $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='SeriesChunk'>\n";
     if($this->path!=$this->page->path)

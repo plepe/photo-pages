@@ -5,6 +5,7 @@ class Chunk {
   var $page;
   var $type;
   var $index_id;
+  var $path;
 
   function colspan() { return 0; }
   function is_shown() { return 0; }

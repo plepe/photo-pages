@@ -291,11 +291,20 @@ class MovieChunk extends ImgChunk {
 	  ">\n";
     $ret.="<img src='".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, 64, $_SESSION[img_version][$this->img])."'>";
     $ret.="</div>\n";
+    if($this->path!=$this->page->path)
+      $ret.="<input type='hidden' name='data[LIST][$this->id][path]' value='$this->path'>\n";
     $ret.="<input type='hidden' name='data[LIST][$this->id][mov]' value='$this->mov'>\n";
     $ret.="<textarea name='data[LIST][$this->id][text]' class='edit_input_imgchunk' onFocus='input_get_focus(this)' rows='1' onKeyUp='resize_textarea(this)' onMouseOut='page_edit_input_leave(this)'>$text</textarea>\n";
     $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='MovieChunk'>\n";
-    $ret.="<div class='edit_img_details'>$this->mov</div>";
+    if($this->path!=$this->page->path)
+      $ret.="<div class='edit_img_details'>$this->path/$this->mov</div>";
+    else
+      $ret.="<div class='edit_img_details'>$this->mov</div>";
     $ret.="<br style='clear: left;'>\n";
+
+    eregi("^(.*)\.([^\.]+)$", $this->mov, $m);
+    $this->page->hide_unused_file($this->path, "$m[1].jpg");
+    $this->page->hide_unused_file($this->path, "$m[1].flv");
 
     return $ret;
   }

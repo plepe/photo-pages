@@ -3,7 +3,6 @@ class ImgChunk extends Chunk {
   var $text;
   var $img;
   var $comments;
-  var $path;
 
   function ImgChunk($page, $text, &$i, $j) {
     $this->type="ImgChunk";
@@ -329,9 +328,14 @@ class ImgChunk extends Chunk {
     $ret.="<img src='".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, 64, $_SESSION[img_version][$this->img])."'>";
     $ret.="</div>\n";
     $ret.="<input type='hidden' name='data[LIST][$this->id][img]' value='$this->img'>\n";
+    if($this->path!=$this->page->path)
+      $ret.="<input type='hidden' name='data[LIST][$this->id][path]' value='$this->path'>\n";
     $ret.="<textarea name='data[LIST][$this->id][text]' class='edit_input_imgchunk' onFocus='input_get_focus(this)' rows='1' onKeyUp='resize_textarea(this)' onMouseOut='page_edit_input_leave(this)'>$text</textarea>\n";
     $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='ImgChunk'>\n";
-    $ret.="<div class='edit_img_details'>$this->img</div>";
+    if($this->path!=$this->page->path)
+      $ret.="<div class='edit_img_details'>$this->path/$this->img</div>";
+    else
+      $ret.="<div class='edit_img_details'>$this->img</div>";
     $ret.="<br style='clear: left;'>\n";
 
     return $ret;
