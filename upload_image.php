@@ -95,6 +95,62 @@ function upload_file($file, $tmpname, $desc) {
 }
 */
 
+function scale_img($path, $file, $force=0) {
+  global $orig_path;
+  global $resolutions;
+  global $file_path;
+  global $convert_options;
+
+  $maxr=getimagesize("$file_path/$path/$orig_path/$file");
+  if($maxr[0]>$maxr[1])
+    $maxr=$maxr[0];
+  else
+    $maxr=$maxr[1];
+
+  $lastr=$orig_path;
+
+  // Convert Image to thumbnails
+  rsort($resolutions);
+  foreach($resolutions as $r) {
+    if($r<$maxr) {
+      if((!file_exists("$file_path/$path/$r/$file"))||$force)
+        system("nice convert -resize {$r}x{$r} $convert_options $file_path/$path/$lastr/$file $file_path/$path/$r/$file");
+      $lastr=$r;
+    }
+    elseif($r==$maxr) {
+      if((!file_exists("$file_path/$path/$r/$file"))||$force)
+        copy("$file_path/$path/$orig_path/$file", "$file_path/$path/$r/$file");
+      $lastr=$r;
+    }
+  }
+}
+
+function generate_flv_and_thumb($orig_file, $path, $file, $force=0) {
+  global $file_path;
+  global $extensions_movies;
+  global $orig_path;
+
+  eregi("^(.*)\.(".implode("|", $extensions_movies).")", $file, $m);
+
+  if((!file_exists("$file_path/$path/$orig_path/$m[1].flv"))||$force) {
+    // In FLV konvertieren
+    system("nice ffmpeg -y -i \"$orig_file\" -vcodec flv -acodec pcm_s16le -ar 22050 /tmp/tmp.avi");
+    system("nice ffmpeg -y -i /tmp/tmp.avi -vcodec copy -acodec copy $file_path/$path/$orig_path/$m[1].flv");
+    system("rm /tmp/tmp.avi");
+    // TODO: flvtool2 verwenden, um metadaten zum video hinzuzufuegen
+  }
+
+  if((!file_exists("$file_path/$path/$orig_path/$m[1].jpg"))||$force) {
+    // Filmstrip generieren
+    system("cd /tmp ; ffmpeg -y -i \"$orig_file\" -vframes 1 -f image2 /tmp/tmp.jpg");
+    system("nice convert -resize 410x450 /tmp/tmp.jpg /tmp/tmp.jpg");
+    system("nice composite -compose atop -gravity center /tmp/tmp.jpg images/filmstrip.png $file_path/$path/$orig_path/$m[1].jpg");
+    system("rm /tmp/tmp.jpg");
+  }
+
+  return array("$m[1].jpg", "$m[1].avi");
+}
+
 function process_upload_file($file, $orig_file, $desc=0) {
   global $page;
   global $file_path;
@@ -125,13 +181,11 @@ function process_upload_file($file, $orig_file, $desc=0) {
     else
       system("nice convert -resize {$max_res}x{$max_res} $convert_options \"$orig_file\" $file_path/$page->path/$orig_path/$file");
 
-    $orig="$file_path/$page->path/$orig_path/$file";
     $name="$file";
   }
 
   // If this is a movie ...
-  if(eregi("^(.*)\.(".implode("|", $extensions_movies).")", $file, $m)) {
-    $orig="$file_path/$page->path/$orig_path/$m[1].jpg";
+  if(eregi("^(.*)\.(".implode("|", $extensions_movies).")", $file)) {
 #    $orig_tmp="$file_path/$page->path/$orig_path/$m[1].%REPLACE%.jpg";
 #    $orig_mov=
 #    $i=0;
@@ -141,22 +195,12 @@ function process_upload_file($file, $orig_file, $desc=0) {
 #    }
 
     //if($keep)
-      copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
+    copy("$orig_file", "$file_path/$page->path/$orig_path/$file");
 
-    // In FLV konvertieren
-    system("nice ffmpeg -y -i \"$orig_file\" -vcodec flv -acodec pcm_s16le -ar 22050 /tmp/tmp.avi");
-    system("nice ffmpeg -y -i /tmp/tmp.avi -vcodec copy -acodec copy $file_path/$page->path/$orig_path/$m[1].flv");
-    system("rm /tmp/tmp.avi");
-    // TODO: flvtool2 verwenden, um metadaten zum video hinzuzufuegen
+    $result=generate_flv_and_thumb($orig_file, $page->path, $file);
 
-    // Filmstrip generieren
-    system("cd /tmp ; ffmpeg -y -i \"$orig_file\" -vframes 1 -f image2 /tmp/tmp.jpg");
-    system("nice convert -resize 410x450 /tmp/tmp.jpg /tmp/tmp.jpg");
-    system("nice composite -compose atop -gravity center /tmp/tmp.jpg images/filmstrip.png $orig");
-    //system("rm /tmp/tmp.jpg");
-
-    $file="$m[1].jpg";
-    $name="$m[1].avi";
+    $file=$result[0];
+    $name=$result[1];
   }
 
   if(file_exists("$file_path/$page->path/$orig_path/$file")) {
@@ -168,26 +212,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
       fputs($f, "$name\n");
     fclose($f);
 
-    $maxr=getimagesize($orig);
-    if($maxr[0]>$maxr[1])
-      $maxr=$maxr[0];
-    else
-      $maxr=$maxr[1];
-
-    $lastr=$orig_path;
-
-    // Convert Image to thumbnails
-    rsort($resolutions);
-    foreach($resolutions as $r) {
-      if($r<$maxr) {
-        system("nice convert -resize {$r}x{$r} $convert_options $file_path/$page->path/$lastr/$file $file_path/$page->path/$r/$file");
-        $lastr=$r;
-      }
-      elseif($r==$maxr) {
-        copy("$orig", "$file_path/$page->path/$r/$file");
-        $lastr=$r;
-      }
-    }
+    scale_img($page->path, $file);
 
     print " done<br>\n";
   }
@@ -207,7 +232,7 @@ foreach($resolutions as $r) {
 }
 
 if($_REQUEST["dir"]) {
-  foreach($_REQUEST[upload_file] as $f) {
+  if($_REQUEST[upload_file]) foreach($_REQUEST[upload_file] as $f) {
     process_upload_file($f, "$upload_path/$_REQUEST[dir]/$f");
   }
 }
@@ -248,6 +273,32 @@ if($_FILES[image]) {
   }
 }
 
+if($_REQUEST[rebuild]) {
+  foreach($page->cfg["LIST"] as $f) {
+    if($f->type=="ImgChunk") {
+      print "Rescaling $f->img ...";
+      flush(); ob_flush();
+
+      scale_img($f->path, $f->img, $_REQUEST[regenerate]=="on");
+
+      print " done<br>\n";
+      flush(); ob_flush();
+    }
+    elseif($f->type=="MovieChunk") {
+      print "Rescaling $f->mov ...";
+      flush(); ob_flush();
+
+      $result=generate_flv_and_thumb(
+        "$file_path/$page->path/$orig_path/$f->mov",
+        $page->path, $file);
+      scale_img($f->path, $result[0], $_REQUEST[regenerate]=="on");
+
+      print " done<br>\n";
+      flush(); ob_flush();
+    }
+  }
+}
+
 if((!$_REQUEST["dir"])&&(!$_FILES[image])) {
   print "<p>\n";
   print "<form action='upload_image.php' method='post' ".
@@ -273,6 +324,11 @@ if((!$_REQUEST["dir"])&&(!$_FILES[image])) {
     print "<input type='button' value='$lang_str[upload_image_mark]' onClick='upload_image_mark_all()'>\n";
     print "<input type='submit' value='$lang_str[upload_image_submit]'>\n";
   }
+
+  print "<h4>$lang_str[upload_image_existing]</h4>\n";
+  print "<input type='checkbox' name='regenerate'>$lang_str[upload_image_regenerate]<br>\n";
+  print "<input type='submit' name='rebuild' value='$lang_str[upload_image_rebuild]'>\n";
+
   print "</form>\n";
 }
 else {

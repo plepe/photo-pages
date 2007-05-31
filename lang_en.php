@@ -108,6 +108,9 @@ $lang_str=array(
   "upload_image_dir"=>"Directory",
   "upload_image_mark"=>"Mark all files",
   "upload_image_submit"=>"Import files",
+  "upload_image_existing"=>"Generated scaled images of existing images",
+  "upload_image_regenerate"=>"Regenerate existings scaled images",
+  "upload_image_rebuild"=>"Generate scaled images",
   "upload_image_max_size"=>"Max. filesize",
 
   "new_page_title"=>"Title of subpage",

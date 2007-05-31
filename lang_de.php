@@ -113,6 +113,9 @@ $lang_str=array(
   "upload_image_dir"=>"Verzeichnis",
   "upload_image_mark"=>"Alle Dateien markieren",
   "upload_image_submit"=>"Dateien importieren",
+  "upload_image_existing"=>"Skalierungen der existierende Bilder herstellen",
+  "upload_image_regenerate"=>"Bereits existierende Skalierungen nochmal berechnen",
+  "upload_image_rebuild"=>"Skalierte Bilder herstellen",
   "upload_image_max_size"=>"Max. Dateigr&ouml;&szlig;e",
 
   "new_page_title"=>"Titel der Unterseite",
