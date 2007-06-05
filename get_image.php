@@ -22,6 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+$extensions_page="get_image";
 include "data.php";
 
 if($_REQUEST[tmp_id]) {
@@ -60,6 +61,8 @@ else {
 }
 //print $filename;
 
+call_hooks("image_modify", &$filename, $img);
+
 $type=mime_content_type($filename);
 Header("content-type: $type");
 Header("Last-Modified: ".http_date($page->last_modified()));
@@ -72,3 +75,5 @@ while($r=fread($f, 1024)) {
   print $r;
 }
 fclose($f);
+
+call_hooks("image_done", &$filename, $img);

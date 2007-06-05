@@ -5,28 +5,41 @@ class SeriesChunk extends Chunk {
 
   function SeriesChunk($page, $text, $i, $j) {
     $this->type="SeriesChunk";
-    if(is_object($text)) {
-      $this->subpage=$text;
-      $this->dir="";
-    }
-    else if(ereg("^(.*)@", $text, $m)) {
-      $this->dir=$m[1];
-      $this->subpage=null;
-    }
     $this->index=$i++;
     $this->id=$j++;
     $this->page=$page;
+    $this->path=$this->page->path;
+    $this->subpage=null;
 
-    if(eregi("^(/.*)/([^/]*)$", $this->dir, $m)) {
-      $this->path=$m[1];
-      $this->dir=$m[2];
-    }
-    elseif(eregi("^(.*)/([^/]*)$", $this->dir, $m)) {
-      $this->path=$this->page->path."/".$m[1];
-      $this->dir=$m[2];
+    if(is_array($text)) {
+      $this->dir=$text[dir];
+      if(isset($text[path]))
+        $this->path=$text[path];
     }
     else {
-      $this->path=$this->page->path;
+      if(is_object($text)) {
+        $this->subpage=$text;
+        $this->dir="";
+      }
+      else if(ereg("^(.*)@", $text, $m)) {
+        $this->dir=$m[1];
+        $this->subpage=null;
+      }
+      $this->index=$i++;
+      $this->id=$j++;
+      $this->page=$page;
+
+      if(eregi("^(/.*)/([^/]*)$", $this->dir, $m)) {
+        $this->path=$m[1];
+        $this->dir=$m[2];
+      }
+      elseif(eregi("^(.*)/([^/]*)$", $this->dir, $m)) {
+        $this->path=$this->page->path."/".$m[1];
+        $this->dir=$m[2];
+      }
+      else {
+        $this->path=$this->page->path;
+      }
     }
   }
 
@@ -136,7 +149,6 @@ class SeriesChunk extends Chunk {
       $ret.="<input type='hidden' name='data[LIST][$this->id][path]' value='$this->path'>\n";
     $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->dir'>\n";
     $ret.="$lang_str[nav_view]: $subdata[TITLE]<br />";
-    $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='SeriesChunk'>\n";
     if($this->path!=$this->page->path)
       $ret.="<div class='edit_img_details'>$this->path/$this->dir@</div>";
     else
@@ -145,6 +157,14 @@ class SeriesChunk extends Chunk {
 
     return $ret;
   }
+
+  function save_data() {
+    $save="";
+
+    $save.="$this->dir@";
+
+    return $save;
+  }
 };
 
-
+register_chunk_type(SeriesChunk, "SeriesChunk", "^[^ ]*@");

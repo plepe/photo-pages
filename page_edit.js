@@ -597,3 +597,108 @@ function move_to_list(list) {
   page_edit_marked=new_marked;
 }
 
+var page_edit_div;
+var page_edit_add_params=new Array(); // array of additional params to imag-urls
+
+function page_edit_edit_hide() {
+  if(page_edit_div) {
+    page_edit_div.parentNode.removeChild(page_edit_div);
+  }
+}
+
+function page_edit_edit_img_copy_data(id, orig, to) {
+  var c=orig;
+  while(c) {
+    if(c.firstChild)
+      page_edit_edit_img_copy_data(id, c.firstChild, to);
+
+    if(c.name) {
+      var cel=document.getElementsByName(c.name);
+
+      if((cel.length>0)&&(cel[0]==c)) {
+        if(cel.length>1)
+          cel=new Array(cel[1]);
+        else
+          cel=new Array();
+      }
+
+      if(cel.length==0) {
+        cel[0]=document.createElement("input");
+        cel[0].type="hidden";
+        cel[0].name=c.name;
+        to.appendChild(cel[0]);
+      }
+      cel[0].value=c.value;
+    }
+    c=c.nextSibling;
+  }
+}
+
+function page_edit_edit_img_ok() {
+  var c;
+  var el=document.getElementById("chunk_"+page_edit_id);
+
+  call_hooks("page_edit_edit_save", ret, page_edit_id, page_edit_type);
+  if(!page_edit_add_params[page_edit_id])
+      page_edit_add_params[page_edit_id]=new Object();
+  call_hooks("page_edit_edit_get_add_params", page_edit_add_params[page_edit_id], page_edit_id, page_edit_type);
+
+  page_edit_edit_img_copy_data(page_edit_id, page_edit_div.firstChild, el);
+  var img=document.getElementById("chunk_"+page_edit_id+"_img");
+  var url={ "page": page, "series": series, "script": "get_image.php", "img": page_edit_id, "imgname": "bla.jpg", "size": 64, "version": 0 };
+  for(var key in page_edit_add_params[page_edit_id]) {
+    url[key]=page_edit_add_params[page_edit_id][key];
+  }
+  img.src=url_photo(url);
+
+  page_edit_edit_hide();
+}
+
+function page_edit_edit_img_cancel() {
+  page_edit_edit_hide();
+}
+
+function page_edit_edit_as_mainpicture(id) {
+  var el1=document.getElementsByName("data[MAIN_PICTURE]");
+  var el2=document.getElementsByName("data[LIST]["+id+"][img]");
+  el1[0].value=el2[0].value;
+}
+
+var page_edit_id;
+var page_edit_type;
+function page_edit_edit_img(id) {
+  page_edit_id=id;
+  page_edit_div=document.createElement("div");
+  var ret=new Object();
+  ret.text="";
+  page_edit_type=document.getElementsByName("data[LIST]["+id+"][type]")[0].value;
+
+  page_edit_div.className="page_edit_edit_img";
+  page_edit_div.setAttribute("page_edit_id", id);
+  document.body.appendChild(page_edit_div);
+
+  ret.text+="<div style='float: left; margin-right: 5px;'>\n";
+  f=new Function("ret", "id", "return "+page_edit_type+"_edit_img(ret, id);");
+  f(ret, id);
+  ret.text+="</div>\n";
+
+  var el1=document.getElementsByName("data[MAIN_PICTURE]");
+  var el2=document.getElementsByName("data[LIST]["+id+"][img]");
+
+  reset_toolbox("page_edit_edit_toolbox");
+  call_hooks("page_edit_edit_toolbox", ret, id, page_edit_type);
+  add_toolbox_item("page_edit_edit_toolbox", "<input type='button' class='toolbox_input"+(el1[0].value==el2[0].value?"_active":"")+"' value='"+lang_str["page_edit_edit_as_mainpicture"]+"' onClick='page_edit_edit_as_mainpicture("+id+")'>\n");
+  ret.text+=show_toolbox("page_edit_edit_toolbox");
+
+  ret.text+="<div style='text-align: right; clear: left;'>\n";
+  ret.text+="  <input type='button' value='"+lang_str["nav_ok"]+"' onClick='page_edit_edit_img_ok()'>\n";
+  ret.text+="  <input type='button' value='"+lang_str["nav_cancel"]+"' onClick='page_edit_edit_img_cancel()'>\n";
+  ret.text+="</div>\n";
+
+  page_edit_div.innerHTML=ret.text;
+
+  call_hooks("page_edit_edit_ready", ret, id, page_edit_type);
+}
+
+
+register_initfun(init_page_edit);

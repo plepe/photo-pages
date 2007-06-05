@@ -6,30 +6,40 @@ class ImgChunk extends Chunk {
 
   function ImgChunk($page, $text, &$i, $j) {
     $this->type="ImgChunk";
-    if(eregi("^([^ ]*) (.*)$", $text, $m)) {
-      $this->img=$m[1];
-      $this->text=$m[2];
-    }
-    else {
-      $this->img=$text;
-    }
     $this->index=$i++;
     $this->id=$j++;
     $this->page=$page;
-    if(eregi("^(/.*)/([^/]*)$", $this->img, $m)) {
-      $this->path=$m[1];
-      $this->img=$m[2];
-    }
-    elseif(eregi("^(.*)/([^/]*)$", $this->img, $m)) {
-      $this->path=$this->page->path."/".$m[1];
-      $this->img=$m[2];
+    $this->path=$this->page->path;
+
+    if(is_array($text)) {
+      $this->img=$text[img];
+      $this->text=$text[text];
+      if(isset($text[path]))
+        $this->path=$text[path];
     }
     else {
-      $this->path=$this->page->path;
-    }
-//print $this->path." ".$this->img."<br>\n";
+      if(eregi("^([^ ]*) (.*)$", $text, $m)) {
+        $this->img=$m[1];
+        $this->text=$m[2];
+      }
+      else {
+        $this->img=$text;
+      }
+      if(eregi("^(/.*)/([^/]*)$", $this->img, $m)) {
+        $this->path=$m[1];
+        $this->img=$m[2];
+      }
+      elseif(eregi("^(.*)/([^/]*)$", $this->img, $m)) {
+        $this->path=$this->page->path."/".$m[1];
+        $this->img=$m[2];
+      }
+      else {
+        $this->path=$this->page->path;
+      }
+  //print $this->path." ".$this->img."<br>\n";
 
-    $this->index_id="$this->id-$this->img";
+      $this->index_id="$this->id-$this->img";
+    }
   }
 
   function count_as_picture() { return 1; }
@@ -325,17 +335,18 @@ class ImgChunk extends Chunk {
           "onMouseMove='page_edit_move_pic(event)' ".
 	  "onClick='page_edit_photo_click(event)' ".
 	  ">\n";
-    $ret.="<img src='".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, 64, $_SESSION[img_version][$this->img])."'>";
+    $ret.="<img src='".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, 64, $_SESSION[img_version][$this->img])."' ".
+          "id='chunk_{$this->id}_img'>";
     $ret.="</div>\n";
     $ret.="<input type='hidden' name='data[LIST][$this->id][img]' value='$this->img'>\n";
     if($this->path!=$this->page->path)
       $ret.="<input type='hidden' name='data[LIST][$this->id][path]' value='$this->path'>\n";
     $ret.="<textarea name='data[LIST][$this->id][text]' class='edit_input_imgchunk' onFocus='input_get_focus(this)' rows='1' onKeyUp='resize_textarea(this)' onMouseOut='page_edit_input_leave(this)'>$text</textarea>\n";
-    $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='ImgChunk'>\n";
     if($this->path!=$this->page->path)
       $ret.="<div class='edit_img_details'>$this->path/$this->img</div>";
     else
       $ret.="<div class='edit_img_details'>$this->img</div>";
+    $ret.="<input type='button' value='edit' onClick='page_edit_edit_img($this->id)'>\n";
     $ret.="<br style='clear: left;'>\n";
 
     return $ret;
@@ -422,7 +433,20 @@ class ImgChunk extends Chunk {
     return $ret;
   }
 
+  function save_data() {
+    $save="";
 
+    $save.=$this->img;
+    if($this->text) {
+      if(strpos($this->text, "\n")===false)
+        $save.=" $this->text";
+      else
+        $save.=" \"\"\"$this->text\"\"\"";
+    }
+
+    return $save;
+  }
 };
 
-
+register_chunk_type(ImgChunk, "ImgChunk", 
+  "^[^ ]*\.(".implode("|", $extensions_images).")");

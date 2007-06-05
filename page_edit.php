@@ -33,7 +33,7 @@ urls_write();
 end_html_header();
 
 ?>
-<BODY onLoad='init_page_edit()'>
+<BODY onLoad='global_initfun()' onUnLoad='call_events(event)'>
 <?
 print "<div>".$page->get_path()."</div>\n";
 print "<div class='wait_screen' id='wait_screen'><table width='100%' height='100%'><tr><td align='center' valign='middle'>Please wait</td></tr></table></div>\n";

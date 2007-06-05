@@ -6,34 +6,44 @@ class MovieChunk extends ImgChunk {
 
   function MovieChunk($page, $text, &$i, $j) {
     $this->type="MovieChunk";
-    if(eregi("^([^ ]*)\.(avi|mov|flv|mpg|mpeg) (.*)$", $text, $m)) {
-      $this->mov="$m[1].$m[2]";
-      $this->img="$m[1].jpg"; // TODO: Suchen ob jpg/gif/png/...
-      $this->text=$m[3];
-    }
-    elseif(eregi("^([^ ]*)\.(avi|mov|flv|mpg|mpeg)$", $text, $m)) {
-      $this->mov="$m[1].$m[2]";
-      $this->img="$m[1].jpg"; // TODO: Suchen ob jpg/gif/png/...
-    }
-    else {
-      $this->mov=$text;
-    }
     $this->index=$i++;
     $this->id=$j++;
     $this->page=$page;
-
-    if(eregi("^(/.*)/([^/]*).(avi|mov|flv|mpg|mpeg)$", $this->img, $m)) {
-      $this->path=$m[1];
-      $this->mov=$m[2].$m[3];
-      $this->img=$m[2]."jpg";
-    }
-    elseif(eregi("^(.*)/([^/]*)$", $this->img, $m)) {
-      $this->path=$this->page->path."/".$m[1];
-      $this->mov=$m[2].$m[3];
-      $this->img=$m[2]."jpg";
+    $this->path=$this->page->path;
+    
+    if(is_array($text)) {
+      $this->mov=$text[mov];
+      $this->text=$text[text];
+      if(isset($text[path]))
+        $this->path=$text[path];
     }
     else {
-      $this->path=$this->page->path;
+      if(eregi("^([^ ]*)\.(avi|mov|flv|mpg|mpeg) (.*)$", $text, $m)) {
+        $this->mov="$m[1].$m[2]";
+        $this->img="$m[1].jpg"; // TODO: Suchen ob jpg/gif/png/...
+        $this->text=$m[3];
+      }
+      elseif(eregi("^([^ ]*)\.(avi|mov|flv|mpg|mpeg)$", $text, $m)) {
+        $this->mov="$m[1].$m[2]";
+        $this->img="$m[1].jpg"; // TODO: Suchen ob jpg/gif/png/...
+      }
+      else {
+        $this->mov=$text;
+      }
+
+      if(eregi("^(/.*)/([^/]*).(avi|mov|flv|mpg|mpeg)$", $this->img, $m)) {
+        $this->path=$m[1];
+        $this->mov=$m[2].$m[3];
+        $this->img=$m[2]."jpg";
+      }
+      elseif(eregi("^(.*)/([^/]*)$", $this->img, $m)) {
+        $this->path=$this->page->path."/".$m[1];
+        $this->mov=$m[2].$m[3];
+        $this->img=$m[2]."jpg";
+      }
+      else {
+        $this->path=$this->page->path;
+      }
     }
 
     $this->index_id="$this->id-$this->mov";
@@ -310,6 +320,21 @@ class MovieChunk extends ImgChunk {
   }
 
   function file_name() { return $this->mov; }
+
+  function save_data() {
+    $save="";
+
+    $save.=$this->mov;
+    if($this->text) {
+      if(strpos($this->text, "\n")===false)
+        $save.=" $this->text";
+      else
+        $save.=" \"\"\"$this->text\"\"\"";
+    }
+
+    return $save;
+  }
 };
 
-
+register_chunk_type(MovieChunk, "MovieChunk", 
+  "^[^ ]*\.(".implode("|", $extensions_movies).")");

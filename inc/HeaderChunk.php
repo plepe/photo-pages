@@ -5,17 +5,26 @@ class HeaderChunk extends Chunk {
 
   function HeaderChunk($page, $text, &$i, $j) {
     $this->type="HeaderChunk";
-    if(eregi("^index_[^ ]* (.*)$", $text, $m)) {
-      $this->level=1;
-      $this->text=$m[1];
-    }
-    elseif(eregi("^(=+)([^=].*[^=])(=+)$", $text, $m)) {
-      $this->text=$m[2];
-      $this->level=strlen($m[1]);
-    }
     $this->index=$i;
     $this->id=$j++;
     $this->page=$page;
+    
+    if(is_array($text)) {
+      $this->text=$text[text];
+      $this->level=$text[level];
+      if(!$this->level)
+        $this->level=1;
+    }
+    else {
+      if(eregi("^index_[^ ]* (.*)$", $text, $m)) {
+        $this->level=1;
+        $this->text=$m[1];
+      }
+      elseif(eregi("^(=+)([^=].*[^=])(=+)$", $text, $m)) {
+        $this->text=$m[2];
+        $this->level=strlen($m[1]);
+      }
+    }
   }
 
   function colspan() {
@@ -49,7 +58,6 @@ class HeaderChunk extends Chunk {
       $text=$this->text;
 
     $ret.="<input name='data[LIST][$this->id][text]' class='edit_input_headerchunk' value='$text' onFocus='input_get_focus(this)' onMouseOver='page_edit_input_enter(this)' onMouseOut='page_edit_input_leave(this)'>\n";
-    $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='HeaderChunk'>\n";
     $ret.="<br style='clear: left;'>\n";
 
     return $ret;
@@ -62,6 +70,16 @@ class HeaderChunk extends Chunk {
   function export_imageview() {
     return strtr($this->text, array("\n"=>"<br>\n"));
   }
+
+  function save_data() {
+    $save="";
+
+    $save.=str_repeat("=", $this->level).
+           "$this->text".
+           str_repeat("=", $this->level);
+
+    return $save;
+  }
 };
 
-
+register_chunk_type(HeaderChunk, "HeaderChunk", "^=");

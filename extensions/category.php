@@ -39,10 +39,6 @@ function category_save_page($data, $page) {
     fclose($f);
   }
 
-   print "dataC";
-   print_r($data[CATEGORIES]);
-   print "not new";
-   print_r($not_new_cat);
    foreach(array_diff($data[CATEGORIES], $not_new_cat) as $c) {
     print "$c\n";
     if(!is_dir("$file_path/category:$c")) {
@@ -56,10 +52,6 @@ function category_save_page($data, $page) {
     fputs($f, "/{$page->path}/\n");
     fclose($f);
   }
-
-  print_r( $data[CATEGORIES]);
-  print "<br>\n";
-  print_r( $page->cfg[CATEGORIES]);
 }
 
 function category_form($text, $page, $data) {

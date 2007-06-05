@@ -86,6 +86,7 @@ if(!$extensions)
 if(!defined("DATA_PHP")) {
   define("DATA_PHP", TRUE);
 
+$chunk_types=array();
 include "inc/Chunk.php";
 include "inc/HeaderChunk.php";
 include "inc/ImgChunk.php";
@@ -374,6 +375,7 @@ class Page {
     global $extensions_images;
     global $extensions_movies;
     global $file_path;
+    global $chunk_types;
 
     if($this->cfg["LIST"])
       return;
@@ -413,6 +415,7 @@ class Page {
       }
       elseif(($section=="imglist")||($section=="subdir")) {
         //print "<!-- xxx mem used ".memory_get_usage()." byte ; diff: ".(memory_get_usage()-$lastmem)." -- $f -->\n";
+        /*
         if(eregi("^[^ ]*\.(".implode("|", $extensions_images).")", $f)) {
           if(!eregi("^index_", $f))
             $this->cfg["LIST"][]=new ImgChunk(&$this, $f, &$index, &$id);
@@ -428,11 +431,18 @@ class Page {
         elseif(eregi("^[^ ]*@", $f)) {
           $this->cfg["LIST"][]=new SeriesChunk($this, $f, &$index, &$id);
         }
-        elseif(eregi("^[^ ]*/", $f)) {
+        elseif(eregi("^[^ ]*//*", $f)) { // -> das /* gehoert weg
           $this->cfg["LIST"][]=new SubdirChunk($this, $f, &$index, &$id);
         }
         else {
           $this->cfg["LIST"][]=new TextChunk($this, $f, &$index, &$id);
+        }
+        */
+        foreach($chunk_types as $c) {
+          if((!$c[load_regexp])||(eregi($c[load_regexp], $f))) {
+            $this->cfg["LIST"][]=new $c[type]($this, $f, &$index, &$id);
+            break;
+          }
         }
         //print "<!-- $path $series mem used ".memory_get_usage()." byte ; diff: ".(memory_get_usage()-$lastmem)." -- $f -->\n";
         //$lastmem=memory_get_usage();
@@ -810,8 +820,11 @@ class Page {
   function save_data($data) {
     global $fields;
     global $file_path;
+    global $chunk_types;
 
     $save="";
+
+    call_hooks("save_page_start", $data, $this);
 
     foreach(array_keys($fields) as $k) {
       $v=$data[$k];
@@ -839,6 +852,9 @@ class Page {
     }
 
     $save.="[imglist]\n";
+    $new_id=0;
+    $new_index=0;
+
     foreach($data["LIST"] as $k=>$v) {
 
       if(is_object($v))
@@ -847,9 +863,11 @@ class Page {
       if(isset($v[path])&&($this->path!=$v[path]))
         $save.="$v[path]/";
 
+      $el=new $chunk_types[$v[type]][type]($this, $v, &$new_index, &$new_id);
+      $save.=$el->save_data()."\n";
+/*
       switch($v[type]) {
         case "ImgChunk":
-          $v[text]=stripslashes($v[text]);
           if($v[text]) {
             if(strpos($v[text], "\n")===false)
               $save.="$v[img] $v[text]\n";
@@ -860,7 +878,6 @@ class Page {
             $save.="$v[img]\n";
           break;
         case "MovieChunk":
-          $v[text]=stripslashes($v[text]);
           if($v[text]) {
             if(strpos($v[text], "\n")===false)
               $save.="$v[mov] $v[text]\n";
@@ -910,13 +927,17 @@ class Page {
           $save.="=$v[text]=\n";
           break;
       }
+*/
     }
+
+    call_hooks("save_page_end", $save, $this);
 
     if(!($f=fopen("$file_path/$this->filename", "w"))) {
       return "Can't open file for writing";
     }
     fputs($f, $save);
     fclose($f);
+
     return 0;
   }
 
@@ -949,6 +970,7 @@ class Page {
       if($_REQUEST["delete"][$k]) {
       }
       else {
+        //$data["LIST"][$k]=stripslashes($data["LIST"][$k]);
         $new_list[]=$data["LIST"][$k];
       }
     }
@@ -1226,6 +1248,7 @@ class Page {
       print "<div class='edit_img_spacer' edit_type='spacer' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'></div>\n";
       print "<div class='edit_img_chunk' id='chunk_$d->id' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onMouseDown='page_edit_img_chunk_clicked(event, this)'>\n";
       print "<input type='hidden' name='data[chunk_order][]' value='$d->id'>\n";
+      print "<input type='hidden' name='data[LIST][$d->id][type]' value='{$d->type}'>\n";
       print $d->edit_show();
       print "</div>\n\n";
     }
@@ -1637,6 +1660,9 @@ include "inc/text.php";
 include "inc/hooks.php";
 include "inc/vars.php";
 include_extensions($extensions_page);
+use_javascript("inc/toolbox");
+use_javascript("inc/ImgChunk");
+html_export_var(array("lang_str"=>$lang_str));
 
 //chdir("$file_path");
 
@@ -1826,3 +1852,9 @@ function implode_vars($vars) {
   return implode(" ", $ret);
 }
 
+//print "chunktypes"; print_r($chunk_types);
+function register_chunk_type($type, $typename, $load_regexp) {
+  global $chunk_types;
+
+  $chunk_types[$typename]=array("type"=>$type, "load_regexp"=>$load_regexp);
+}

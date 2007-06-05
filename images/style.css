@@ -636,3 +636,12 @@ input.upload_file {
 form {
   margin: 0px;
 }
+div.page_edit_edit_img {
+  background: #333333;
+  border: 1px solid #666666;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  padding: 5px;
+  width: 900px;
+}

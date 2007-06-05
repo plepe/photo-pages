@@ -84,8 +84,8 @@ function html_export_var($vars) {
       //print "<$key>".html_var_to_js($value)."</$key>\n";
       html_add_formated_text($key, html_var_to_js($value));
     }
-    $export_vars_todo=array();
   }
+  $export_vars_todo=array();
 }
 
 

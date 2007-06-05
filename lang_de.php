@@ -30,6 +30,7 @@ $lang_str=array(
   "nav_rows"=>"Zeilen",
   "nav_language"=>"Sprache",
   "nav_ok"=>"Ok",
+  "nav_cancel"=>"Abbrechen",
   "nav_save"=>"Speichern",
   "nav_home"=>"&Uuml;bersicht (alt-shift-h)",
   "nav_frame"=>"Spaltenansicht",
@@ -96,6 +97,7 @@ $lang_str=array(
   "page_edit_saved"=>"Gespeichert.",
   "page_edit_pict_chunk_new_subdir"=>"Neues Unterverzeichnis",
   "page_edit_pict_chunk_new_view"=>"Neue Ansicht",
+  "page_edit_edit_as_mainpicture"=>"Als Hauptbild",
 
   "error_invalid_pictname"=>"Ung&uuml;ltiger Bildname",
   "error_notexist_pict"=>"Dieses Bild existiert nicht",

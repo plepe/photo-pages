@@ -11,6 +11,8 @@ function include_extensions($view) {
   global $extensions_data;
   global $extensions;
 
+  html_export_var(array("extensions_mode"=>$view));
+
   foreach($extensions as $ext) {
     include "extensions/{$ext}_data.php";
   }

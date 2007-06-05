@@ -44,6 +44,18 @@ function url_page(path, series, skript) {
 }
 
 function url_photo(path, series, skript, imgnum, imgname, size, imgversion) {
+  ret=v_url_script;
+
+  if(typeof path=="object")
+    ret=build_url(ret, path);
+  else
+    ret=build_url(ret, { "page": path, "series": series, "script": skript, "img": imgnum, "imgname": imgname, "size": size, "version": imgversion });
+//  ret=ret.replace("%1$s", path);
+//  ret=ret.replace("%2$s", series);
+//  ret=ret.replace("%3$s", skript);
+//  ret=ret.replace("%4$s", imgnum);
+
+  return ret;
 }
 
 function url_script(path, series, skript, imgnum, todo) {
@@ -52,7 +64,7 @@ function url_script(path, series, skript, imgnum, todo) {
   if(typeof path=="object")
     ret=build_url(ret, path);
   else
-    ret=build_url(ret, { "page": path, "series": series, "script": script, "imgnum": imgnum, "todo": todo });
+    ret=build_url(ret, { "page": path, "series": series, "script": skript, "imgnum": imgnum, "todo": todo });
 //  ret=ret.replace("%1$s", path);
 //  ret=ret.replace("%2$s", series);
 //  ret=ret.replace("%3$s", skript);

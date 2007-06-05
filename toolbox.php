@@ -23,8 +23,10 @@
  *
  */
 
+session_start();
 Header("content-type: text/xml; charset: utf-8");
 $request_type="xml";
+print "<xml version=\"1.0\" encoding=\"UTF-8\">\n";
 
 require "data.php";
 
@@ -42,8 +44,6 @@ function scale() {
     $lastr=$res;
   }
 }
-
-print "<xml version=\"1.0\" encoding=\"UTF-8\">\n";
 
 $img=$_REQUEST[img];
 $todo=$_REQUEST[todo];

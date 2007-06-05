@@ -9,32 +9,41 @@ class SubdirChunk extends Chunk {
     $this->index=$i++;
     $this->id=$j++;
     $this->page=$page;
+    $this->path=$this->page->path;
+    $this->subpage=null;
 
-    if(is_object($text)) {
-      $this->subpage=$text;
-    }
-    //if(is_dir("$page->path/$text")) {
-    $this->dir=$text;
-    //}
-
-    if(eregi("^/([^/]*)/$", $this->dir, $m)) {
-      $this->path="";
-      $this->dir=$m[1];
-    }
-    elseif(eregi("^(/.*)/([^/]*)/$", $this->dir, $m)) {
-      $this->path=$m[1];
-      $this->dir=$m[2];
-    }
-    elseif(eregi("^(.*)/([^/]*)/$", $this->dir, $m)) {
-      $this->path=$this->page->path."/".$m[1];
-      $this->dir=$m[2];
-    }
-    elseif(eregi("^(.*)/$", $this->dir, $m)) {
-      $this->path=$this->page->path;
-      $this->dir=$m[1];
+    if(is_array($text)) {
+      $this->dir=$text[dir];
+      if(isset($text[path]))
+        $this->path=$text[path];
     }
     else {
-      $this->path=$this->page->path;
+      if(is_object($text)) {
+        $this->subpage=$text;
+      }
+      //if(is_dir("$page->path/$text")) {
+      $this->dir=$text;
+      //}
+
+      if(eregi("^/([^/]*)/$", $this->dir, $m)) {
+        $this->path="";
+        $this->dir=$m[1];
+      }
+      elseif(eregi("^(/.*)/([^/]*)/$", $this->dir, $m)) {
+        $this->path=$m[1];
+        $this->dir=$m[2];
+      }
+      elseif(eregi("^(.*)/([^/]*)/$", $this->dir, $m)) {
+        $this->path=$this->page->path."/".$m[1];
+        $this->dir=$m[2];
+      }
+      elseif(eregi("^(.*)/$", $this->dir, $m)) {
+        $this->path=$this->page->path;
+        $this->dir=$m[1];
+      }
+      else {
+        $this->path=$this->page->path;
+      }
     }
   }
 
@@ -155,7 +164,6 @@ class SubdirChunk extends Chunk {
       $ret.="<input type='hidden' name='data[LIST][$this->id][path]' value='$this->path'>\n";
     $ret.="<input type='hidden' name='data[LIST][$this->id][dir]' value='$this->dir'>\n";
     $ret.="$lang_str[nav_subdir]: $subdata[TITLE]";
-    $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='SubdirChunk'>\n";
     if($this->path!=$this->page->path)
       $ret.="<div class='edit_img_details'>$this->path/$this->dir/</div>";
     else
@@ -217,6 +225,13 @@ class SubdirChunk extends Chunk {
     return $ret;
   }
 
+  function save_data() {
+    $save="";
+
+    $save.="$this->dir/";
+
+    return $save;
+  }
 };
 
-
+register_chunk_type(SubdirChunk, "SubdirChunk", "^[^ ]*/");

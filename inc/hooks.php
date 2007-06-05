@@ -15,3 +15,5 @@ function register_hook($why, $fun) {
 
   $hooks[$why][]=$fun;
 }
+
+use_javascript("inc/hooks");

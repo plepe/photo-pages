@@ -4,13 +4,19 @@ class TextChunk extends Chunk {
 
   function TextChunk($page, $text, $i, $j) {
     $this->type="TextChunk";
-    if(ereg("^\"(.*)\"$", $text, $m))
-      $this->text=$m[1];
-    else
-      $this->text=$text;
     $this->index=$i;
     $this->id=$j++;
     $this->page=$page;
+
+    if(is_array($text)) {
+      $this->text=$text[text];
+    }
+    else {
+      if(ereg("^\"(.*)\"$", $text, $m))
+        $this->text=$m[1];
+      else
+        $this->text=$text;
+    }
   }
 
   function colspan() { return 9999; }
@@ -32,7 +38,6 @@ class TextChunk extends Chunk {
       $text=$this->text;
 
     $ret.="<textarea class='edit_input_textchunk' onKeyUp='resize_textarea(this)' name='data[LIST][$this->id][text]' onFocus='input_get_focus(this)' onLoad='resize_textarea(this)' onMouseOut='page_edit_input_leave(this)'>$text</textarea>\n";
-    $ret.="<input type='hidden' name='data[LIST][$this->id][type]' value='TextChunk'>\n";
     $ret.="<br style='clear: left;'>\n";
 
     return $ret;
@@ -45,6 +50,19 @@ class TextChunk extends Chunk {
   function export_imageview() {
     return strtr($this->text, array("\n"=>"<br>\n"));
   }
+
+  function save_data() {
+    $save="";
+
+    if($this->text) {
+      if(strpos($this->text, "\n")===false)
+        $save.=$this->text;
+      else
+        $save.="\"\"\"$this->text\"\"\"";
+    }
+
+    return $save;
+  }
 };
 
-
+register_chunk_type(TextChunk, "TextChunk", 0);

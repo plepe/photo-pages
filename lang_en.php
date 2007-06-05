@@ -30,6 +30,7 @@ $lang_str=array(
   "nav_rows"=>"Rows",
   "nav_language"=>"Language",
   "nav_ok"=>"Ok",
+  "nav_cancel"=>"Cancel",
   "nav_save"=>"Save",
   "nav_home"=>"Home (alt-shift-h)",
   "nav_frame"=>"Frame",
@@ -94,6 +95,7 @@ $lang_str=array(
   "page_edit_pict_new_series"=>"View",
   "page_edit_pict_new_subdir"=>"Subdirectory",
   "page_edit_saved"=>"Saved.",
+  "page_edit_edit_as_mainpicture"=>"As main picture",
 
   "error_invalid_pictname"=>"Invalid name of picture",
   "error_notexist_pict"=>"Picture does not exist",

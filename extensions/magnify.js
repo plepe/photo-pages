@@ -117,3 +117,16 @@ function start_mag() {
 }
 
 register_event(window, "mousemove", mag_move);
+
+function magnify_page_edit_toolbox(ret, id, type) {
+  add_toolbox_item("page_edit_edit_toolbox", "<input accesskey='m' type='submit' class='toolbox_input' id='toolbox_input_mag' onClick='start_mag()' value='"+lang_str["tool_magnify_name"]+"' title=\""+lang_str["tooltip_mag"]+"\"><br>\n");
+  img_orig=url_photo({ "page": page, "series": series, "script": "get_image.php", "img": id, "imgname": "bla.jpg", "size": "orig", "version": 0});
+}
+
+function magnify_init_fun() {
+  if(extensions_mode=="page_edit") {
+    register_hook("page_edit_edit_toolbox", magnify_page_edit_toolbox);
+  }
+}
+
+register_initfun(magnify_init_fun);
