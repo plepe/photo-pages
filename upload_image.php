@@ -96,42 +96,6 @@ function upload_file($file, $tmpname, $desc) {
 }
 */
 
-function scale_img($path, $file, $force=0) {
-  global $orig_path;
-  global $generated_path;
-  global $resolutions;
-  global $file_path;
-  global $convert_options;
-
-  if(file_exists("$file_path/$path/$generated_path/$file"))
-    $find_path=$generated_path;
-  else
-    $find_path=$orig_path;
-
-  $maxr=getimagesize("$file_path/$path/$find_path/$file");
-  if($maxr[0]>$maxr[1])
-    $maxr=$maxr[0];
-  else
-    $maxr=$maxr[1];
-
-  $lastr=$find_path;
-
-  // Convert Image to thumbnails
-  rsort($resolutions);
-  foreach($resolutions as $r) {
-    if($r<$maxr) {
-      if((!file_exists("$file_path/$path/$r/$file"))||$force)
-        system("nice convert -resize {$r}x{$r} $convert_options $file_path/$path/$lastr/$file $file_path/$path/$r/$file");
-      $lastr=$r;
-    }
-    elseif($r==$maxr) {
-      if((!file_exists("$file_path/$path/$r/$file"))||$force)
-        copy("$file_path/$path/$find_path/$file", "$file_path/$path/$r/$file");
-      $lastr=$r;
-    }
-  }
-}
-
 function generate_flv_and_thumb($orig_file, $path, $file, $force=0) {
   global $file_path;
   global $extensions_movies;

@@ -30,44 +30,11 @@ print "<xml version=\"1.0\" encoding=\"UTF-8\">\n";
 
 require "data.php";
 
-function scale() {
-  global $img;
-  global $resolutions;
-  global $orig_path;
-  global $page;
-  global $file_path;
-
-  $lastr=$orig_path;
-  rsort($resolutions);
-  foreach($resolutions as $res) {
-    system("convert -resize {$res}x{$res} -filter Hamming -quality 85 -interlace PLANE $file_path/$page->path/$lastr/$img->img $file_path/$page->path/$res/$img->img");
-    $lastr=$res;
-  }
-}
-
 $img=$_REQUEST[img];
 $todo=$_REQUEST[todo];
 print "<todo>$todo</todo>\n";
 
 switch($todo) {
-  case "rot_right":
-    $img=$page->cfg["LIST"][$img];
-    system("exiftran -9 -o $file_path/$page->path/$orig_path/new.$img->img $file_path/$page->path/$orig_path/$img->img");
-    system("mv $file_path/$page->path/$orig_path/new.$img->img $file_path/$page->path/$orig_path/$img->img");
-    scale();
-    $_SESSION[img_version][$img->img->img]++;
-    print "<status>success</status>\n";
-    print "<changed_image>yes</changed_image>\n";
-    break;
-  case "rot_left":
-    $img=$page->cfg["LIST"][$img];
-    system("exiftran -2 -o $file_path/$page->path/$orig_path/new.$img->img $file_path/$page->path/$orig_path/$img->img");
-    system("mv $file_path/$page->path/$orig_path/new.$img->img $file_path/$page->path/$orig_path/$img->img");
-    scale();
-    $_SESSION[img_version][$img->img]++;
-    print "<status>success</status>\n";
-    print "<changed_image>yes</changed_image>\n";
-    break;
   case "edit_desc":
     $data=htmlentities(stripcslashes($_REQUEST[data]));
 

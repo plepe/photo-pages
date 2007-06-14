@@ -80,7 +80,7 @@ umask(0000);
 $language="en";
 
 // Contains a list of extensions - check the README file for available extensions
-$extensions=array("window", "resolution", "fullscreen", "slideshow", "magnify", "columns", "search", "rowcount", "langchoose", "details", "description");
+$extensions=array("window", "resolution", "fullscreen", "slideshow", "magnify", "columns", "search", "rowcount", "langchoose", "details", "description", "rotate");
 
 // Nice (needs URL rewriting)
 //$url_page=$web_path.'%1$s/?series=%2$s';

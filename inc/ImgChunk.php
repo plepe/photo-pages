@@ -195,8 +195,6 @@ class ImgChunk extends Chunk {
 
     $ret1="";
     if($this->page->get_right($_SESSION[current_user], "edit")) {
-      $ret1.="<input class='toolbox_input' type='submit' name='rot_left' value='$lang_str[tool_rotate_left]' onClick='start_rotate(\"".url_script($this->page->path, $this->page->series, "toolbox.php", $this->id)."&todo=rot_left\", this)' title=\"$lang_str[tooltip_rotate]\"><br>\n";
-      $ret1.="<input class='toolbox_input' type='submit' name='rot_right' value='$lang_str[tool_rotate_right]' onClick='start_rotate(\"".url_script($this->page->path, $this->page->series, "toolbox.php", $this->id)."&todo=rot_right\", this)' title=\"$lang_str[tooltip_rotate]\"><br>\n";
     }
     if($this->page->get_right($_SESSION[current_user], "editdesc")) {
       $ret1.="<input accesskey='e' class='toolbox_input' type='submit' id='toolbox_input_desc' value='$lang_str[tool_editdesc_name]' onClick='start_desc_edit()' title=\"$lang_str[tooltip_editdesc]\"><br>\n";
@@ -452,7 +450,10 @@ class ImgChunk extends Chunk {
     return $ret;
   }
 
-  function save_data() {
+  function save_data($data) {
+    global $file_path;
+    global $orig_path;
+    global $generated_path;
     $save="";
 
     $save.=$this->img;
@@ -461,6 +462,17 @@ class ImgChunk extends Chunk {
         $save.=" $this->text";
       else
         $save.=" \"\"\"$this->text\"\"\"";
+    }
+
+    $image_modify=0;
+    call_hooks("image_modify_save_request", &$image_modify, $this, $data);
+
+    if($image_modify) {
+      $filename="$file_path/$this->path/$orig_path/$this->img";
+      call_hooks("image_modify_save_start", &$filename, $this);
+      rename("$filename", "$file_path/$this->path/$generated_path/$this->img");
+      scale_img($this->path, $this->img, 1);
+      $_SESSION[img_version][$this->img]++;
     }
 
     return $save;

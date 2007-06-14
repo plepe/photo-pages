@@ -866,7 +866,7 @@ class Page {
         $save.="$v[path]/";
 
       $el=new $chunk_types[$v[type]][type]($this, $v, &$new_index, &$new_id);
-      $save.=$el->save_data()."\n";
+      $save.=$el->save_data($v)."\n";
 /*
       switch($v[type]) {
         case "ImgChunk":
@@ -1252,9 +1252,11 @@ class Page {
 //      }
       print "<div class='edit_img_spacer' edit_type='spacer' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)'></div>\n";
       print "<div class='edit_img_chunk' id='chunk_$d->id' edit_type='chunk' onMouseOver='page_edit_mouse_enter(event, this)' onMouseOut='page_edit_mouse_leave(event, this)' onMouseDown='page_edit_img_chunk_clicked(event, this)'>\n";
-      print "<input type='hidden' name='data[chunk_order][]' value='$d->id'>\n";
-      print "<input type='hidden' name='data[LIST][$d->id][type]' value='{$d->type}'>\n";
-      print $d->edit_show();
+      $text ="<input type='hidden' name='data[chunk_order][]' value='$d->id'>\n";
+      $text.="<input type='hidden' name='data[LIST][$d->id][type]' value='{$d->type}'>\n";
+      $text.=$d->edit_show();
+      call_hooks("page_edit_show_chunk", &$text, $this, $d);
+      print $text;
       print "</div>\n\n";
     }
 
@@ -1864,4 +1866,40 @@ function register_chunk_type($type, $typename, $load_regexp) {
   global $chunk_types;
 
   $chunk_types[$typename]=array("type"=>$type, "load_regexp"=>$load_regexp);
+}
+
+function scale_img($path, $file, $force=0) {
+  global $orig_path;
+  global $generated_path;
+  global $resolutions;
+  global $file_path;
+  global $convert_options;
+
+  if(file_exists("$file_path/$path/$generated_path/$file"))
+    $find_path=$generated_path;
+  else
+    $find_path=$orig_path;
+
+  $maxr=getimagesize("$file_path/$path/$find_path/$file");
+  if($maxr[0]>$maxr[1])
+    $maxr=$maxr[0];
+  else
+    $maxr=$maxr[1];
+
+  $lastr=$find_path;
+
+  // Convert Image to thumbnails
+  rsort($resolutions);
+  foreach($resolutions as $r) {
+    if($r<$maxr) {
+      if((!file_exists("$file_path/$path/$r/$file"))||$force)
+        system("nice convert -resize {$r}x{$r} $convert_options $file_path/$path/$lastr/$file $file_path/$path/$r/$file");
+      $lastr=$r;
+    }
+    elseif($r==$maxr) {
+      if((!file_exists("$file_path/$path/$r/$file"))||$force)
+        copy("$file_path/$path/$find_path/$file", "$file_path/$path/$r/$file");
+      $lastr=$r;
+    }
+  }
 }

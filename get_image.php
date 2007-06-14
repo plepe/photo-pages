@@ -35,9 +35,18 @@ if($_REQUEST[tmp_id]) {
   $page->get_viewlist();
 }
 
+$image_modify=0;
+call_hooks("image_modify_request", &$image_modify, $img);
+
+if($image_modify) {
+  $request_size=$_REQUEST[size];
+  $_REQUEST[size]=$orig_path;
+}
+
 if($_REQUEST[img]==="main") {
   eregi("^(.*/)?([^/]*)$", $page->cfg[MAIN_PICTURE], $m);
   $filename="$file_path/{$page->path}/$m[1]/$_REQUEST[size]/$m[2]";
+  $single_filename=$m[2];
 }
 else {
   if($_REQUEST["img"]>=sizeof($page->cfg["LIST"])) {
@@ -54,17 +63,33 @@ else {
     $flv_file="$m[1].flv";
     $largest_path=$img->get_largest_path($flv_file);
     $filename="$file_path/$img->path/$largest_path/$flv_file";
+    $single_filename=$flv_file;
   }
   elseif($_REQUEST[size]=="movie") {
     $largest_path=$img->get_largest_path($img->mov);
     $filename="$file_path/$img->path/$largest_path/$img->mov";
+    $single_filename=$img->mov;
   }
-  else
+  else {
     $filename="$file_path/$img->path/$_REQUEST[size]/$img->img";
+    $single_filename=$img->img;
+  }
 }
 //print $filename;
 
-call_hooks("image_modify", &$filename, $img);
+if($image_modify) {
+  $_REQUEST[size]=$request_size;
+  $new_filename="$file_path/$img->path/tmp/orig_{$_REQUEST[size]}_{$single_filename}";
+
+  if(!file_exists($new_filename)) {
+    @mkdir("$file_path/$img->path/tmp");
+    system("convert -resize {$_REQUEST[size]}x{$_REQUEST[size]} $filename $new_filename");
+  }
+
+  $filename=$new_filename;
+
+  call_hooks("image_modify_start", &$filename, $img);
+}
 
 $type=mime_content_type($filename);
 Header("content-type: $type");
