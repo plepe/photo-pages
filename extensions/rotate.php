@@ -62,6 +62,9 @@ function rotate_load_page($cfg, $page) {
   global $generated_path;
   global $rotate_data;
 
+  if(!file_exists("$file_path/$page->path/$generated_path/rotate.data"))
+    return;
+
   $f=fopen("$file_path/$page->path/$generated_path/rotate.data", "r");
   while($r=fgets($f)) {
     $r=chop($r);
