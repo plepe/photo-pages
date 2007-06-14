@@ -203,7 +203,7 @@ class MovieChunk extends ImgChunk {
       <param name="quality" value="high" />
       <param name="scale" value="noScale" />
       <param name="wmode" value="transparent" />
-      <param name="flashvars" value="config={videoFile: '<?=$url?>', initialScale: 'fit'}" />
+      <param name="flashvars" value="config={ videoFile: '<?=$url?>', initialScale: 'fit', loop: 'false' }" />
     </object>
 <?
       //<param name="flashvars" value="config={videoFile='<?=? >'}" />

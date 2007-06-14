@@ -847,7 +847,8 @@ class Page {
     if($data["RIGHTS"]) {
       $save.="[rights]\n";
       foreach($data["RIGHTS"] as $k=>$v) {
-        $save.="$k ".implode(",", $v)."\n";
+        if($v)
+          $save.="$k ".implode(",", $v)."\n";
       }
     }
 
@@ -970,7 +971,10 @@ class Page {
       if($_REQUEST["delete"][$k]) {
       }
       else {
-        //$data["LIST"][$k]=stripslashes($data["LIST"][$k]);
+        foreach($data["LIST"][$k] as $k1=>$v1) {
+          if(is_string($v1))
+            $data["LIST"][$k][$k1]=stripslashes($v1);
+        }
         $new_list[]=$data["LIST"][$k];
       }
     }
@@ -1640,7 +1644,6 @@ print "starting export: $this->path $this->series -> $export_path<br>\n";
       print $p->path."<br>\n";
     }
   }
-
 }
 
 // Here starts the basic initialisation of vars
@@ -1661,8 +1664,11 @@ include "inc/hooks.php";
 include "inc/vars.php";
 include_extensions($extensions_page);
 use_javascript("inc/toolbox");
+use_javascript("inc/Chunk");
 use_javascript("inc/ImgChunk");
-html_export_var(array("lang_str"=>$lang_str));
+if($request_type!="xml") {
+  html_export_var(array("lang_str"=>$lang_str));
+}
 
 //chdir("$file_path");
 

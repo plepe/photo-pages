@@ -34,8 +34,10 @@ function do_logout() {
   return false;
 }
 
-function authenticate_finish(xmldata) {
-  location.reload();
+function authenticate_finish(xmldata, status) {
+  if(!status) {
+    location.reload();
+  }
 }
 
 function authenticate_user(ob) {

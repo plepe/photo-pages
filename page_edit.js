@@ -678,7 +678,7 @@ function page_edit_edit_img(id) {
   document.body.appendChild(page_edit_div);
 
   ret.text+="<div style='float: left; margin-right: 5px;'>\n";
-  f=new Function("ret", "id", "return "+page_edit_type+"_edit_img(ret, id);");
+  f=new Function("ret", "id", "return "+page_edit_type+"_edit_chunk(ret, id);");
   f(ret, id);
   ret.text+="</div>\n";
 

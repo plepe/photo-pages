@@ -52,12 +52,20 @@ function processReqChange() {
     var xmldata=xmlhttp_req.responseXML;
 
     var status=xmldata.getElementsByTagName('status');
-    if((status.length>0)&&(status[0].firstChild.nodeValue.length>0)) {
-      status=status[0].firstChild.nodeValue;
+    if((status.length>0)&&(status[0].firstChild)) {
+      if(status[0].firstChild.nodeValue.length>0)
+        status=status[0].firstChild.nodeValue;
+      else
+        status="Unknown error";
+
       if(status!="success") {
         alert(status);
       }
+      else
+        status=0;
     }
+    else
+      status=0;
 
     if((xmldata.getElementsByTagName('changed_image').length)&&
        (xmldata.getElementsByTagName('changed_image')[0].firstChild.nodeValue=="yes")) {
@@ -84,7 +92,7 @@ function processReqChange() {
     }
 
     if(xmlhttp_callback)
-      xmlhttp_callback(xmldata);
+      xmlhttp_callback(xmldata, status);
 
     var tb=document.getElementById("message");
     if(tb) {

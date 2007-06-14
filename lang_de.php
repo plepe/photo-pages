@@ -103,7 +103,7 @@ $lang_str=array(
   "error_notexist_pict"=>"Dieses Bild existiert nicht",
   "error_invalid_series"=>"Ung&uuml;ltiger Serienname, verwende Standard",
   "error_invalid_chars"=>"enth&auml;lt ung&uuml;ltige Zeichen.",
-  "error_invald_auth"=>"Username oder Passwort falsch!",
+  "error_invalid_auth"=>"Username oder Passwort falsch!",
 
   "new_page_no_dot"=>"Verzeichnisse dürfen nicht mit einem . beginnen",
   "new_page_no_page_name"=>"Die Kurzbezeichnung darf nicht leer sein",

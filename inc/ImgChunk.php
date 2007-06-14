@@ -446,6 +446,7 @@ class ImgChunk extends Chunk {
 
     return $save;
   }
+
 };
 
 register_chunk_type(ImgChunk, "ImgChunk", 
