@@ -27,6 +27,7 @@
 
 // In which directory are the original files
 $orig_path="orig";
+$generated_path="generated";
 
 // Default picture, if no main_picture is set
 $no_main_picture="black.png";

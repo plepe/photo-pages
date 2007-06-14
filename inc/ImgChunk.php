@@ -44,6 +44,19 @@ class ImgChunk extends Chunk {
 
   function count_as_picture() { return 1; }
 
+  function get_largest_path($file) {
+    global $file_path;
+    global $generated_path;
+    global $orig_path;
+
+    if(file_exists("$file_path/$this->path/$generated_path/$file"))
+      $find_path=$generated_path;
+    else
+      $find_path=$orig_path;
+
+    return $find_path;
+  }
+
   function colspan() {
     return 1;
   }
@@ -123,16 +136,18 @@ class ImgChunk extends Chunk {
   }
 
   function get_image_details() {
-    global $orig_path;
     global $file_path;
+    global $orig_path;
 
-    $r=getimagesize("$file_path/{$this->path}/$orig_path/$this->img");
+    $largest_path=$this->get_largest_path($this->img);
+
+    $r=getimagesize("$file_path/{$this->path}/$largest_path/$this->img");
     $e=exif_read_data("$file_path/{$this->path}/$orig_path/$this->img");
 
-    $ret["filename"]="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."'>".implode(" ", explode("_", $this->img))."</a>";
+    $ret["filename"]="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $largest_path, $_SESSION[img_version][$this->img])."'>".implode(" ", explode("_", $this->img))."</a>";
 
     //$ret["filename"]="<a href='orig/$this->img'>$this->img</a>";
-    $ret["filesize"]=sprintf("%.1f kB", filesize("$file_path/{$this->path}/$orig_path/$this->img")/1024.0);
+    $ret["filesize"]=sprintf("%.1f kB", filesize("$file_path/{$this->path}/$largest_path/$this->img")/1024.0);
     if($e[DateTime])
       $ret["taketime"]=$e[DateTime];
 
@@ -209,6 +224,8 @@ class ImgChunk extends Chunk {
     if(!$res)
       $res=$normal_res;
 
+    $largest_path=$this->get_largest_path($this->img);
+
     $imgres=getimagesize("$file_path/{$this->path}/$normal_res/$this->img");
 
     if(!$_SESSION[img_version][$this->img])
@@ -217,7 +234,7 @@ class ImgChunk extends Chunk {
     $ret.="<script type='text/javascript'>\n".
           "<!--\n".
           "var img_version={$_SESSION[img_version][$this->img]};\n".
-          "var img_orig=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."\";\n".
+          "var img_orig=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, $largest_path, $_SESSION[img_version][$this->img])."\";\n".
           "var img_size_url=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, "%SIZE%", $_SESSION[img_version][$this->img])."\";\n".
           "var img_url=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, $normal_res, $_SESSION[img_version][$this->img])."\";\n".
           "var series=\"$series\";\n".
@@ -236,7 +253,7 @@ class ImgChunk extends Chunk {
 
     call_hooks("imageview", &$img_params, $page, $this);
 
-    $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."' target='_top'>";
+    $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $largest_path, $_SESSION[img_version][$this->img])."' target='_top'>";
 
 //    $ret.="<a href='$orig_path/$this->img?{$_SESSION[img_version][$this->img]}' target='_top'>".
     //$ret.="<img src='$normal_res/$this->img?{$_SESSION[img_version][$this->img]}' ";
@@ -320,6 +337,8 @@ class ImgChunk extends Chunk {
     global $index_res;
     global $orig_path;
 
+    $largest_path=$this->get_largest_path($this->img);
+
     if(!$text)
       $text=$this->text;
 
@@ -329,7 +348,7 @@ class ImgChunk extends Chunk {
                   "get_image.php", $this->id, $this->img, 600, 
                   $_SESSION[img_version][$this->img])."\", \"".
           url_photo($this->page->path, $this->page->series, 
-                  "get_image.php", $this->id, $this->img, $orig_path, 
+                  "get_image.php", $this->id, $this->img, $largest_path, 
                   $_SESSION[img_version][$this->img])."\")' ".
           "onMouseOut='page_edit_leave_image(this)' ".
           "onMouseMove='page_edit_move_pic(event)' ".

@@ -39,6 +39,7 @@ function autoconvert() {
   global $resolutions;
   global $convert_options;
   global $orig_path;
+  global $generated_path;
 
   $list=opendir("$file_path/$page->path/$orig_path");
   while($file=readdir($list)) {
@@ -97,17 +98,23 @@ function upload_file($file, $tmpname, $desc) {
 
 function scale_img($path, $file, $force=0) {
   global $orig_path;
+  global $generated_path;
   global $resolutions;
   global $file_path;
   global $convert_options;
 
-  $maxr=getimagesize("$file_path/$path/$orig_path/$file");
+  if(file_exists("$file_path/$path/$generated_path/$file"))
+    $find_path=$generated_path;
+  else
+    $find_path=$orig_path;
+
+  $maxr=getimagesize("$file_path/$path/$find_path/$file");
   if($maxr[0]>$maxr[1])
     $maxr=$maxr[0];
   else
     $maxr=$maxr[1];
 
-  $lastr=$orig_path;
+  $lastr=$find_path;
 
   // Convert Image to thumbnails
   rsort($resolutions);
@@ -119,7 +126,7 @@ function scale_img($path, $file, $force=0) {
     }
     elseif($r==$maxr) {
       if((!file_exists("$file_path/$path/$r/$file"))||$force)
-        copy("$file_path/$path/$orig_path/$file", "$file_path/$path/$r/$file");
+        copy("$file_path/$path/$find_path/$file", "$file_path/$path/$r/$file");
       $lastr=$r;
     }
   }
@@ -129,22 +136,29 @@ function generate_flv_and_thumb($orig_file, $path, $file, $force=0) {
   global $file_path;
   global $extensions_movies;
   global $orig_path;
+  global $generated_path;
 
   eregi("^(.*)\.(".implode("|", $extensions_movies).")", $file, $m);
 
-  if((!file_exists("$file_path/$path/$orig_path/$m[1].flv"))||$force) {
+  if((!file_exists("$file_path/$path/$generated_path/$m[1].flv"))||$force) {
+    print "Generate flv<br>\n";
+    flush(); ob_flush();
+
     // In FLV konvertieren
     system("nice ffmpeg -y -i \"$orig_file\" -vcodec flv -acodec pcm_s16le -ar 22050 /tmp/tmp.avi");
-    system("nice ffmpeg -y -i /tmp/tmp.avi -vcodec copy -acodec copy $file_path/$path/$orig_path/$m[1].flv");
+    system("nice ffmpeg -y -i /tmp/tmp.avi -vcodec copy -acodec copy $file_path/$path/$generated_path/$m[1].flv");
     system("rm /tmp/tmp.avi");
     // TODO: flvtool2 verwenden, um metadaten zum video hinzuzufuegen
   }
 
-  if((!file_exists("$file_path/$path/$orig_path/$m[1].jpg"))||$force) {
+  if((!file_exists("$file_path/$path/$generated_path/$m[1].jpg"))||$force) {
+    print "Generate jpg<br>\n";
+    flush(); ob_flush();
+
     // Filmstrip generieren
     system("cd /tmp ; ffmpeg -y -i \"$orig_file\" -vframes 1 -f image2 /tmp/tmp.jpg");
     system("nice convert -resize 410x450 /tmp/tmp.jpg /tmp/tmp.jpg");
-    system("nice composite -compose atop -gravity center /tmp/tmp.jpg images/filmstrip.png $file_path/$path/$orig_path/$m[1].jpg");
+    system("nice composite -compose atop -gravity center /tmp/tmp.jpg images/filmstrip.png $file_path/$path/$generated_path/$m[1].jpg");
     system("rm /tmp/tmp.jpg");
   }
 
@@ -155,6 +169,7 @@ function process_upload_file($file, $orig_file, $desc=0) {
   global $page;
   global $file_path;
   global $orig_path;
+  global $generated_path;
   global $script_path;
   global $resolutions;
   global $convert_options;
@@ -203,7 +218,8 @@ function process_upload_file($file, $orig_file, $desc=0) {
     $name=$result[1];
   }
 
-  if(file_exists("$file_path/$page->path/$orig_path/$file")) {
+  if(file_exists("$file_path/$page->path/$orig_path/$file")||
+     file_exists("$file_path/$page->path/$generated_path/$file")) {
     // Add this image to the fotocfg.txt resp. a series
     $f=fopen("$file_path/$page->filename", "a");
     if($desc)
@@ -225,6 +241,8 @@ function process_upload_file($file, $orig_file, $desc=0) {
 
 if(!file_exists("$file_path/$page->path/$orig_path"))
   mkdir("$file_path/$page->path/$orig_path");
+if(!file_exists("$file_path/$page->path/$generated_path"))
+  mkdir("$file_path/$page->path/$generated_path");
 
 foreach($resolutions as $r) {
   if(!file_exists("$file_path/$page->path/$r"))
@@ -290,7 +308,7 @@ if($_REQUEST[rebuild]) {
 
       $result=generate_flv_and_thumb(
         "$file_path/$page->path/$orig_path/$f->mov",
-        $page->path, $file);
+        $page->path, $f->mov, $_REQUEST[regenerate]=="on");
       scale_img($f->path, $result[0], $_REQUEST[regenerate]=="on");
 
       print " done<br>\n";

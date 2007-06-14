@@ -52,10 +52,13 @@ else {
   if($_REQUEST[size]=="flv") {
     eregi("^(.*)\.([^.]+)$", $img->mov, $m);
     $flv_file="$m[1].flv";
-    $filename="$file_path/$img->path/$orig_path/$flv_file";
+    $largest_path=$img->get_largest_path($flv_file);
+    $filename="$file_path/$img->path/$largest_path/$flv_file";
   }
-  elseif($_REQUEST[size]=="movie")
-    $filename="$file_path/$img->path/$orig_path/$img->mov";
+  elseif($_REQUEST[size]=="movie") {
+    $largest_path=$img->get_largest_path($img->mov);
+    $filename="$file_path/$img->path/$largest_path/$img->mov";
+  }
   else
     $filename="$file_path/$img->path/$_REQUEST[size]/$img->img";
 }

@@ -146,6 +146,7 @@ class MovieChunk extends ImgChunk {
     global $series;
     global $normal_res;
     global $orig_path;
+    global $generated_path;
     global $file_path;
     global $lang_str;
     global $web_path;
@@ -159,7 +160,7 @@ class MovieChunk extends ImgChunk {
     $ret.="<script type='text/javascript'>\n".
           "<!--\n".
           "var img_version=\"{$_SESSION[img_version][$this->img]}\";\n".
-          "var img_orig=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, $orig_path, $_SESSION[img_version][$this->img])."\";\n".
+          "var img_orig=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, $generated_path, $_SESSION[img_version][$this->img])."\";\n".
           "var img_size_url=\"".url_photo($this->page->path, $this->page->series, "get_image.php", $this->id, $this->img, "%SIZE%", $_SESSION[img_version][$this->img])."\";\n".
           "var imgurl=\"$this->img\";\n".
           "var cur_res=\"$normal_res\";\n".
@@ -283,6 +284,7 @@ class MovieChunk extends ImgChunk {
   function edit_show($text=0) {
     global $index_res;
     global $orig_path;
+    global $generated_path;
 
     if(!$text)
       $text=$this->text;
@@ -293,7 +295,7 @@ class MovieChunk extends ImgChunk {
                   "get_image.php", $this->id, $this->img, 600, 
                   $_SESSION[img_version][$this->img])."\", \"".
           url_photo($this->page->path, $this->page->series, 
-                  "get_image.php", $this->id, $this->img, $orig_path, 
+                  "get_image.php", $this->id, $this->img, $generated_path, 
                   $_SESSION[img_version][$this->img])."\")' ".
           "onMouseOut='page_edit_leave_image(this)' ".
           "onMouseMove='page_edit_move_pic(event)' ".
