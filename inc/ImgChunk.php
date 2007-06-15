@@ -44,12 +44,15 @@ class ImgChunk extends Chunk {
 
   function count_as_picture() { return 1; }
 
-  function get_largest_path($file) {
+  function get_largest_path($file=0) {
     global $file_path;
     global $generated_path;
     global $orig_path;
 
-    if(file_exists("$file_path/$this->path/$generated_path/$file"))
+    if(!$file)
+      $file=$this->img;
+
+    if(file_exists("$file_path/$path/$generated_path/$file"))
       $find_path=$generated_path;
     else
       $find_path=$orig_path;
@@ -306,7 +309,7 @@ class ImgChunk extends Chunk {
     $ret.="</form></div>";
 
     $text="";
-    call_hooks("image_description", &$text, $page, $this);
+    call_hooks("image_description", &$text, $this->page, $this);
     $ret.=$text;
 
 //    if(file_exists("comment.php")) {
