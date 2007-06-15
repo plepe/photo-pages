@@ -3,7 +3,7 @@ class SeriesChunk extends Chunk {
   var $dir;
   var $subpage;
 
-  function SeriesChunk($page, $text, $i, $j) {
+  function SeriesChunk($page, $text, &$i, &$j) {
     $this->type="SeriesChunk";
     $this->index=$i++;
     $this->id=$j++;
@@ -25,9 +25,6 @@ class SeriesChunk extends Chunk {
         $this->dir=$m[1];
         $this->subpage=null;
       }
-      $this->index=$i++;
-      $this->id=$j++;
-      $this->page=$page;
 
       if(eregi("^(/.*)/([^/]*)$", $this->dir, $m)) {
         $this->path=$m[1];

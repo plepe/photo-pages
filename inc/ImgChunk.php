@@ -225,7 +225,7 @@ class ImgChunk extends Chunk {
     if(!$res)
       $res=$normal_res;
 
-    $largest_path=$this->get_largest_path($this->img);
+    $largest_path=$this->get_largest_path();
 
     $imgres=getimagesize("$file_path/{$this->path}/$normal_res/$this->img");
 

@@ -58,6 +58,7 @@ else {
   else {
     $img=$page->cfg["LIST"][$_REQUEST[img]];
   }
+
   if($_REQUEST[size]=="flv") {
     eregi("^(.*)\.([^.]+)$", $img->mov, $m);
     $flv_file="$m[1].flv";
