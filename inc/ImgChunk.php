@@ -52,7 +52,7 @@ class ImgChunk extends Chunk {
     if(!$file)
       $file=$this->img;
 
-    if(file_exists("$file_path/$path/$generated_path/$file"))
+    if(file_exists("$file_path/$this->path/$generated_path/$file"))
       $find_path=$generated_path;
     else
       $find_path=$orig_path;

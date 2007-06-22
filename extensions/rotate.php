@@ -51,9 +51,10 @@ function rotate_save_page($data, $page) {
 //  }
 
   $f=fopen("$file_path/$page->path/$generated_path/rotate.data", "w");
-  foreach($rotate_data as $img=>$rot) {
-    fputs($f, "$img\t$rot\n");
-  }
+  if($rotate_data)
+    foreach($rotate_data as $img=>$rot) {
+      fputs($f, "$img\t$rot\n");
+    }
   fclose($f);
 }
 
