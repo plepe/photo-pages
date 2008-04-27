@@ -662,6 +662,9 @@ function page_edit_edit_as_mainpicture(id) {
   var el1=document.getElementsByName("data[MAIN_PICTURE]");
   var el2=document.getElementsByName("data[LIST]["+id+"][img]");
   el1[0].value=el2[0].value;
+
+  var ob=document.getElementById("page_edit_edit_as_mainpicture");
+  ob.className="toolbox_input_active";
 }
 
 var page_edit_id;
@@ -687,7 +690,7 @@ function page_edit_edit_img(id) {
 
   reset_toolbox("page_edit_edit_toolbox");
   call_hooks("page_edit_edit_toolbox", ret, id, page_edit_type);
-  add_toolbox_item("page_edit_edit_toolbox", "<input type='button' class='toolbox_input"+(el1[0].value==el2[0].value?"_active":"")+"' value='"+lang_str["page_edit_edit_as_mainpicture"]+"' onClick='page_edit_edit_as_mainpicture("+id+")'>\n");
+  add_toolbox_item("page_edit_edit_toolbox", "<input type='button' class='toolbox_input"+(el1[0].value==el2[0].value?"_active":"")+"' id='page_edit_edit_as_mainpicture' value='"+lang_str["page_edit_edit_as_mainpicture"]+"' onClick='page_edit_edit_as_mainpicture("+id+")'>\n");
   ret.text+=show_toolbox("page_edit_edit_toolbox");
 
   ret.text+="<div style='text-align: right; clear: left;'>\n";

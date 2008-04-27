@@ -166,6 +166,8 @@ class ImgChunk extends Chunk {
       $ret["exptime"]=$e[ExposureTime];
     }
 
+    call_hooks("img_details", &$ret, $this->page, $this);
+
     return $ret;
   }
 
@@ -252,7 +254,7 @@ class ImgChunk extends Chunk {
     $img_params[width]=$imgres[0];
     $img_params[height]=$imgres[1];
 
-    call_hooks("imageview", &$img_params, $page, $this);
+    call_hooks("imageview", &$img_params, $this->page, $this);
 
     $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $largest_path, $_SESSION[img_version][$this->img])."' target='_top'>";
 
