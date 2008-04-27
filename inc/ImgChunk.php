@@ -72,9 +72,10 @@ class ImgChunk extends Chunk {
 
   function read_comments() {
     global $lang_str;
+    global $file_path;
 
-    if((!isset($this->comments))&&file_exists("{$this->page->path}/comments/$this->img")) {
-      $fp=fopen("{$this->page->path}/comments/$this->img", "r");
+    if((!isset($this->comments))&&file_exists("$file_path/{$this->page->path}/comments/$this->img")) {
+      $fp=fopen("$file_path/{$this->page->path}/comments/$this->img", "r");
       $mode=0;
       while($str=fgets($fp, 8192)) {
         if($str=="$$$$$\n") {
