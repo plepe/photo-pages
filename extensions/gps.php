@@ -22,7 +22,7 @@ function read_gps_data($ret, $page, $t) {
 
     $lat=$lat[0]+$lat[1]/60+$lat[2]/3600;
     $lon=$lon[0]+$lon[1]/60+$lon[2]/3600;
-    $ret["gps_pos"]=sprintf("<a href='http://maps.google.com/?ie=UTF8&ll=%F,%F&z=18'>%s</a>", $lat, $lon, $ret["gps_pos"]);
+    $ret["gps_pos"]=sprintf("<a href='http://maps.google.com/?ie=UTF8&ll=%F,%F&z=14'>%s</a>", $lat, $lon, $ret["gps_pos"]);
 
     if($alt=$e["GPSAltitude"]) {
       $d1=explode("/", $alt);
