@@ -37,7 +37,6 @@ function gps_show_geo_info($text, $page, $t) {
   global $file_path;
   global $orig_path;
 
-  //$route=gps_load_route($page);
   $e=exif_read_data("$file_path/{$t->path}/$orig_path/$t->img");
 
   if($lat=$e["GPSLatitude"]) {
@@ -52,22 +51,25 @@ function gps_show_geo_info($text, $page, $t) {
       $lon[$k]=$d1[0]/$d1[1];
     }
   }
-  if($lat[0]||$lat[1]||$lat[2]) {
-    add_toolbox_item("gps", 
-      sprintf("Latitude: %s %.0f° %.0f' %.0f\"<br>Longitude: %s %.0f° %.0f' %.0f\"", $e["GPSLatitudeRef"], $lat[0], $lat[1], $lat[2], $e["GPSLongitudeRef"], $lon[0], $lon[1], $lon[2]));
-
-    $lat=$lat[0]+$lat[1]/60+$lat[2]/3600;
-    $lon=$lon[0]+$lon[1]/60+$lon[2]/3600;
-    $ret["gps_pos"]=sprintf("<a href='http://maps.google.com/?ie=UTF8&ll=%F,%F&z=14'>%s</a>", $lat, $lon, $ret["gps_pos"]);
-
-    if($alt=$e["GPSAltitude"]) {
-      $d1=explode("/", $alt);
-      $alt=$d1[0]/$d1[1];
-      if($alt)
-        add_toolbox_item("gps", sprintf("<br>Height: %.0fm", $alt));
-    }
+  if(!($lat[0])&&(!$lat[1])&&(!$lat[2])) {
+    return;
   }
 
+  add_toolbox_item("gps", 
+    sprintf("Latitude: %s %.0f° %.0f' %.0f\"<br>Longitude: %s %.0f° %.0f' %.0f\"", $e["GPSLatitudeRef"], $lat[0], $lat[1], $lat[2], $e["GPSLongitudeRef"], $lon[0], $lon[1], $lon[2]));
+
+  $lat=$lat[0]+$lat[1]/60+$lat[2]/3600;
+  $lon=$lon[0]+$lon[1]/60+$lon[2]/3600;
+  $ret["gps_pos"]=sprintf("<a href='http://maps.google.com/?ie=UTF8&ll=%F,%F&z=14'>%s</a>", $lat, $lon, $ret["gps_pos"]);
+
+  if($alt=$e["GPSAltitude"]) {
+    $d1=explode("/", $alt);
+    $alt=$d1[0]/$d1[1];
+    if($alt)
+      add_toolbox_item("gps", sprintf("<br>Height: %.0fm", $alt));
+  }
+
+  //$route=gps_load_route($page);
   add_toolbox_item("gps", 
 //  sprintf("<iframe src='http://openlayers.org/viewer/?center=%F,%F&zoom=12' ".
 //              "width='240' height='200' ".
