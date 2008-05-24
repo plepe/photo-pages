@@ -1,0 +1,16 @@
+div#toolbox_gps {
+  border: 1px solid #666666;
+  float: left;
+  padding: 5px;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  margin-left: 0px;
+  margin-top: 0px;
+  width: 240px;
+  background: #333333;
+}
+div#gps_map {
+  border: 1px solid #666666;
+  width: 238px;
+  height: 198px;
+}
