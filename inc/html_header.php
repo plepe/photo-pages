@@ -72,6 +72,9 @@ function start_html_header($title) {
 <?
 use_javascript();
 use_css();
+$text="";
+call_hooks("header", &$text, $page);
+print $text;
 html_export_var(array());
 }
 

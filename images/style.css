@@ -226,11 +226,13 @@ td.imageview_image {
 }
 img.imageview_image {
   border: 1px solid #666666;
-  float: left;
   margin-right: 5px;
   margin-bottom: 5px;
   margin-left: 0px;
   margin-top: 0px;
+}
+div#imageview_main {
+  float: left;
 }
 .imageview_image_details {
   border: 0px solid #666666;

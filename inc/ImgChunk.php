@@ -257,26 +257,13 @@ class ImgChunk extends Chunk {
 
     call_hooks("imageview", &$img_params, $this->page, $this);
 
+    $ret.="<div id='imageview_main'>\n";
     $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $largest_path, $_SESSION[img_version][$this->img])."' target='_top'>";
 
 //    $ret.="<a href='$orig_path/$this->img?{$_SESSION[img_version][$this->img]}' target='_top'>".
     //$ret.="<img src='$normal_res/$this->img?{$_SESSION[img_version][$this->img]}' ";
     $ret.="<img src='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $normal_res, $_SESSION[img_version][$this->img])."' target='_top' ";
     $ret.="id='img' class='imageview_image' ".implode_vars($img_params)." onLoad='notify_img_load()'></a>\n";
-// 
-
-    $ret.="<div class='toolbox'>\n";
-
-    $det=$this->get_image_details();
-    $ret.="<table class='imageview_image_details' width='100%'>\n";
-    foreach($det as $name=>$value) {
-      $ret.="<tr><td>".$lang_str["info_$name"].":</td><td>$value</td></tr>\n";
-    }
-    $ret.="</table></div>\n";
-
-    $ret.=$this->toolbox();
-
-    $ret.="<br style='clear: left;'>\n";
 
     if($this->text) {
       $ret.="<div class='imageview_image_desc' id='desc'>".
@@ -314,6 +301,23 @@ class ImgChunk extends Chunk {
     $text="";
     call_hooks("image_description", &$text, $this->page, $this);
     $ret.=$text;
+
+    $ret.="</div>\n";
+// 
+    $ret.="<div class='toolbox'>\n";
+
+    $det=$this->get_image_details();
+    $ret.="<table class='imageview_image_details' width='100%'>\n";
+    foreach($det as $name=>$value) {
+      $ret.="<tr><td>".$lang_str["info_$name"].":</td><td>$value</td></tr>\n";
+    }
+    $ret.="</table></div>\n";
+
+    $ret1=$this->toolbox();
+    call_hooks("image_toolboxes", &$ret1, $this->page, $this);
+    $ret.=$ret1;
+
+    $ret.="<br style='clear: left;'>\n";
 
 //    if(file_exists("comment.php")) {
 //      $ret.="<a href='comment.php?img=$this->img'>Kommentar hinzuf&uuml;gen</a>";
