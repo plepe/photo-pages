@@ -57,6 +57,9 @@ class Group {
     if(($name!=$anon_user)&&($this->groupname=="$default_group"))
       return 1;
 
+    if(!$this->members)
+      return 0;
+
     return in_array($username, $this->members);
   }
 };

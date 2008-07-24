@@ -666,10 +666,11 @@ class Page {
     $i=0;
 
 // TODO: Die Bilder aller Ansichten zusammenzaehlen
-    foreach($this->cfg["LIST"] as $el) {
-      if($el->count_as_picture())
-        $i++;
-    }
+    if($this->cfg["LIST"])
+      foreach($this->cfg["LIST"] as $el) {
+        if($el->count_as_picture())
+          $i++;
+      }
 
     return $i;
   }
@@ -1703,10 +1704,6 @@ unset($page);
 //print "bla1\n";
 if(!$_REQUEST[page])
   $_REQUEST[page]=$main_page;
-if(!file_exists("$file_path/$_REQUEST[page]")) {
-  print "Page does not exist";
-  //$_REQUEST[page]="";
-}
 
 // Doppelte / und / am Schluss entfernen
 do {
@@ -1717,10 +1714,16 @@ while(substr($_REQUEST[page], strlen($_REQUEST[page])-1, 1)=="/") {
   $_REQUEST[page]=substr($_REQUEST[page], 0, strlen($_REQUEST[page])-1);
 }
 
-$page=get_page($_REQUEST[page], $series);
-$page->get_viewlist();
-if(!$series) {
-  $page->get_sublist();
+if(!file_exists("$file_path/$_REQUEST[page]")) {
+  $page=new Page();
+  $page->cfg["WELCOME_TEXT"]="Page '$_REQUEST[page]' does not exist.";
+}
+else {
+  $page=get_page($_REQUEST[page], $series);
+  $page->get_viewlist();
+  if(!$series) {
+    $page->get_sublist();
+  }
 }
 
 //$rights=$page->get_rights($_SESSION[current_user]);
