@@ -86,6 +86,7 @@ function gps_show_geo_info($text, $page, $t) {
 function gps_header($text, $page) {
   $text.="<script src='http://openlayers.org/api/OpenLayers.js'></script>\n";
   $text.="<script src='http://maps.google.com/maps?file=api&v=2&key=ABQIAAAAeEqsE9X0Q906P0rnPSlJeRQZ4mIvHXT2Uizv1wYK190UnoknvxQxWepPo9wxeynr65DyANRzv3ixrw' type='text/javascript'></script>\n";
+  $text.="<script src='http://www.openstreetmap.org/openlayers/OpenStreetMap.js'></script>\n";
 }
 
 //register_hook("img_details", read_gps_data);
