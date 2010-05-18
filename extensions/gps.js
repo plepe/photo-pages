@@ -1,4 +1,5 @@
 var gps_map;
+var gps_layer_hill;
 
 function gps_zoom_change(event) {
   options_set("gps_zoom", gps_map.zoom);
@@ -6,6 +7,10 @@ function gps_zoom_change(event) {
 
 function gps_baselayer_change(event) {
   options_set("gps_baselayer", gps_map.baseLayer.id);
+}
+
+function gps_layer_change(event) {
+  options_set("gps_layer_hill", gps_layer_hill.visibility?"on":"off");
 }
 
 function gps_init() {
@@ -32,6 +37,15 @@ function gps_init() {
   var l= new OpenLayers.Layer.Google( "Google", { type: G_HYBRID_MAP,
      projection: new OpenLayers.Projection("EPSG:4326"), 'sphericalMercator': true } );
   gps_map.addLayer(l);
+
+  var z=options_get("gps_layer_hill");
+  gps_layer_hill = new OpenLayers.Layer.OSM(
+                 "Hillshading (NASA SRTM3 v2)",
+                 "http://toolserver.org/~cmarqu/hill/${z}/${x}/${y}.png",
+                { type: 'png',
+                  displayOutsideMaxExtent: true, isBaseLayer: false,
+                  transparent: true, "visibility": z!="off"});
+  gps_map.addLayer(gps_layer_hill);
 
   var z=options_get("gps_baselayer");
   for(var i=0; i<gps_map.layers.length; i++) {
@@ -79,7 +93,7 @@ function gps_init() {
 
   gps_map.events.register("zoomend", gps_map, gps_zoom_change);
   gps_map.events.register("changebaselayer", gps_map, gps_baselayer_change);
-
+  gps_map.events.register("changelayer", gps_map, gps_layer_change);
 }
 
 register_initfun(gps_init);
