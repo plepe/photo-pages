@@ -69,7 +69,7 @@ function gps_show_geo_info($text, $page, $t) {
       add_toolbox_item("gps", sprintf("<br>Height: %.0fm", $alt));
   }
 
-  //$route=gps_load_route($page);
+  $route=gps_load_route($page);
   add_toolbox_item("gps", 
 //  sprintf("<iframe src='http://openlayers.org/viewer/?center=%F,%F&zoom=12' ".
 //              "width='240' height='200' ".

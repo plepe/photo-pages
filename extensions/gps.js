@@ -49,16 +49,28 @@ function gps_init() {
   var markers = new OpenLayers.Layer.Markers( "Markers" );
   gps_map.addLayer(markers);
 
-//  //for(var route_part in route) {
-//    var geo=new Array();
-//    // for(var poi in route_part) {
-//      geo.push(new OpenLayers.Geometry.Point(0, 0));
-//      geo.push(new OpenLayers.Geometry.Point(5, 5));
-//    //}
-//
-//    var route_el=new OpenLayers.Geometry.MultiPoint();
-//    markers.addMarker(route_el);
-//  //}
+  if(gps_route) {
+    var gps_route_layer=new OpenLayers.Layer.Vector("Route", {});
+    gps_route_layer.setOpacity(0.7);
+    gps_map.addLayer(gps_route_layer);
+
+    for(var i=0; i<gps_route.length; i++) {
+      var route_part=[];
+      for(var j=0; j<gps_route[i].length; j++) {
+        var p=gps_route[i][j];
+        var ll=new OpenLayers.LonLat(p.lon, p.lat).transform(new OpenLayers.Projection("EPSG:4326"), gps_map.getProjectionObject());
+        route_part.push(new OpenLayers.Geometry.Point(ll.lon, ll.lat));
+      }
+
+      var ls=new OpenLayers.Geometry.LineString(route_part);
+      var vector=new OpenLayers.Feature.Vector(ls, 0, {
+        strokeWidth: 2,
+        strokeColor: "black"
+      });
+
+      gps_route_layer.addFeatures([vector]);
+    }
+  }
 
   var size = new OpenLayers.Size(21,25);
   var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
