@@ -1,7 +1,7 @@
 <?
 $extensions_data=array();
 
-function set_extension_views($ext, $views) {
+function set_extension_views($ext, $views=0) {
   global $extensions_data;
 
   $extensions_data[$ext]=array("views"=>$views);
