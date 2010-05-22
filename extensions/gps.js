@@ -60,9 +60,6 @@ function gps_init() {
   var gps_pos=new OpenLayers.LonLat(map.getAttribute("pos_lon"), map.getAttribute("pos_lat")).transform(new OpenLayers.Projection("EPSG:4326"), gps_map.getProjectionObject());
   gps_map.setCenter(gps_pos, z);
 
-  var markers = new OpenLayers.Layer.Markers( "Markers" );
-  gps_map.addLayer(markers);
-
   if(gps_route) {
     var gps_route_layer=new OpenLayers.Layer.Vector("Route", {});
     gps_route_layer.setOpacity(0.7);
@@ -85,6 +82,9 @@ function gps_init() {
       gps_route_layer.addFeatures([vector]);
     }
   }
+
+  var markers = new OpenLayers.Layer.Markers( "Markers" );
+  gps_map.addLayer(markers);
 
   var size = new OpenLayers.Size(21,25);
   var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
