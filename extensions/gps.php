@@ -84,8 +84,11 @@ function gps_show_geo_info($text, $page, $t) {
 }
 
 function gps_header($text, $page) {
+  global $gps_google_api_keys;
+
+  $api_key=$gps_google_api_keys[$_SERVER['HTTP_HOST']];
   $text.="<script src='http://openlayers.org/api/OpenLayers.js'></script>\n";
-  $text.="<script src='http://maps.google.com/maps?file=api&v=2&key=ABQIAAAAeEqsE9X0Q906P0rnPSlJeRQZ4mIvHXT2Uizv1wYK190UnoknvxQxWepPo9wxeynr65DyANRzv3ixrw' type='text/javascript'></script>\n";
+  $text.="<script src='http://maps.google.com/maps?file=api&v=2&key=$api_key' type='text/javascript'></script>\n";
   $text.="<script src='http://www.openstreetmap.org/openlayers/OpenStreetMap.js'></script>\n";
 }
 

@@ -89,3 +89,7 @@ $extensions=array("window", "resolution", "fullscreen", "slideshow", "magnify", 
 //$url_javascript=$web_path.'/%3$s';
 //$url_img=$web_path.'images/%1$s';
 
+// Generate Keys for the Google Maps API and insert them here
+$gps_google_api_keys=array(
+  "my.domain"=>"abcdef",
+);
