@@ -58,8 +58,8 @@ function gps_show_geo_info($text, $page, $t) {
   add_toolbox_item("gps", 
     sprintf("Latitude: %s %.0f° %.0f' %.0f\"<br>Longitude: %s %.0f° %.0f' %.0f\"", $e["GPSLatitudeRef"], $lat[0], $lat[1], $lat[2], $e["GPSLongitudeRef"], $lon[0], $lon[1], $lon[2]));
 
-  $lat=$lat[0]+$lat[1]/60+$lat[2]/3600;
-  $lon=$lon[0]+$lon[1]/60+$lon[2]/3600;
+  $lat=($e["GPSLatitudeRef"]=="S"?-1:1)*($lat[0]+$lat[1]/60+$lat[2]/3600);
+  $lon=($e["GPSLatitudeRef"]=="W"?-1:1)*($lon[0]+$lon[1]/60+$lon[2]/3600);
   $ret["gps_pos"]=sprintf("<a href='http://maps.google.com/?ie=UTF8&ll=%F,%F&z=14'>%s</a>", $lat, $lon, $ret["gps_pos"]);
 
   if($alt=$e["GPSAltitude"]) {
