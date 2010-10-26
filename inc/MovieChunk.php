@@ -18,12 +18,12 @@ class MovieChunk extends ImgChunk {
         $this->path=$text[path];
     }
     else {
-      if(eregi("^([^ ]*)\.(avi|mov|flv|mpg|mpeg) (.*)$", $text, $m)) {
+      if(eregi("^([^ ]*)\.(avi|mov|flv|mpg|mpeg|ogg) (.*)$", $text, $m)) {
         $this->mov="$m[1].$m[2]";
         $this->img="$m[1].jpg"; // TODO: Suchen ob jpg/gif/png/...
         $this->text=$m[3];
       }
-      elseif(eregi("^([^ ]*)\.(avi|mov|flv|mpg|mpeg)$", $text, $m)) {
+      elseif(eregi("^([^ ]*)\.(avi|mov|flv|mpg|mpeg|ogg)$", $text, $m)) {
         $this->mov="$m[1].$m[2]";
         $this->img="$m[1].jpg"; // TODO: Suchen ob jpg/gif/png/...
       }
@@ -31,7 +31,7 @@ class MovieChunk extends ImgChunk {
         $this->mov=$text;
       }
 
-      if(eregi("^(/.*)/([^/]*).(avi|mov|flv|mpg|mpeg)$", $this->img, $m)) {
+      if(eregi("^(/.*)/([^/]*).(avi|mov|flv|mpg|mpeg|ogg)$", $this->img, $m)) {
         $this->path=$m[1];
         $this->mov=$m[2].$m[3];
         $this->img=$m[2]."jpg";

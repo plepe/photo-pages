@@ -65,7 +65,7 @@ umask(0000);
 
 // Accepted Filename-Extensions
 $extensions_images=array("jpg", "jpeg", "gif", "png");
-$extensions_movies=array("avi", "mov", "flv", "mpeg", "mpg");
+$extensions_movies=array("avi", "mov", "flv", "mpeg", "mpg", "ogg");
 
 // Available Namespaces
 $namespaces=array("category");
