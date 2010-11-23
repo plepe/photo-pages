@@ -1,5 +1,9 @@
 function window_resize() {
   var img=document.getElementById("img");
+
+  if(!img)
+    return;
+
   var p=get_abs_pos(img);
 
   var w=window.innerWidth-p[0]*2;

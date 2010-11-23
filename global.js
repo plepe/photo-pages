@@ -260,6 +260,8 @@ function call_events(event) {
 function register_event(ob, event, fun) {
   if(typeof ob=="string")
     ob=document.getElementById(ob);
+  if(!ob)
+    return;
 
   if(!eventfuns[ob])
     eventfuns[ob]=new Array();
