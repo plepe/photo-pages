@@ -29,6 +29,12 @@ use_javascript("global");
 use_javascript("upload_image");
 urls_write();
 end_html_header();
+
+if(!$page->get_right($_SESSION[current_user], "edit")) {
+  print "<body>Permission denied!</body></html>";
+  exit;
+}
+
 ?>
 <BODY>
 <?

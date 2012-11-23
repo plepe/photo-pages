@@ -32,6 +32,11 @@ use_javascript("page_edit");
 urls_write();
 end_html_header();
 
+if(!$page->get_right($_SESSION[current_user], "edit")) {
+  print "<body>Permission denied!</body></html>";
+  exit;
+}
+
 ?>
 <BODY onLoad='global_initfun()' onUnLoad='call_events(event)'>
 <?
