@@ -1436,7 +1436,7 @@ class Page {
       print "<br style='clear: left;'>\n";
     } // ende rights
 
-    print "<input type='submit' name='submit[ok]' value='$lang_str[nav_save]'>\n";
+    print "<input type='submit' name='submit_ok' value='$lang_str[nav_save]'>\n";
     
     print "</form>\n";
 

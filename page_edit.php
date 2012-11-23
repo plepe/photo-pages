@@ -24,7 +24,7 @@
  */
 $extensions_page="page_edit";
 require "data.php";
-if($_REQUEST[submit][ok]) {
+if($_REQUEST[submit_ok]) {
   $result=$page->set_page_edit_data($_REQUEST[data]);
 }
 start_html_header($page->cfg[TITLE]);
@@ -39,12 +39,12 @@ print "<div>".$page->get_path()."</div>\n";
 print "<div class='wait_screen' id='wait_screen'><table width='100%' height='100%'><tr><td align='center' valign='middle'>Please wait</td></tr></table></div>\n";
 print "<p>\n";
 
-if($_REQUEST[submit][ok]) {
+if($_REQUEST[submit_ok]) {
   if($result)
     print $lang_str[page_edit_saved];
 }
 
-if($_REQUEST[submit][ok]) {
+if($_REQUEST[submit_ok]) {
   print "<br><br><a href='".url_page($page->path, $page->series, "index.php")."'>Zur&uuml;ck</a>.";
 }
 else {
