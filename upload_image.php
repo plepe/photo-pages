@@ -29,6 +29,12 @@ use_javascript("global");
 use_javascript("upload_image");
 urls_write();
 end_html_header();
+
+if(!$page->get_right($_SESSION[current_user], "edit")) {
+  print "<body>Permission denied!</body></html>";
+  exit;
+}
+
 ?>
 <BODY>
 <?
@@ -242,7 +248,10 @@ if($_FILES[image]) {
     print "</pre>\n";
     unlink($_FILES[image][tmp_name]);
     $tmpdir=opendir($tmpname);
-    while($f=readdir($tmpdir)) {
+    while($f=readdir($tmpdir))
+      $list[]=$f;
+    natsort($list);
+    foreach($list as $f) {
       if(substr($f, 0, 1)!=".") {
         process_upload_file($f, "$tmpname/$f");
         @unlink("$tmpname/$f");
