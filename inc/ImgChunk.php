@@ -167,6 +167,9 @@ class ImgChunk extends Chunk {
       $ret["exptime"]=$e[ExposureTime];
     }
 
+    if(isset($e['Copyright'])&&($e['Copyright']))
+      $ret["photographer"]=$e['Copyright'];
+
     call_hooks("img_details", &$ret, $this->page, $this);
 
     return $ret;
