@@ -59,6 +59,8 @@ $lang_str=array(
   "info_resolution"=>"Resolution",
   "info_camera"=>"Model",
   "info_exptime"=>"Exposure Time",
+  "info_aperture"=>"Aperture",
+  "info_iso"=>"ISO",
 
   "info_photosby"=>"Photos by",
 
