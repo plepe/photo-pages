@@ -28,10 +28,10 @@ function gps_init() {
                         new OpenLayers.Control.Navigation() ]
           });
 
-  var l = new OpenLayers.Layer.OSM("OpenStreetBrowser", "http://www.openstreetbrowser.org/tiles/base/${z}/${x}/${y}.png", {numZoomLevels: 19});
+  var l = new OpenLayers.Layer.OSM.Mapnik("OpenStreetMap - Mapnik");
   gps_map.addLayer(l);
 
-  var l = new OpenLayers.Layer.OSM.Mapnik("OpenStreetMap - Mapnik");
+  var l = new OpenLayers.Layer.OSM("OpenStreetBrowser", "http://www.openstreetbrowser.org/tiles/base/${z}/${x}/${y}.png", {numZoomLevels: 19});
   gps_map.addLayer(l);
 
   var l= new OpenLayers.Layer.Google( "Google", { type: G_HYBRID_MAP,
@@ -57,7 +57,7 @@ function gps_init() {
   if(!z)
     z=13;
 
-  var gps_pos=new OpenLayers.LonLat(map.getAttribute("pos_lon"), map.getAttribute("pos_lat")).transform(new OpenLayers.Projection("EPSG:4326"), gps_map.getProjectionObject());
+  var gps_pos=new OpenLayers.LonLat(map.getAttribute("pos_lon"), map.getAttribute("pos_lat")).transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
   gps_map.setCenter(gps_pos, z);
 
   if(gps_route) {

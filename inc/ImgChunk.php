@@ -165,6 +165,12 @@ class ImgChunk extends Chunk {
         $ret["camera"]="$e[Model]";
 
       $ret["exptime"]=$e[ExposureTime];
+
+      // Calculate aperture
+      $x=explode("/", $e['FNumber']);
+      $ret["aperture"]="f/".($x[0]/$x[1]);
+
+      $ret["iso"]=$e['ISOSpeedRatings'];
     }
 
     if(isset($e['Copyright'])&&($e['Copyright']))
