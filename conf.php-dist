@@ -65,7 +65,7 @@ $max_res=1280;
 $resolutions=array(64, 200, 600);
 
 // Which options should be used when rescaling
-$convert_options="-filter Hamming -quality 85 -interlace PLANE";
+$convert_options="-filter Hamming -quality 85 -interlace PLANE -auto-orient";
 
 // What's the name of the anonymous user?
 $anon_user="anonymous";
