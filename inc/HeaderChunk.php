@@ -3,7 +3,7 @@ class HeaderChunk extends Chunk {
   var $level;
   var $text;
 
-  function HeaderChunk($page, $text, &$i, $j) {
+  function HeaderChunk($page, $text, &$i, &$j) {
     $this->type="HeaderChunk";
     $this->index=$i;
     $this->id=$j++;
@@ -71,7 +71,7 @@ class HeaderChunk extends Chunk {
     return strtr($this->text, array("\n"=>"<br>\n"));
   }
 
-  function save_data() {
+  function save_data($data) {
     $save="";
 
     $save.=str_repeat("=", $this->level).

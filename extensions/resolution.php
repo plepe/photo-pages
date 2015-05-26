@@ -1,7 +1,7 @@
 <?
 global $normal_res;
 
-function resolution_select($params, $page, $img) {
+function resolution_select(&$params, $page, $img) {
   global $lang_str;
   global $resolutions;
   global $normal_res;
@@ -34,6 +34,5 @@ if($_SESSION[normal_res])
   $normal_res=$_SESSION[normal_res];
 
 $_SESSION[normal_res]=$normal_res;
-session_register("normal_res");
 
 register_hook("imageview", resolution_select);

@@ -1,7 +1,7 @@
 <?
 include "extensions/details.php";
 
-function details_search($found, $page, $img) {
+function details_search(&$found, $page, $img) {
   $desc=details_load($page, $img);
 
   if(in_array($img->type, array("SubdirChunk", "SeriesChunk", "HeaderChunk")))
@@ -13,7 +13,7 @@ function details_search($found, $page, $img) {
   }
 }
 
-function details_album_desc($desc, $page, $img) {
+function details_album_desc(&$desc, $page, $img) {
   global $lang_str;
 
   $details=details_load($page, $img);

@@ -4,7 +4,7 @@ class ImgChunk extends Chunk {
   var $img;
   var $comments;
 
-  function ImgChunk($page, $text, &$i, $j) {
+  function ImgChunk($page, $text, &$i, &$j) {
     $this->type="ImgChunk";
     $this->index=$i++;
     $this->id=$j++;
@@ -128,7 +128,7 @@ class ImgChunk extends Chunk {
 
     if($this->text)
       $desc=strtr($this->text, array("\n"=>"<br>\n"))."<br>\n";
-    call_hooks("album_desc", &$desc, $page, $this);
+    call_hooks("album_desc", $desc, $page, $this);
     $ret.=$desc;
 
     $this->read_comments();
@@ -176,7 +176,7 @@ class ImgChunk extends Chunk {
     if(isset($e['Copyright'])&&($e['Copyright']))
       $ret["photographer"]=$e['Copyright'];
 
-    call_hooks("img_details", &$ret, $this->page, $this);
+    call_hooks("img_details", $ret, $this->page, $this);
 
     return $ret;
   }
@@ -264,7 +264,7 @@ class ImgChunk extends Chunk {
     $img_params[width]=$imgres[0];
     $img_params[height]=$imgres[1];
 
-    call_hooks("imageview", &$img_params, $this->page, $this);
+    call_hooks("imageview", $img_params, $this->page, $this);
 
     $ret.="<div id='imageview_main'>\n";
     $ret.="<a href='".url_photo($this->page->path, $this->page->series, "image.php", $this->id, $this->img, $largest_path, $_SESSION[img_version][$this->img])."' target='_top'>";
@@ -308,7 +308,7 @@ class ImgChunk extends Chunk {
     $ret.="</form></div>";
 
     $text="";
-    call_hooks("image_description", &$text, $this->page, $this);
+    call_hooks("image_description", $text, $this->page, $this);
     $ret.=$text;
 
     $ret.="</div>\n";
@@ -323,7 +323,7 @@ class ImgChunk extends Chunk {
     $ret.="</table></div>\n";
 
     $ret1=$this->toolbox();
-    call_hooks("image_toolboxes", &$ret1, $this->page, $this);
+    call_hooks("image_toolboxes", $ret1, $this->page, $this);
     $ret.=$ret1;
 
     $ret.="<br style='clear: left;'>\n";
@@ -484,11 +484,11 @@ class ImgChunk extends Chunk {
     }
 
     $image_modify=0;
-    call_hooks("image_modify_save_request", &$image_modify, $this, $data);
+    call_hooks("image_modify_save_request", $image_modify, $this, $data);
 
     if($image_modify) {
       $filename="$file_path/$this->path/$orig_path/$this->img";
-      call_hooks("image_modify_save_start", &$filename, $this);
+      call_hooks("image_modify_save_start", $filename, $this);
       rename("$filename", "$file_path/$this->path/$generated_path/$this->img");
       scale_img($this->path, $this->img, 1);
       $_SESSION[img_version][$this->img]++;

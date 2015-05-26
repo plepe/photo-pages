@@ -139,7 +139,7 @@ function rowcount_album_nav($list, $img) {
   return $ret;
 }
 
-function rowcount_modify_list($list) {
+function rowcount_modify_list(&$list) {
   $img=$_REQUEST["img"];
 
   $list=rowcount_split_album_pages($list);
@@ -164,7 +164,6 @@ if(!$rows)
 if(!$rows) {
   $rows=6;
   $_SESSION["rows"]=6;
-  session_register("rows");
 }
 
 $ret="";

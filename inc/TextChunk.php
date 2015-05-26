@@ -2,7 +2,7 @@
 class TextChunk extends Chunk {
   var $text;
 
-  function TextChunk($page, $text, $i, $j) {
+  function TextChunk($page, $text, &$i, &$j) {
     $this->type="TextChunk";
     $this->index=$i;
     $this->id=$j++;
@@ -51,7 +51,7 @@ class TextChunk extends Chunk {
     return strtr($this->text, array("\n"=>"<br>\n"));
   }
 
-  function save_data() {
+  function save_data($data) {
     $save="";
 
     if($this->text) {

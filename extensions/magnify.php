@@ -1,5 +1,5 @@
 <?
-function magnify_export_size($text, $page, $img) {
+function magnify_export_size(&$text, $page, $img) {
   global $file_path;
 
   $large_path=$img->get_largest_path();

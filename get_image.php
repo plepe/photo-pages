@@ -36,7 +36,7 @@ if($_REQUEST[tmp_id]) {
 }
 
 $image_modify=0;
-call_hooks("image_modify_request", &$image_modify, $img);
+call_hooks("image_modify_request", $image_modify, $img);
 
 if($image_modify) {
   $request_size=$_REQUEST[size];
@@ -89,7 +89,7 @@ if($image_modify) {
 
   $filename=$new_filename;
 
-  call_hooks("image_modify_start", &$filename, $img);
+  call_hooks("image_modify_start", $filename, $img);
 }
 
 $type=mime_content_type($filename);
@@ -105,4 +105,4 @@ while($r=fread($f, 1024)) {
 }
 fclose($f);
 
-call_hooks("image_done", &$filename, $img);
+call_hooks("image_done", $filename, $img);

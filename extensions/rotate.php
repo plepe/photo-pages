@@ -2,7 +2,7 @@
 
 $rotate_data=array();
 
-function rotate_hook_modify_request($modify, $image) {
+function rotate_hook_modify_request(&$modify, $image) {
   global $rotate_data;
 
   if($_REQUEST[rotate]!=$rotate_data[$image]) {
@@ -10,7 +10,7 @@ function rotate_hook_modify_request($modify, $image) {
   }
 }
 
-function rotate_hook_modify_save_request($modify, $image, $data) {
+function rotate_hook_modify_save_request(&$modify, $image, $data) {
   global $rotate_data;
 
   if($data[rotate]!=$rotate_data[$image->img]) {
@@ -19,14 +19,14 @@ function rotate_hook_modify_save_request($modify, $image, $data) {
   }
 }
 
-function rotate_hook_modify($filename, $image) {
+function rotate_hook_modify(&$filename, $image) {
   if($image->type=="ImgChunk") {
     system("convert -rotate $_REQUEST[rotate] -background \"#333333\" -resize $_REQUEST[size]x$_REQUEST[size] $filename /tmp/bla.jpg");
     $filename="/tmp/bla.jpg";
   }
 }
 
-function rotate_hook_save_modify($filename, $image) {
+function rotate_hook_save_modify(&$filename, $image) {
   global $rotate_data;
 
   if($image->type=="ImgChunk") {
@@ -58,7 +58,7 @@ function rotate_save_page($data, $page) {
   fclose($f);
 }
 
-function rotate_load_page($cfg, $page) {
+function rotate_load_page(&$cfg, $page) {
   global $file_path;
   global $generated_path;
   global $rotate_data;
@@ -75,7 +75,7 @@ function rotate_load_page($cfg, $page) {
   fclose($f);
 }
 
-function rotate_show_chunk($text, $page, $img) {
+function rotate_show_chunk(&$text, $page, $img) {
   global $rotate_data;
 
   if($img->type=="ImgChunk") {

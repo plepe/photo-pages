@@ -1,5 +1,5 @@
 <?
-function category_modify($data, $page) {
+function category_modify(&$data, $page) {
   if(eregi("^category:(.*)$", $page->path, $m)) {
   }
 
@@ -54,7 +54,7 @@ function category_save_page($data, $page) {
   }
 }
 
-function category_form($text, $page, $data) {
+function category_form(&$text, $page, $data) {
   global $categories;
 
   if(!$data["CATEGORIES"])
@@ -66,7 +66,7 @@ function category_form($text, $page, $data) {
   $text.="</tr>\n";
 }
 
-function category_heading($text, $page) {
+function category_heading(&$text, $page) {
   if(sizeof($page->cfg["CATEGORIES"])) {
     $text.="Categories: ";
 

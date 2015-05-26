@@ -314,7 +314,7 @@ class Page {
       if($dir=@opendir("$file_path/$this->path")) while($file=readdir($dir)) {
         if(ereg("^(.*)\.lst$", $file, $m)) {
           if(!in_array($m[1], $list)) {
-            $n=&new SeriesChunk(&$this, "$m[1]@", &$subindex, &$id);
+            $n=new SeriesChunk($this, "$m[1]@", $subindex, $id);
             $m=$n->get_subpage();
             if(($m->cfg["VIEWHIDE"]!="yes")&&($m->get_right($_SESSION[current_user], "announce")))
               $this->cfg["LIST"][]=$n;
@@ -326,8 +326,8 @@ class Page {
     $this->get_sublist();
 
     $this->show_list=$this->cfg["LIST"];
-    call_hooks("load", &$this->cfg, $this);
-    call_hooks("album_modify_list", &$this->show_list, $this);
+    call_hooks("load", $this->cfg, $this);
+    call_hooks("album_modify_list", $this->show_list, $this);
 
     return $this->cfg["LIST"];
   }
@@ -349,7 +349,7 @@ class Page {
         $id=$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->id+1;
         $subindex=$this->cfg["LIST"][sizeof($this->cfg["LIST"])-1]->index+1;
         if(!in_array("$file", $list)) {
-          $n=&new SubdirChunk(&$this, "$file/", &$subindex, &$id);
+          $n=new SubdirChunk($this, "$file/", $subindex, $id);
           $m=$n->get_subpage();
           //if(($m->cfg["HIDE"]!="yes")&&($m->get_right($_SESSION[current_user], "announce")))
           $this->cfg["LIST"][]=$n;
@@ -441,7 +441,7 @@ class Page {
         */
         foreach($chunk_types as $c) {
           if((!$c[load_regexp])||(eregi($c[load_regexp], $f))) {
-            $this->cfg["LIST"][]=new $c[type]($this, $f, &$index, &$id);
+            $this->cfg["LIST"][]=new $c[type]($this, $f, $index, $id);
             break;
           }
         }
@@ -866,7 +866,7 @@ class Page {
       if(isset($v[path])&&($this->path!=$v[path]))
         $save.="$v[path]/";
 
-      $el=new $chunk_types[$v[type]][type]($this, $v, &$new_index, &$new_id);
+      $el=new $chunk_types[$v[type]][type]($this, $v, $new_index, $new_id);
       $save.=$el->save_data($v)."\n";
 /*
       switch($v[type]) {
@@ -1228,7 +1228,7 @@ class Page {
     }
 
     //print "<td><textarea class='page_edit_input' name='data[WELCOME_TEXT]'>{$data[WELCOME_TEXT]}</textarea></td></tr>\n";
-    call_hooks("page_edit_main_form", &$text, $this, $data);
+    call_hooks("page_edit_main_form", $text, $this, $data);
 
     $text.="</table>\n";
     print $text;
@@ -1256,7 +1256,7 @@ class Page {
       $text ="<input type='hidden' name='data[chunk_order][]' value='$d->id'>\n";
       $text.="<input type='hidden' name='data[LIST][$d->id][type]' value='{$d->type}'>\n";
       $text.=$d->edit_show();
-      call_hooks("page_edit_show_chunk", &$text, $this, $d);
+      call_hooks("page_edit_show_chunk", $text, $this, $d);
       print $text;
       print "</div>\n\n";
     }
@@ -1685,7 +1685,6 @@ if($_REQUEST[username]) {
 
 if(!$_SESSION[current_user]) {
   $_SESSION[current_user]=get_user("anonymous");
-  session_register("current_user");
 }
 
 $series=$_REQUEST[series];
@@ -1741,7 +1740,6 @@ else {
 # Damit beim Rotieren und so immer die richtigen Bilder kommen
 if(!is_array($_SESSION[img_version])) {
   $_SESSION[img_version]=array();
-  session_register("img_version");
 }
 
 }

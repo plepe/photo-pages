@@ -4,7 +4,7 @@ class MovieChunk extends ImgChunk {
   var $img;
   var $comments;
 
-  function MovieChunk($page, $text, &$i, $j) {
+  function MovieChunk($page, $text, &$i, &$j) {
     $this->type="MovieChunk";
     $this->index=$i++;
     $this->id=$j++;
@@ -323,7 +323,7 @@ class MovieChunk extends ImgChunk {
 
   function file_name() { return $this->mov; }
 
-  function save_data() {
+  function save_data($data) {
     $save="";
 
     $save.=$this->mov;

@@ -1,7 +1,7 @@
 <?
 global $lang_str;
 
-function fullscreen_calculate($vars) {
+function fullscreen_calculate(&$vars) {
   if($_SESSION[window_width]&&$_SESSION[fullscreen_mode]) {
     $w=$_SESSION[window_width];
     $h=$_SESSION[window_height];

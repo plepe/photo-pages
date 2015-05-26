@@ -33,7 +33,7 @@ function gps_load_route($page) {
   return $route;
 }
 
-function gps_show_geo_info($text, $page, $t) {
+function gps_show_geo_info(&$text, $page, $t) {
   global $file_path;
   global $orig_path;
 
@@ -83,7 +83,7 @@ function gps_show_geo_info($text, $page, $t) {
   html_export_var(array("gps_route"=>$route));
 }
 
-function gps_header($text, $page) {
+function gps_header(&$text, $page) {
   global $gps_google_api_keys;
 
   $api_key=$gps_google_api_keys[$_SERVER['HTTP_HOST']];

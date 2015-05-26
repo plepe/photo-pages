@@ -67,7 +67,7 @@ if($page->get_right($_SESSION[current_user], "view")) {
   print $page->welcome();
 }
 $text="";
-call_hooks("album_heading", &$text, $page);
+call_hooks("album_heading", $text, $page);
 print $text;
 
 

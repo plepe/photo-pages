@@ -1,5 +1,5 @@
 <?
-function search_create_field($list, $page) {
+function search_create_field(&$list, $page) {
   global $lang_str;
   $search_query=$_REQUEST[search_query];
 
@@ -16,7 +16,7 @@ function search_create_field($list, $page) {
         $new_list[]=$l;
       else {
         $found=0;
-        call_hooks("search", &$found, $page, $l);
+        call_hooks("search", $found, $page, $l);
         if($found)
           $new_list[]=$l;
       }

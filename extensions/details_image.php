@@ -9,7 +9,7 @@ function details_image_load($page, $img) {
   html_export_var(array("details_desc"=>$details_desc));
 }
 
-function details_list_details($text, $page, $img) { 
+function details_list_details(&$text, $page, $img) { 
   global $details_desc;
   global $lang_str;
 

@@ -20,8 +20,8 @@ function include_extensions($view) {
   foreach($extensions as $ext) {
     if(($extensions_data[$ext]["views"]==0)||
        (in_array($view, $extensions_data[$ext]["views"]))) {
-      @include "extensions/{$ext}_lang.php";
-      @include "extensions/{$ext}.php";
+      include "extensions/{$ext}_lang.php";
+      include "extensions/{$ext}.php";
       if(file_exists("extensions/{$ext}.js"))
         use_javascript("extensions/{$ext}");
       if(file_exists("extensions/{$ext}.css"))

@@ -155,7 +155,7 @@ class SeriesChunk extends Chunk {
     return $ret;
   }
 
-  function save_data() {
+  function save_data($data) {
     $save="";
 
     $save.="$this->dir@";

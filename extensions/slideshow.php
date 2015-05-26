@@ -2,8 +2,6 @@
 global $lang_str;
 
 if(!$_SESSION[slideshow_time]) {
-  session_register("slideshow_active");
-  session_register("slideshow_time");
   $_SESSION[slideshow_time]=5;
 }
 

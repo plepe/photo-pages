@@ -22,5 +22,5 @@ class Chunk {
   function edit_show() { return ""; }
   function export_album() { return ""; }
   function export_imageview() { return ""; }
-  function save_data() { return ""; }
+  function save_data($data) { return ""; }
 };
