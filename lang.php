@@ -24,7 +24,6 @@
  */
 
 if($_REQUEST[language]) {
-  session_register("language");
   $_SESSION[language]=$_REQUEST[language];
 }
 

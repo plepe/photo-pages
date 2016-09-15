@@ -191,7 +191,6 @@ class MovieChunk extends ImgChunk {
     $_SESSION["tmp_$tmp_id"]["series"]=$this->page->series;
     $_SESSION["tmp_$tmp_id"]["img"]=$this->id;
     $_SESSION["tmp_$tmp_id"]["size"]="flv";
-    session_register("tmp_$tmp_id");
 
     $url=url_script(array("script"=>"get_image.php", "tmp_id"=>$tmp_id)); //"$web_path/get_image.php?tmp_id=$tmp_id";
     //$url=htmlentities($url);

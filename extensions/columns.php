@@ -7,7 +7,6 @@ if(!$cols)
 if(!$cols) {
   $cols=4;
   $_SESSION["cols"]=4;
-  session_register("cols");
 }
 
 $ret="";

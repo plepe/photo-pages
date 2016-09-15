@@ -36,12 +36,10 @@ end_html_header();
 <?
 if($_REQUEST[cols]) {
   $_SESSION[album_cols]=$_REQUEST[cols];
-  session_register("album_cols");
 }
 
 if($_REQUEST[rows]) {
   $_SESSION[album_rows]=$_REQUEST[rows];
-  session_register("album_rows");
 }
 
 $img=0;
