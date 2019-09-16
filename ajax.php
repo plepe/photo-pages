@@ -29,8 +29,9 @@ print "<xml version=\"1.0\" encoding=\"UTF-8\">\n";
 
 require "data.php";
 
-
-include "extensions/$_REQUEST[extension]_ajax.php";
+if (preg_match("/^[a-zA-Z0-9_]+$/", $_REQUEST['extension'])) {
+  include "extensions/{$_REQUEST['extension']}_ajax.php";
+}
 
 print "</xml>\n";
 

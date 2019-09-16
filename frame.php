@@ -26,7 +26,9 @@ require "data.php";
 start_html_header($page->cfg[TITLE]);
 end_html_header();
 
-$img=$_REQUEST[img];
+if (preg_match("/^[0-9]+$/", $_REQUEST['img'])) {
+  $img = $_REQUEST['img'];
+}
 
 ?>
 <FRAMESET cols="250,*" border=0 frameborder=0 framespacing=0 bordercolor="#0080FF">

@@ -31,6 +31,11 @@ use_javascript("user");
 urls_write();
 end_html_header();
 
+if ($_REQUEST['page'] && !preg_match("/^[a-zA-Z\-0-9_\/]+$/", $_REQUEST['page'])) {
+  print "Illegal page!";
+  exit(1);
+}
+
 ?>
 <BODY>
 <?
